@@ -88,4 +88,128 @@
 - 로그인 시 사용자 ID 및 시간을 기록하며, 접속 빈도/시간대별 통계를 확인할 수 있어야 한다.
 
 ---
+# UI Flow Chart
+
 <img width="3952" alt="2차 프로젝트 (3)" src="https://github.com/user-attachments/assets/c56814ad-0477-429e-b6ec-dab665efe06d" />
+
+---
+# API 명세서
+## 🌐 [0] 초기화면 / 인증
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 메인화면 (로고+시작하기 버튼) | `/` | `/templates/common/main.html` | GET |
+| 로그인 페이지 | `/login` | `/templates/user/login.html` | GET |
+| 로그인 처리 | `/login` | redirect:`/routines` | POST |
+| 회원가입 폼 이동 | `/signup` | `/templates/user/signup.html` | GET |
+| 회원가입 처리 | `/signup` | redirect:`/login` | POST |
+| 로그아웃 | `/logout` | redirect:`/` | POST |
+
+---
+
+## ✅ [1] TODO 기능
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| TODO 목록 조회 | `/todos` | `/templates/todo/todo-list.html` | GET |
+| TODO 추가 폼 | `/todos/new` | `/templates/todo/todo-form.html` | GET |
+| TODO 추가 | `/todos` | redirect:`/todos` | POST |
+| TODO 수정 폼 | `/todos/{id}/edit` | `/templates/todo/todo-form.html` | GET |
+| TODO 수정 | `/todos/{id}` | redirect:`/todos` | PATCH |
+| TODO 삭제 | `/todos/{id}` | redirect:`/todos` | DELETE |
+| TODO 완료 | `/todos/{id}/complete` | redirect:`/todos` | PATCH |
+| TODO 완료 취소 | `/todos/{id}/cancel` | redirect:`/todos` | PATCH |
+
+---
+
+## ✅ [2] 데일리 루틴 + 타이머
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 루틴 목록 조회 | `/routines` | `/templates/routine/routine-list.html` | GET |
+| 루틴 추가 폼 모달 | `/routines/new` | modal in `/routine-list.html` | GET |
+| 루틴 추가 | `/routines` | redirect:`/routines` | POST |
+| 루틴 수정 폼 모달 | `/routines/{id}/edit` | modal in `/routine-list.html` | GET |
+| 루틴 수정 | `/routines/{id}` | redirect:`/routines` | PATCH |
+| 루틴 삭제 | `/routines/{id}` | redirect:`/routines` | DELETE |
+| 루틴 완료 | `/routines/{id}/complete` | redirect:`/routines` | PATCH |
+| 루틴 완료 취소 | `/routines/{id}/cancel` | redirect:`/routines` | PATCH |
+| 루틴 쉬어가기(스킵) | `/routines/{id}/skip` | redirect:`/routines` | PATCH |
+| 루틴 타이머 페이지 진입 + 즉시 시작 | `/routines/{id}/timer` | `/templates/routine/timer.html` | GET |
+| 타이머 일시정지 | `/timer/pause` | JS 처리 (AJAX) | PATCH |
+| 타이머 완료 수동 클릭 | `/timer/complete` | redirect:`/routines` | PATCH |
+
+---
+
+## ✅ [3] 마이 통계 + 환경설정
+
+### 📊 마이 통계
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 마이 통계 페이지 | `/mypage/stats` | `/templates/mypage/stats.html` | GET |
+
+---
+
+### ⚙️ 환경 설정
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 환경 설정 페이지 | `/settings` | `/templates/mypage/settings.html` | GET |
+| 닉네임 수정 | `/settings/nickname` | redirect:`/settings` | PATCH |
+| 비밀번호 수정 | `/settings/password` | redirect:`/settings` | PATCH |
+| 전체 알림 설정 (On/Off) | `/settings/notifications` | redirect:`/settings` | PATCH |
+
+---
+
+## ✅ [4] 면접 질문 기능
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 면접 질문 카테고리 선택 | `/interview/select` | `/templates/interview/interview-select.html` | GET |
+| 질문 랜덤 제공 | `/interview/question` | `/templates/interview/interview-random.html` | GET |
+| 사용자 답변 제출 | `/interview/answer` | `/templates/interview/interview-answer.html` | POST |
+| 모범 답안 확인 | `/interview/result` | `/templates/interview/interview-result.html` | GET |
+
+---
+
+## ✅ [5] 챗봇 (LLM)
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 챗봇 모달 호출 | `/chatbot` | modal in 모든 페이지 | GET |
+| 챗봇 대화 전송 | `/chatbot/message` | JS (AJAX) | POST |
+
+---
+
+## ✅ [6] 알림 기능
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| TODO/루틴 알림 등록 | `/alarm/{type}/{id}` | 없음 (JS 비동기) | POST |
+| 알림 일괄 설정 On/Off (환경설정 내) | `/settings/notifications` | redirect:`/settings` | PATCH |
+
+---
+
+## ✅ [7] 관리자 기능
+
+### 👥 회원 관리
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 회원 목록 조회 (기본 진입화면) | `/admin/members` | `/templates/admin/manage-members.html` | GET |
+| 회원 수정 폼 표시 | `/admin/members/{id}/edit` | modal in `/manage-members.html` | GET |
+| 회원 수정 | `/admin/members/{id}` | redirect:`/admin/members` | PATCH |
+| 회원 삭제 | `/admin/members/{id}` | confirm modal → redirect | DELETE |
+
+---
+
+### 📚 컨텐츠 관리 (면접 질문)
+
+| 이름 | Controller URL | View URL | 메서드 |
+| --- | --- | --- | --- |
+| 질문 목록 조회 | `/admin/questions` | `/templates/admin/manage-questions.html` | GET |
+| 질문 등록 | `/admin/questions` | redirect:`/admin/questions` | POST |
+| 질문 수정 | `/admin/questions/{id}` | redirect:`/admin/questions` | PATCH |
+| 질문 삭제 | `/admin/questions/{id}` | confirm modal → redirect | DELETE |
+
