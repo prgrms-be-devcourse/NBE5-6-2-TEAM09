@@ -44,10 +44,10 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public UserDto findByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new CommonException(ResponseCode.BAD_REQUEST));
 
-        return mapper.map(user, UserDto.class);
+
     }
 }
