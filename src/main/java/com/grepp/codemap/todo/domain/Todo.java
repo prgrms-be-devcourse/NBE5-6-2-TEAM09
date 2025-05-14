@@ -64,4 +64,20 @@ public class Todo {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public void setIsCompleted(boolean b) {
+        this.isCompleted = b;
+    }
 }
