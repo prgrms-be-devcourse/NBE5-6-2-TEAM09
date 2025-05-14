@@ -61,4 +61,12 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void encodePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void assignRole(String role) {
+        this.role = role;
+    }
 }

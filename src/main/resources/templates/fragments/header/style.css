@@ -1,0 +1,92 @@
+.div-wrapper {
+  background-color: #00008d;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.div-wrapper .div {
+  background-color: #00008d;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-color: var(--neutral-2);
+  width: 1920px;
+  height: 116px;
+  position: relative;
+}
+
+.div-wrapper .group {
+  position: absolute;
+  width: 147px;
+  height: 38px;
+  top: 38px;
+  left: 34px;
+}
+
+.div-wrapper .vector {
+  position: absolute;
+  width: 40px;
+  height: 23px;
+  top: 0;
+  left: 0;
+}
+
+.div-wrapper .rectangle {
+  position: absolute;
+  width: 36px;
+  height: 12px;
+  top: 26px;
+  left: 2px;
+  background-color: var(--neutral-3);
+  border-radius: 9px;
+}
+
+.div-wrapper .text-wrapper {
+  position: absolute;
+  top: 9px;
+  left: 49px;
+  font-family: "DM Sans-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--background);
+  font-size: 20px;
+  letter-spacing: 0.15px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.div-wrapper .auto-layout {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: absolute;
+  top: 34px;
+  left: 1630px;
+}
+
+.div-wrapper .style-filled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  position: relative;
+  flex: 0 0 auto;
+  background-color: var(--secondary);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.div-wrapper .do-something {
+  position: relative;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--body-small-font-family);
+  font-weight: var(--body-small-font-weight);
+  color: var(--neutral-0);
+  font-size: var(--body-small-font-size);
+  letter-spacing: var(--body-small-letter-spacing);
+  line-height: var(--body-small-line-height);
+  white-space: nowrap;
+  font-style: var(--body-small-font-style);
+}
