@@ -1,3 +1,15 @@
+
+.logout-button {
+  background: none;
+  border: none;
+  color: #00008d; /* 💡 텍스트 컬러 수정: 진한 파란색 또는 --primary 변수 사용 */
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+
+}
+
 .div-wrapper {
   background-color: #00008d;
   display: flex;
@@ -32,28 +44,7 @@
   left: 0;
 }
 
-.div-wrapper .rectangle {
-  position: absolute;
-  width: 36px;
-  height: 12px;
-  top: 26px;
-  left: 2px;
-  background-color: var(--neutral-3);
-  border-radius: 9px;
-}
 
-.div-wrapper .text-wrapper {
-  position: absolute;
-  top: 9px;
-  left: 49px;
-  font-family: "DM Sans-Bold", Helvetica;
-  font-weight: 700;
-  color: var(--background);
-  font-size: 20px;
-  letter-spacing: 0.15px;
-  line-height: 24px;
-  white-space: nowrap;
-}
 
 .div-wrapper .auto-layout {
   display: inline-flex;
@@ -61,7 +52,7 @@
   gap: 16px;
   position: absolute;
   top: 34px;
-  left: 1630px;
+  right: 40px;
 }
 
 .div-wrapper .style-filled {

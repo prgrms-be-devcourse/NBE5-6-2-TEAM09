@@ -5,10 +5,11 @@
 
 .box .group {
   position: fixed;
-  width: 287px;
-  height: 682px;
-  top: 0;
+  top: 180px; /* 💡 헤더 높이만큼 내려서 겹침 방지 */
   left: 0;
+  width: 287px;
+  height: calc(100% - 180px);
+  z-index: 999;
 }
 
 .box .view {
@@ -106,18 +107,21 @@
 }
 
 .box .text-wrapper {
-  position: relative;
-  width: 56px;
-  margin-top: -7.00px;
-  margin-bottom: -5.00px;
-  margin-right: -16.00px;
-  font-family: "Inter-Regular", Helvetica;
-  font-weight: 400;
-  color: #545f70;
+  width: auto;
+  max-width: 180px; /* ✅ 폭 넉넉하게 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 14px;
-  letter-spacing: -0.14px;
-  line-height: 19.6px;
+  font-weight: 400;
+  color: #545f70; /* ✅ 메뉴 색상과 동일하게 */
+  padding-left: 8px; /* ✅ 왼쪽 여백 추가로 텍스트 위치 조정 */
+  padding-right: 8px;
+  padding-top: -10px;
+  margin-left: -40px; /* ✅ 왼쪽으로 조금 더 당김 */
+  margin-bottom: 20px;
 }
+
 
 .box .group-2 {
   position: absolute;
@@ -180,7 +184,7 @@
   position: absolute;
   width: 24px;
   height: 24px;
-  top: 23px;
+  top: 21px;
   left: 16px;
 }
 
@@ -219,20 +223,23 @@
 }
 
 .box .side-navigation-item-2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 16px;
+  height: 70px; /* ✅ 기존 유지 */
   position: absolute;
   width: 234px;
-  height: 70px;
   top: 0;
   left: 0;
-  background-color: #eef0f4;
   border-radius: 8px;
-  overflow: hidden;
+
 }
 
 .box .home-3 {
   top: 24px;
-  font-family: "Inter-SemiBold", Helvetica;
-  font-weight: 600;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
   position: absolute;
   height: 22px;
   left: 64px;
@@ -241,6 +248,7 @@
   letter-spacing: -0.32px;
   line-height: 22px;
   white-space: nowrap;
+
 }
 
 .box .icon-4 {
@@ -249,4 +257,30 @@
   height: 20px;
   top: 632px;
   left: 40px;
+}
+
+.nav-link-button.active {
+  background-color: #eef0f4;
+  font-weight: 600;
+}
+
+.side-navigation-item-2.active-nav {
+  background-color: #eef0f4;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding: 0;
+
+}
+
+.side-navigation-item-2.active-nav .home-3 {
+  font-weight: 600;
+  color: #545f70;
+  flex-grow: 1;
+  text-align: left;
+  padding-left: 15px; /* ✅ 다른 메뉴들과 텍스트 들여쓰기 통일 */
+  margin-top: 1px;    /* ✅ 텍스트 위치 미세 조정 */
 }
