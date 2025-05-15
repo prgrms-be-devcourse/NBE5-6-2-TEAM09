@@ -32,13 +32,13 @@ public class AdminUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. id=" + id));
 
-        user.adminUpdateInfo(
-                dto.getNickname(),
-                dto.getEmail(),
-                dto.getCurrentPassword(),
-                dto.getNewPassword(),
-                passwordEncoder
-        );
+//        user.adminUpdateInfo(
+//                dto.getNickname(),
+//                dto.getEmail(),
+//                dto.getCurrentPassword(),
+//                dto.getNewPassword(),
+//                passwordEncoder
+//        );
     }
 
     public void deleteUser(Long id) {
