@@ -38,10 +38,11 @@
 
 .div-wrapper .vector {
   position: absolute;
-  width: 40px;
-  height: 23px;
-  top: 0;
+  width: 100px;
+  height: 85px;
+  top: 50%;
   left: 0;
+  transform: translateY(-50%);
 }
 
 

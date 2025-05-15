@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeMap - 회원가입</title>
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <style>
+    .auto-layout,
+    .style-filled,
+    .logout-button,
+    form[action="/logout"] {
+      display: none !important;
+    }
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    main {
+      display: flex;
+      height: calc(100vh - 116px);
+      padding: 0 80px;
+      justify-content: center;
+      align-items: center;
+      gap: 60px;
+      width: 100%;
+    }
+
+    .left-panel {
+      width: 360px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .left-panel img {
+      width: 160px;
+      height: auto;
+    }
+
+    .left-panel .title {
+      font-size: 42px;
+      font-weight: bold;
+      color: #0019a5;
+    }
+
+    .left-panel .slogan {
+      font-size: 20px;
+      color: #0019a5;
+      font-weight: 500;
+    }
+
+    .login-card {
+      width: 420px;
+      background-color: #bdd2ff;
+      padding: 48px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .login-card h2 {
+      margin-bottom: 24px;
+      color: #0019a5;
+      font-size: 24px;
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .login-card .input-group {
+      position: relative;
+      width: 100%;
+    }
+
+    .login-card .input-group img {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+    }
+
+    .login-card .buttons {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .login-card .buttons button {
+      width: 100%;
+      padding: 12px 0;
+      border: none;
+      border-radius: 999px;
+      background-color: #3b82f6;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .login-card .buttons button:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+<!-- ✅ 헤더 -->
+<header th:replace="fragments/header/index :: header"></header>
+
+<!-- ✅ 본문 -->
+<main>
+  <!-- 왼쪽 -->
+  <div class="left-panel">
+    <img src="/img/codemap_blue.png" alt="CodeMap Logo" />
+    <div class="slogan">: Stay on Track, Become a Dev.</div>
+  </div>
+
+  <!-- 오른쪽 -->
+  <div class="login-card">
+    <h2>회원가입</h2>
+    <form method="post" action="/user/signup">
+      <input type="email" name="email" placeholder="이메일" required />
+      <input type="text" name="nickname" placeholder="닉네임" required />
+      <div class="input-group">
+        <input type="password" name="password" placeholder="비밀번호" required />
+        <img src="/img/eye.png" alt="비밀번호 보기" />
+      </div>
+      <div class="input-group">
+        <input type="password" name="confirmPassword" placeholder="비밀번호 확인" required />
+        <img src="/img/eye.png" alt="비밀번호 확인 보기" />
+      </div>
+      <div class="buttons">
+        <button type="submit">회원가입</button>
+      </div>
+    </form>
+  </div>
+</main>
+</body>
+</html>

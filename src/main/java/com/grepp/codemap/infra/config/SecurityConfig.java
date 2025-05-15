@@ -68,7 +68,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(
                 (requests) -> requests
-                    .requestMatchers(GET, "/user/signup", "/user/signup/*", "/user/signin","/todos/calender","/todos**","/css/**", "/js/**", "/img/**")
+                    .requestMatchers(GET,"/", "/user/signup", "/user/signup/*", "/user/signin","/todos/calender","/todos**","/css/**", "/js/**", "/img/**")
                     .permitAll()
                     .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
                     .requestMatchers(POST, "/chatbot/**", "/chatbot/message/**").permitAll()
