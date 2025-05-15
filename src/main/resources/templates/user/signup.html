@@ -133,7 +133,7 @@
   <!-- 오른쪽 -->
   <div class="login-card">
     <h2>회원가입</h2>
-    <form method="post" action="/user/signup">
+    <form th:action="@{/user/signup}" method="post">
       <input type="email" name="email" placeholder="이메일" required />
       <input type="text" name="nickname" placeholder="닉네임" required />
       <div class="input-group">
@@ -141,7 +141,7 @@
         <img src="/img/eye.png" alt="비밀번호 보기" />
       </div>
       <div class="input-group">
-        <input type="password" name="confirmPassword" placeholder="비밀번호 확인" required />
+        <input type="password" name="passwordConfirm" placeholder="비밀번호 확인" required />
         <img src="/img/eye.png" alt="비밀번호 확인 보기" />
       </div>
       <div class="buttons">

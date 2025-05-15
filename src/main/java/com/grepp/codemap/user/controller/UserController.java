@@ -42,6 +42,8 @@ public class UserController {
             BindingResult bindingResult,
             Model model){
 
+        log.info("폼 데이터: {}", form);
+
         if(bindingResult.hasErrors()){
             return "user/signup";
         }
