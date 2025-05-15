@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -49,5 +48,10 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(ResponseCode.BAD_REQUEST));
 
 
+    }
+    @Transactional(readOnly = true)
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new CommonException(ResponseCode.BAD_REQUEST));
     }
 }
