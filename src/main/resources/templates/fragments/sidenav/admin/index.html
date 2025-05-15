@@ -3,11 +3,12 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="globals.css" />
-    <link rel="stylesheet" href="styleguide.css" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/globals.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/styleguide.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/style.css}" />
   </head>
   <body>
+  <div th:fragment="sidebar">
     <div class="box">
       <div class="group">
         <div class="overlap-wrapper">
@@ -50,6 +51,7 @@
         </div>
       </div>
     </div>
+  </div>
   </body>
 </html>
 
