@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeMap - 초기화면</title>
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <style>
+
+    .auto-layout,
+    .style-filled,
+    .logout-button,
+    form[action="/logout"] {
+      display: none !important;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      font-family: 'Pretendard', sans-serif;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 116px); /* 헤더 제외 영역 */
+      text-align: center;
+    }
+
+    .logo {
+      width: 350px;
+      height: auto;
+      margin-bottom: -3vw;
+    }
+
+    .title {
+      font-size: 36px;
+      font-weight: 700;
+      color: #0019a5;
+      margin-bottom: 8px;
+    }
+
+    .slogan {
+      font-size: 18px;
+      color: #0019a5;
+      margin-bottom: 25px;
+
+    }
+
+    .start-button {
+      background-color: #3b82f6;
+      color: white;
+      font-size: 16px;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .start-button:hover {
+      background-color: #2563eb;
+    }
+
+
+
+  </style>
+</head>
+<body>
+<!-- ✅ 헤더 유지 -->
+<header th:replace="fragments/header/index :: header"></header>
+
+<!-- ✅ 중앙 콘텐츠 -->
+<main>
+  <img src="/img/codemap_blue.png" alt="CodeMap Logo" class="logo" />
+  <div class="slogan">: Stay on Track, Become a Dev.</div>
+  <button class="start-button" onclick="location.href='/user/signin'">시작하기</button>
+</main>
+</body>
+</html>

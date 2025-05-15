@@ -1,0 +1,286 @@
+.box {
+  width: 287px;
+  height: 682px;
+}
+
+.box .group {
+  position: fixed;
+  top: 180px; /* 💡 헤더 높이만큼 내려서 겹침 방지 */
+  left: 0;
+  width: 287px;
+  height: calc(100% - 180px);
+  z-index: 999;
+}
+
+.box .view {
+  height: 682px;
+}
+
+.box .overlap {
+  position: relative;
+  width: 287px;
+  height: 682px;
+}
+
+.box .side-navigation-bar {
+  width: 287px;
+  height: 682px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 20px #00000040;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.box .frame {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px 0px 0px;
+  position: relative;
+  top: 546px;
+  left: 16px;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-color: #eef0f4;
+}
+
+.box .div {
+  position: relative;
+  width: 234px;
+  height: 52px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.box .home {
+  top: 15px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  position: absolute;
+  height: 22px;
+  left: 64px;
+  color: #545f70;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.box .img {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 14px;
+  left: 16px;
+}
+
+.box .chevron-right {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 16px;
+  left: 206px;
+}
+
+.box .icon {
+  position: absolute;
+  width: 20px;
+  height: 18px;
+  top: 583px;
+  left: 40px;
+}
+
+.box .div-wrapper {
+  display: flex;
+  width: 72px;
+  height: 32px;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  position: absolute;
+  top: 37px;
+  left: 107px;
+  background-color: #eef0f4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.box .text-wrapper {
+  width: auto;
+  max-width: 180px; /* ✅ 폭 넉넉하게 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: 400;
+  color: #545f70; /* ✅ 메뉴 색상과 동일하게 */
+  padding-left: 8px; /* ✅ 왼쪽 여백 추가로 텍스트 위치 조정 */
+  padding-right: 8px;
+  padding-top: -10px;
+  margin-left: -40px; /* ✅ 왼쪽으로 조금 더 당김 */
+  margin-bottom: 20px;
+}
+
+
+.box .group-2 {
+  position: absolute;
+  width: 243px;
+  height: 322px;
+  top: 21px;
+  left: 17px;
+}
+
+.box .user-circle {
+  position: absolute;
+  width: 84px;
+  height: 83px;
+  top: 0;
+  left: 0;
+}
+
+.box .group-3 {
+  position: absolute;
+  width: 234px;
+  height: 70px;
+  top: 112px;
+  left: 9px;
+}
+
+.box .overlap-group {
+  position: absolute;
+  width: 234px;
+  height: 70px;
+  top: 0;
+  left: 0;
+  border-radius: 8px;
+}
+
+.box .side-navigation-item {
+  width: 234px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.box .home-2 {
+  top: 24px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  position: absolute;
+  height: 22px;
+  left: 64px;
+  color: #545f70;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.box .img-2 {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 21px;
+  left: 16px;
+}
+
+.box .icon-2 {
+  position: absolute;
+  width: 8px;
+  height: 14px;
+  top: 28px;
+  left: 206px;
+}
+
+.box .icon-3 {
+  position: absolute;
+  width: 12px;
+  height: 6px;
+  top: 268px;
+  left: 4300px;
+}
+
+.box .overlap-2 {
+  position: absolute;
+  width: 234px;
+  height: 70px;
+  top: 252px;
+  left: 9px;
+  border-radius: 8px;
+}
+
+.box .overlap-3 {
+  position: absolute;
+  width: 234px;
+  height: 70px;
+  top: 182px;
+  left: 9px;
+  border-radius: 8px;
+}
+
+.box .side-navigation-item-2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 16px;
+  height: 70px; /* ✅ 기존 유지 */
+  position: absolute;
+  width: 234px;
+  top: 0;
+  left: 0;
+  border-radius: 8px;
+
+}
+
+.box .home-3 {
+  top: 24px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  position: absolute;
+  height: 22px;
+  left: 64px;
+  color: #545f70;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  line-height: 22px;
+  white-space: nowrap;
+
+}
+
+.box .icon-4 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 632px;
+  left: 40px;
+}
+
+.nav-link-button.active {
+  background-color: #eef0f4;
+  font-weight: 600;
+}
+
+.side-navigation-item-2.active-nav {
+  background-color: #eef0f4;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding: 0;
+
+}
+
+.side-navigation-item-2.active-nav .home-3 {
+  font-weight: 600;
+  color: #545f70;
+  flex-grow: 1;
+  text-align: left;
+  padding-left: 15px; /* ✅ 다른 메뉴들과 텍스트 들여쓰기 통일 */
+  margin-top: 1px;    /* ✅ 텍스트 위치 미세 조정 */
+}
