@@ -25,9 +25,6 @@ public class UserController {
 
     private final UserService userService;
 
-//    public UserController(UserService userService) {
-//        this.userService = userService;
-//    }
 
     @GetMapping("signin")
     public String signin(SigninForm form, Model model) {
@@ -49,12 +46,12 @@ public class UserController {
             return "user/signup";
         }
 
-//        if (!form.getPassword().equals(form.getPasswordConfirm())) {
-//            bindingResult.rejectValue("passwordConfirm", "error.passwordConfirm", "비밀번호가 일치하지 않습니다.");
-//            return "user/signup";
-//        }
+        if (!form.getPassword().equals(form.getPasswordConfirm())) {
+            bindingResult.rejectValue("passwordConfirm", "error.passwordConfirm", "비밀번호가 일치하지 않습니다.");
+            return "user/signup";
+        }
 
-//        userService.signup(form.toDto(), Role.ROLE_USER);
+        userService.signup(form.toDto(), Role.ROLE_USER);
         return "redirect:/";
     }
 }
