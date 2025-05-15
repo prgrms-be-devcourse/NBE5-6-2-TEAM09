@@ -32,24 +32,24 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .build();
+            .build();
     }
 
 
     @Bean
-    public AuthenticationSuccessHandler successHandler(){
+    public AuthenticationSuccessHandler successHandler() {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request,
-                                                HttpServletResponse response, Authentication authentication)
-                    throws IOException, ServletException {
+                HttpServletResponse response, Authentication authentication)
+                throws IOException, ServletException {
 
                 boolean isAdmin = authentication.getAuthorities()
-                        .stream()
-                        .anyMatch(authority ->
-                                authority.getAuthority().equals("ROLE_ADMIN"));
+                    .stream()
+                    .anyMatch(authority ->
+                        authority.getAuthority().equals("ROLE_ADMIN"));
 
-                if(isAdmin){
+                if (isAdmin) {
                     response.sendRedirect("/admin/manage-members");
                     return;
                 }
@@ -64,28 +64,31 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .authorizeHttpRequests(
-                        (requests) -> requests
-                                .requestMatchers(GET, "/user/signup","/user/signup/*", "/user/signin","/todos/calender","/todos**","/css/**", "/js/**", "/img/**").permitAll()
-                                .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .formLogin((form) -> form
-                        .loginPage("/user/signin")
-                        .usernameParameter("email")
-                        .loginProcessingUrl("/user/signin")
-                        .defaultSuccessUrl("/")
-                        .successHandler(successHandler())
-                        .permitAll()
-                )
-                //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
-                .logout(LogoutConfigurer::permitAll);
+            .authorizeHttpRequests(
+                (requests) -> requests
+                    .requestMatchers(GET, "/user/signup", "/user/signup/*", "/user/signin","/todos/calender","/todos**","/css/**", "/js/**", "/img/**")
+                    .permitAll()
+                    .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
+                    .requestMatchers(POST, "/chatbot/**", "/chatbot/message/**").permitAll()
+                    .anyRequest().authenticated()
+            )
+            .formLogin((form) -> form
+                .loginPage("/user/signin")
+                .usernameParameter("email")
+                .loginProcessingUrl("/user/signin")
+                .defaultSuccessUrl("/")
+                .successHandler(successHandler())
+                .permitAll()
+            )
+            //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
+            .logout(LogoutConfigurer::permitAll)
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**"));
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
