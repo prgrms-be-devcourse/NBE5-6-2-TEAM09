@@ -69,4 +69,10 @@ public class User {
     public void assignRole(String role) {
         this.role = role;
     }
+
+    public void setNotificationEnabled(Boolean enabled) {
+        this.notificationEnabled = enabled;
+    }
+
+
 }
