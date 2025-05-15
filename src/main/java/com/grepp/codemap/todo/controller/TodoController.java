@@ -32,8 +32,16 @@ public class TodoController {
     /** ✅ 2. 선택 날짜 투두 조회 */
     @GetMapping
     public String getTodoList(@RequestParam("date") String date,
-        @SessionAttribute("userId") Long userId,
+        @SessionAttribute(value = "userId", required = false) Long userId,
         Model model) {
+
+        // 지금은 로그인 안 한 경우 그냥 빈 목록 넘기자
+        if (userId == null) {
+            model.addAttribute("todos", List.of());  // 빈 리스트
+            model.addAttribute("selectedDate", date);
+            return "todo/todo-list";
+        }
+
         LocalDate localDate = LocalDate.parse(date);
         LocalDateTime startOfDay = localDate.atStartOfDay();
         LocalDateTime endOfDay = localDate.atTime(LocalTime.MAX);
