@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,10 +33,11 @@ public class TodoController {
     /** ✅ 2. 선택 날짜 투두 조회 */
     @GetMapping
     public String getTodoList(@RequestParam("date") String date,
-        @SessionAttribute(value = "userId", required = false) Long userId,
+        HttpSession session,
         Model model) {
 
-        // 지금은 로그인 안 한 경우 그냥 빈 목록 넘기자
+        Long userId = (Long) session.getAttribute("userId");
+
         if (userId == null) {
             model.addAttribute("todos", List.of());  // 빈 리스트
             model.addAttribute("selectedDate", date);
@@ -61,8 +63,9 @@ public class TodoController {
 
     /** ✅ 4. 투두 생성 */
     @PostMapping
-    public String createTodo(@SessionAttribute("userId") Long userId,
+    public String createTodo(HttpSession session,
         @ModelAttribute @Valid TodoCreateRequest request) {
+        Long userId = (Long) session.getAttribute("userId");
         Todo created = todoService.createTodo(
             userId,
             request.title(),
@@ -76,9 +79,10 @@ public class TodoController {
     /** ✅ 5. 수정 폼 (모달에서 불러옴) */
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
+        HttpSession session,
         @RequestParam("date") String date,
         Model model) {
+        Long userId = (Long) session.getAttribute("userId");
         Todo todo = todoService.findByIdAndUser(id, userId);
         model.addAttribute("todo", todo);
         model.addAttribute("selectedDate", date);
@@ -88,8 +92,9 @@ public class TodoController {
     /** ✅ 6. 투두 수정 */
     @PatchMapping("/{id}")
     public String updateTodo(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
+        HttpSession session,
         @ModelAttribute @Valid TodoUpdateRequest request) {
+        Long userId = (Long) session.getAttribute("userId");
         Todo updated = todoService.updateTodo(
             id,
             userId,
@@ -103,8 +108,9 @@ public class TodoController {
     /** ✅ 7. 투두 삭제 */
     @DeleteMapping("/{id}")
     public String deleteTodo(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
+        HttpSession session,
         @RequestParam("date") String date) {
+        Long userId = (Long) session.getAttribute("userId");
         todoService.deleteTodo(id, userId);
         return "redirect:/todos?date=" + date;
     }
@@ -112,8 +118,9 @@ public class TodoController {
     /** ✅ 8. 완료 상태 토글 (체크박스 클릭) */
     @PatchMapping("/{id}/complete")
     public String toggleComplete(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
+        HttpSession session,
         @RequestParam("date") String date) {
+        Long userId = (Long) session.getAttribute("userId");
         todoService.toggleComplete(id, userId);
         return "redirect:/todos?date=" + date;
     }
@@ -121,8 +128,9 @@ public class TodoController {
     /** ✅ 9. 완료 취소 */
     @PatchMapping("/{id}/cancel")
     public String cancelComplete(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
+        HttpSession session,
         @RequestParam("date") String date) {
+        Long userId = (Long) session.getAttribute("userId");
         todoService.toggleComplete(id, userId); // 같은 toggle 메서드 사용
         return "redirect:/todos?date=" + date;
     }
