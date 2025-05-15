@@ -16,17 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
 
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+//    public UserController(UserService userService) {
+//        this.userService = userService;
+//    }
 
     @GetMapping("signin")
     public String signin(SigninForm form, Model model) {
