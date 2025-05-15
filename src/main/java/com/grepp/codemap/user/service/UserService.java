@@ -5,6 +5,7 @@ import com.grepp.codemap.infra.response.ResponseCode;
 import com.grepp.codemap.infra.auth.Role;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.dto.UserDto;
+import com.grepp.codemap.user.form.SigninForm;
 import com.grepp.codemap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,5 +54,17 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
             .orElseThrow(() -> new CommonException(ResponseCode.BAD_REQUEST));
+    }
+
+    @Transactional(readOnly = true)
+    public User login(SigninForm form) {
+        User user = userRepository.findByEmail(form.getEmail())
+            .orElseThrow(() -> new CommonException(ResponseCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
+            throw new CommonException(ResponseCode.BAD_REQUEST); // 혹은 custom 에러
+        }
+
+        return user;
     }
 }
