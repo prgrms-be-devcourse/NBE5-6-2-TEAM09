@@ -65,14 +65,30 @@ public class TodoController {
     @PostMapping
     public String createTodo(HttpSession session,
         @ModelAttribute @Valid TodoCreateRequest request) {
+
         Long userId = (Long) session.getAttribute("userId");
+
+        // ✅ userId가 세션에 없을 경우 예외 처리 또는 리다이렉트
+        if (userId == null) {
+            throw new IllegalStateException("로그인된 사용자만 투두를 추가할 수 있습니다.");
+            // 또는 return "redirect:/user/signin";
+        }
+
+        // ✅ 날짜 및 시간 파싱
+        LocalTime parsedTime = LocalTime.parse(request.startTime());
+        LocalDate parsedDate = LocalDate.parse(request.completedAt());
+        LocalDateTime startTime = LocalDateTime.of(parsedDate, parsedTime);
+        LocalDateTime completedAt = parsedDate.atTime(LocalTime.MAX);
+
+        // ✅ 투두 생성
         Todo created = todoService.createTodo(
             userId,
             request.title(),
             request.description(),
-            request.startTime(),
-            request.completedAt()
+            startTime,
+            completedAt
         );
+
         return "redirect:/todos?date=" + created.getCompletedAt().toLocalDate();
     }
 

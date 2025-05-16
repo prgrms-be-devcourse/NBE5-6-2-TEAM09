@@ -1,0 +1,56 @@
+<!-- templates/todo/todo-form.html -->
+<div id="todoModal">
+  <button id="closeButton" onclick="closeModal()">×</button>
+  <h2>투두 추가하기</h2>
+  <form th:action="@{/todos}" method="post">
+    <input type="text" name="title" placeholder="투두 제목" required />
+    <textarea name="description" placeholder="투두 내용" required></textarea>
+    <input type="time" name="startTime" placeholder="시작 시간" required />
+    <input type="date" name="completedAt" th:value="${selectedDate}" required />
+    <button type="submit">추가</button>
+  </form>
+</div>
+
+<style>
+  /* ✅ todoModal 관련 스타일만 */
+  #todoModal {
+    display: block;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f4f4fb;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    z-index: 2000;
+    width: 400px;
+  }
+  #todoModal input, #todoModal textarea, #todoModal button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  #todoModal h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #1b2c50;
+  }
+  #todoModal button {
+    background-color: #4e6df2;
+    color: white;
+    border: none;
+    font-size: 16px;
+  }
+  #closeButton {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 18px;
+  }
+</style>
