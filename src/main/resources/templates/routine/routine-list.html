@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>데일리 루틴</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      font-family: "Pretendard", sans-serif;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+    aside {
+      position: fixed;
+      top: 116px; left: 0;
+      width: 250px;
+      height: calc(100% - 116px);
+      z-index: 900;
+    }
+    main {
+      margin-left: 250px;
+      margin-top: 116px;
+      padding: 40px;
+    }
+    .routine-wrapper {
+      background-color: #d8e3ff;
+      padding: 40px;
+      border-radius: 12px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .routine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .routine-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1b2c50;
+    }
+    .routine-header button {
+      background-color: #4e6df2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .routine-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f9f9f9;
+      border: 2px solid #1b2c50;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .routine-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .routine-left span {
+      font-size: 16px;
+    }
+    .routine-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .routine-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .routine-category {
+      font-size: 14px;
+      color: #666;
+    }
+    .routine-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .start-timer {
+      background-color: #4e6df2;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .menu-button {
+      background-color: transparent;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .menu-box {
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 6px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      z-index: 10;
+      display: none;
+    }
+    .menu-box div {
+      padding: 6px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .menu-box div:hover {
+      background-color: #f0f0f0;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+      color: #666;
+    }
+    .empty-state p {
+      margin-bottom: 20px;
+    }
+    .completed-routines {
+      margin-top: 40px;
+    }
+    .completed-routines h3 {
+      color: #1b2c50;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+    .routine-complete {
+      background-color: #e9e9e9;
+      border-color: #999;
+    }
+    .routine-complete .routine-title {
+      text-decoration: line-through;
+      color: #777;
+    }
+    #routineModal {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      z-index: 2000;
+      width: 400px;
+    }
+    #routineModal h3 {
+      margin-bottom: 20px;
+      color: #1b2c50;
+    }
+    #routineModal input, #routineModal select, #routineModal textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    #routineModal textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    #routineModal .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    #routineModal .button-group button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #routineModal .button-group button.cancel {
+      background-color: #e0e0e0;
+    }
+    #routineModal .button-group button.submit {
+      background-color: #4e6df2;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<main>
+  <div class="routine-wrapper">
+    <div class="routine-header">
+      <h2>데일리 루틴</h2>
+      <button onclick="openModal()">추가</button>
+    </div>
+
+    <!-- 활성 루틴 목록 -->
+    <div th:if="${activeRoutines != null and !activeRoutines.isEmpty()}">
+      <div th:each="routine : ${activeRoutines}" class="routine-item">
+        <div class="routine-left">
+          <div class="routine-info">
+            <span class="routine-title" th:text="${routine.title}">데일리 루틴 1</span>
+            <span class="routine-category" th:text="${routine.category}">카테고리</span>
+          </div>
+        </div>
+        <div class="routine-right">
+          <button class="start-timer" th:onclick="'location.href=\'/routines/' + ${routine.id} + '/timer\''">시작하기</button>
+          <button class="menu-button">⋯</button>
+          <div class="menu-box">
+            <div th:onclick="'location.href=\'/routines/' + ${routine.id} + '/edit\''">수정</div>
+            <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+            <div th:onclick="'skipRoutine(' + ${routine.id} + ')'">쉬어가기</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 루틴이 없을 때 보여줄 빈 상태 -->
+    <div th:if="${activeRoutines == null or activeRoutines.isEmpty()}" class="empty-state">
+      <p>등록된 데일리 루틴이 없습니다.</p>
+      <p>오늘의 루틴을 추가해 보세요!</p>
+    </div>
+
+    <!-- 완료된 루틴 목록 -->
+    <div th:if="${completedRoutines != null and !completedRoutines.isEmpty()}" class="completed-routines">
+      <h3>완료된 루틴</h3>
+      <div th:each="routine : ${completedRoutines}" class="routine-item routine-complete">
+        <div class="routine-left">
+          <div class="routine-info">
+            <span class="routine-title" th:text="${routine.title}">완료된 루틴 1</span>
+            <span class="routine-category" th:text="${routine.category}">카테고리</span>
+          </div>
+        </div>
+        <div class="routine-right">
+          <button class="menu-button">⋯</button>
+          <div class="menu-box">
+            <div th:onclick="'cancelComplete(' + ${routine.id} + ')'">완료 취소</div>
+            <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 루틴 추가/수정 모달 -->
+<div id="routineModal">
+  <h3>루틴 추가</h3>
+  <form id="routineForm" th:action="@{/routines}" method="post">
+    <input type="hidden" id="routineId" name="id" />
+
+    <select name="category" required>
+      <option value="" disabled selected>카테고리 선택</option>
+      <option value="알고리즘">알고리즘</option>
+      <option value="프론트엔드">프론트엔드</option>
+      <option value="백엔드">백엔드</option>
+      <option value="CS">CS</option>
+      <option value="프로젝트">프로젝트</option>
+    </select>
+
+    <input type="text" name="title" placeholder="루틴 제목" required />
+    <textarea name="description" placeholder="상세 설명"></textarea>
+    <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180" required />
+
+    <div class="button-group">
+      <button type="button" class="cancel" onclick="closeModal()">취소</button>
+      <button type="submit" class="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 투두 리스트 버튼 찾기 및 링크 설정
+    const todoButton = Array.from(document.querySelectorAll('.nav-link-button'))
+    .find(el => el.textContent.includes('투두 리스트'));
+
+    // 투두 리스트 경로 설정
+    if(todoButton) {
+      todoButton.onclick = function() {
+        location.href = '/todos/calender';
+      };
+    }
+
+    // 사이드바 루틴 메뉴 활성화
+    const routineButton = Array.from(document.querySelectorAll('.nav-link-button'))
+    .find(el => el.textContent.includes('데일리 루틴'));
+    if (routineButton) {
+      routineButton.classList.add('active');
+    }
+
+    // 메뉴 버튼 이벤트 설정
+    const menuButtons = document.querySelectorAll('.menu-button');
+    menuButtons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const menuBox = this.nextElementSibling;
+
+        // 다른 열린 메뉴 닫기
+        document.querySelectorAll('.menu-box').forEach(box => {
+          if (box !== menuBox) {
+            box.style.display = 'none';
+          }
+        });
+
+        // 현재 메뉴 토글
+        menuBox.style.display = menuBox.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+
+    // 문서 클릭 시 열린 메뉴 닫기
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.menu-box').forEach(box => {
+        box.style.display = 'none';
+      });
+    });
+  });
+
+  function openModal() {
+    // 폼 초기화
+    document.getElementById('routineForm').reset();
+    document.getElementById('routineId').value = '';
+    document.getElementById('routineModal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('routineModal').style.display = 'none';
+  }
+
+  function deleteRoutine(routineId) {
+    if (confirm('정말 이 루틴을 삭제하시겠습니까?')) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `/routines/${routineId}`;
+
+      const methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      methodInput.value = 'DELETE';
+
+      form.appendChild(methodInput);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }
+
+  function skipRoutine(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/skip`;
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+
+    form.appendChild(methodInput);
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  function cancelComplete(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/cancel`;
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+
+    form.appendChild(methodInput);
+    document.body.appendChild(form);
+    form.submit();
+  }
+</script>
+</body>
+</html>
