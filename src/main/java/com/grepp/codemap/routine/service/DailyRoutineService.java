@@ -290,4 +290,13 @@ public class DailyRoutineService {
         PomodoroSession saved = pomodoroSessionRepository.save(endedSession);
         return PomodoroSessionDto.fromEntity(saved);
     }
+
+
+    public List<DailyRoutineDto> getPassedRoutinesByUser(Long userId) {
+        User user = userService.getUserById(userId);
+        return dailyRoutineRepository.findPassedRoutinesByUser(user)
+            .stream()
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
+    }
 }

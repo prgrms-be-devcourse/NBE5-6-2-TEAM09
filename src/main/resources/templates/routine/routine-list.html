@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
   <title>데일리 루틴</title>
 
   <!-- 공통 스타일 -->
@@ -158,6 +160,24 @@
       margin-bottom: 16px;
       font-size: 20px;
     }
+    .passed-routines {
+      margin-top: 40px;
+    }
+
+    .passed-routines h3 {
+      color: #1b2c50;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+
+    .passed-routine {
+      background-color: #f9f9f9;
+      border-color: #aaa;
+    }
+
+    .passed-routine .routine-title {
+      color: #666;
+    }
     .routine-complete {
       background-color: #e9e9e9;
       border-color: #999;
@@ -239,13 +259,36 @@
           <button class="start-timer" th:onclick="'location.href=\'/routines/' + ${routine.id} + '/timer\''">시작하기</button>
           <button class="menu-button">⋯</button>
           <div class="menu-box">
-            <div th:onclick="'location.href=\'/routines/' + ${routine.id} + '/edit\''">수정</div>
+            <div th:onclick="'editRoutine(' + ${routine.id} + ')'">수정</div>
             <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
             <div th:onclick="'skipRoutine(' + ${routine.id} + ')'">쉬어가기</div>
           </div>
+       </div>
+    </div>
+
+      <!-- 쉬어가기 루틴 목록 -->
+      <div th:if="${passedRoutines != null and !passedRoutines.isEmpty()}" class="passed-routines">
+        <h3>쉬어가는 루틴</h3>
+        <div th:each="routine : ${passedRoutines}" class="routine-item passed-routine">
+          <div class="routine-left">
+            <div class="routine-info">
+        <span class="routine-title">
+          <span style="color: #888;">(PASS)</span> <span th:text="${routine.title}">쉬어가기 루틴</span>
+        </span>
+              <span class="routine-category" th:text="${routine.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <!-- 비활성화된 시작 버튼 -->
+            <button class="start-timer" disabled style="background-color: #ccc; cursor: not-allowed;">시작하기</button>
+            <button class="menu-button">⋯</button>
+            <div class="menu-box">
+              <div th:onclick="'cancelPass(' + ${routine.id} + ')'">쉬어가기 취소</div>
+              <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
     <!-- 루틴이 없을 때 보여줄 빈 상태 -->
     <div th:if="${activeRoutines == null or activeRoutines.isEmpty()}" class="empty-state">
@@ -281,14 +324,7 @@
   <form id="routineForm" th:action="@{/routines}" method="post">
     <input type="hidden" id="routineId" name="id" />
 
-    <select name="category" required>
-      <option value="" disabled selected>카테고리 선택</option>
-      <option value="알고리즘">알고리즘</option>
-      <option value="프론트엔드">프론트엔드</option>
-      <option value="백엔드">백엔드</option>
-      <option value="CS">CS</option>
-      <option value="프로젝트">프로젝트</option>
-    </select>
+    <input type="text" name="category" placeholder="카테고리 입력" required />
 
     <input type="text" name="title" placeholder="루틴 제목" required />
     <textarea name="description" placeholder="상세 설명"></textarea>
@@ -359,6 +395,52 @@
     document.getElementById('routineModal').style.display = 'none';
   }
 
+  function editRoutine(routineId) {
+    fetch(`/routines/${routineId}/edit`)
+    .then(response => response.json())
+    .then(data => {
+      // 모달 제목 변경
+      document.querySelector('#routineModal h3').textContent = '루틴 수정';
+
+      // 폼 데이터 채우기
+      document.getElementById('routineId').value = data.id;
+      document.querySelector('input[name="category"]').value = data.category || '';
+      document.querySelector('input[name="title"]').value = data.title || '';
+      document.querySelector('textarea[name="description"]').value = data.description || '';
+      document.querySelector('input[name="focusTime"]').value = data.focusTime || '';
+
+      // 폼 액션 및 메서드 변경
+      const form = document.getElementById('routineForm');
+      form.action = `/routines/${routineId}`;
+
+      // CSRF 토큰 추가
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      let csrfInput = form.querySelector('input[name="_csrf"]');
+      if (!csrfInput) {
+        csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+      } else {
+        csrfInput.value = csrfToken;
+      }
+
+      // hidden input 추가
+      let methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      methodInput.value = 'PATCH';
+      form.appendChild(methodInput);
+
+      // 모달 표시
+      document.getElementById('routineModal').style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('루틴 정보를 불러오는 데 실패했습니다.');
+    });
+  }
   function deleteRoutine(routineId) {
     if (confirm('정말 이 루틴을 삭제하시겠습니까?')) {
       const form = document.createElement('form');
@@ -371,6 +453,14 @@
       methodInput.value = 'DELETE';
 
       form.appendChild(methodInput);
+
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = '_csrf';
+      csrfInput.value = csrfToken;
+      form.appendChild(csrfInput);
+
       document.body.appendChild(form);
       form.submit();
     }
@@ -387,6 +477,37 @@
     methodInput.value = 'PATCH';
 
     form.appendChild(methodInput);
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+  // routine-list.html 스크립트 영역에 추가
+  function cancelPass(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/cancel`; // 완료 취소와 동일한 엔드포인트 사용
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+
+    form.appendChild(methodInput);
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
     document.body.appendChild(form);
     form.submit();
   }
@@ -402,6 +523,15 @@
     methodInput.value = 'PATCH';
 
     form.appendChild(methodInput);
+
+    // CSRF 토큰 추가
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
     document.body.appendChild(form);
     form.submit();
   }

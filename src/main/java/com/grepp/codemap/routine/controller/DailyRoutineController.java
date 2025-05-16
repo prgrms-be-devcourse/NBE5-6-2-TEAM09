@@ -38,14 +38,19 @@ public class DailyRoutineController {
 
         User user = userService.getUserById(userId);
 
+        model.addAttribute("user", user);
+
         // 활성 루틴 목록
         List<DailyRoutineDto> activeRoutines = dailyRoutineService.getActiveRoutinesByUser(userId);
         // 완료된 루틴 목록
         List<DailyRoutineDto> completedRoutines = dailyRoutineService.getCompletedRoutinesByUser(userId);
+        // 쉬어가기 루틴 목록
+        List<DailyRoutineDto> passedRoutines = dailyRoutineService.getPassedRoutinesByUser(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("activeRoutines", activeRoutines);
         model.addAttribute("completedRoutines", completedRoutines);
+        model.addAttribute("passedRoutines", passedRoutines);
         model.addAttribute("newRoutine", new DailyRoutineDto()); // 모달 폼용
 
         return "routine/routine-list";
@@ -78,14 +83,19 @@ public class DailyRoutineController {
 
     ///루틴 수정 폼 모달
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model,
+    @ResponseBody
+    public ResponseEntity<?> showEditForm(@PathVariable Long id,
         @SessionAttribute("userId") Long userId) {
+        try {
+            // 서비스 계층의 메서드를 사용하여 루틴 조회
+            DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
+            return ResponseEntity.ok(routine);  // JSON으로 응답
+        } catch (Exception e) {
+            log.error("루틴 조회 중 오류 발생", e);
+            return ResponseEntity.status(500).body("루틴 정보를 가져오는데 실패했습니다");
+        }
 
-        // 서비스 계층의 메서드를 사용하여 루틴 조회
-        DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
 
-        model.addAttribute("routine", routine);
-        return "routine/routine-form :: routineFormModal";
     }
 
 
