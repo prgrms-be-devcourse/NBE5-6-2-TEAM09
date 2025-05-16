@@ -29,7 +29,13 @@ public class DailyRoutineController {
 
     //루틴 목록 조회 페이지
     @GetMapping
-    public String getRoutineList(Model model, @SessionAttribute("userId") Long userId) {
+    public String getRoutineList(Model model,
+        @SessionAttribute(name = "userId", required = false) Long userId) {
+        if (userId == null) {
+            // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+            return "redirect:/user/signin";
+        }
+
         User user = userService.getUserById(userId);
 
         // 활성 루틴 목록
