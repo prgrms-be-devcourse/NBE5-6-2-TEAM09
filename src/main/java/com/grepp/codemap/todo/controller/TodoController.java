@@ -102,7 +102,7 @@ public class TodoController {
         Todo todo = todoService.findByIdAndUser(id, userId);
         model.addAttribute("todo", todo);
         model.addAttribute("selectedDate", date);
-        return "todo/todo-form";
+        return "todo/todo-update";
     }
 
     /** ✅ 6. 투두 수정 */
