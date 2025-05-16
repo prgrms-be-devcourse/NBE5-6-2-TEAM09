@@ -6,6 +6,7 @@ import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.form.SigninForm;
 import com.grepp.codemap.user.form.SignupForm;
 import com.grepp.codemap.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -106,5 +107,17 @@ public class UserController {
 
         userService.signup(form.toDto(), Role.ROLE_USER);
         return "redirect:/";
+    }
+
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate(); // 세션 삭제
+        }
+
+        SecurityContextHolder.clearContext(); // Security 인증 정보 제거
+        return "redirect:/user/signin";
     }
 }
