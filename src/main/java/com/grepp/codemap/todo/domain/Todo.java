@@ -80,4 +80,7 @@ public class Todo {
     public void setIsCompleted(boolean b) {
         this.isCompleted = b;
     }
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 }

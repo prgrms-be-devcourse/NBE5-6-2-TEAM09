@@ -83,10 +83,12 @@ public class TodoService {
         Long userId,
         String title,
         String description,
+        LocalDateTime startTime,
         LocalDateTime completedAt) {
         Todo todo = findByIdAndUser(id, userId);
         todo.setTitle(title);
         todo.setDescription(description);
+        todo.setStartTime(startTime);
         todo.setCompletedAt(completedAt);
         return todoRepository.save(todo);
     }
