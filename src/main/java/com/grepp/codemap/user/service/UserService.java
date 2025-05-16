@@ -67,4 +67,23 @@ public class UserService {
 
         return user;
     }
+
+    public void updateNickname(Long userId, String newNickname) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        user.updateNickname(newNickname);
+        userRepository.save(user);
+    }
+
+    public void updatePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        user.updatePassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

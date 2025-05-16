@@ -16,11 +16,31 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
     List<DailyRoutine> findByUserAndIsDeletedFalseOrderByCreatedAtDesc(User user);
 
     @Query("SELECT dr FROM DailyRoutine dr WHERE dr.user = :user AND dr.isDeleted = false AND dr.status = :status ORDER BY dr.createdAt DESC")
-    List<DailyRoutine> findByUserAndStatusAndNotDeleted(@Param("user") User user, @Param("status") String status);
+    List<DailyRoutine> findByUserAndStatusAndNotDeleted(@Param("user") User user,
+        @Param("status") String status);
 
     @Query("SELECT SUM(dr.focusTime) FROM DailyRoutine dr WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false")
     Integer getTotalFocusTimeByUser(@Param("user") User user);
 
     @Query("SELECT dr.category, SUM(dr.focusTime) FROM DailyRoutine dr WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false GROUP BY dr.category")
     List<Object[]> getTotalFocusTimeByCategory(@Param("user") User user);
+
+    // 전체 루틴 수
+    @Query("SELECT COUNT(r) FROM DailyRoutine r WHERE r.user.id = :userId AND r.isDeleted = false")
+    long countAllByUserId(@Param("userId") Long userId);
+
+    // 완료된 루틴 수
+    @Query("SELECT COUNT(r) FROM DailyRoutine r WHERE r.user.id = :userId AND r.status = 'COMPLETED' AND r.isDeleted = false")
+    long countCompletedByUserId(@Param("userId") Long userId);
+
+    // 카테고리별 완료 수 & 전체 수
+    @Query("""
+            SELECT r.category, 
+                   SUM(CASE WHEN r.status = 'COMPLETED' THEN 1 ELSE 0 END),
+                   COUNT(r)
+            FROM DailyRoutine r
+            WHERE r.user.id = :userId AND r.isDeleted = false
+            GROUP BY r.category
+        """)
+    List<Object[]> countByCategory(@Param("userId") Long userId);
 }

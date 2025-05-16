@@ -72,5 +72,11 @@ public class User {
         this.notificationEnabled = enabled;
     }
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 }
