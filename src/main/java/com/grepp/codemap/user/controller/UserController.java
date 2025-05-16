@@ -42,10 +42,10 @@ public class UserController {
     }
     @PostMapping("signin")
     public String signin(
-        @Valid SigninForm form,
-        BindingResult bindingResult,
-        HttpSession session,
-        Model model
+            @Valid SigninForm form,
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model
     ) {
         if (bindingResult.hasErrors()) {
             return "user/signin";
@@ -73,6 +73,9 @@ public class UserController {
             );
 
 
+            if (user.getRole().equals(Role.ROLE_ADMIN.name())) {
+                return "redirect:/admin/manage-questions";
+            }
 
             // ✅ 이후 인증 상태 유지됨 → 다른 요청에서도 인증됨
             return "redirect:/routines";
@@ -94,7 +97,6 @@ public class UserController {
             BindingResult bindingResult,
             Model model){
 
-        log.info("폼 데이터: {}", form);
 
         if(bindingResult.hasErrors()){
             return "user/signup";
