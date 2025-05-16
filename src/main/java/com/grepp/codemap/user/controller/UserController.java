@@ -8,9 +8,15 @@ import com.grepp.codemap.user.form.SignupForm;
 import com.grepp.codemap.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,9 +51,30 @@ public class UserController {
         }
 
         try {
+            // 로그인 성공 시
             User user = userService.login(form);
-            session.setAttribute("userId", user.getId()); // ✅ 핵심 세션 저장
-            return "redirect:/routines"; // 또는 /todos/calender
+
+            // ✅ 세션 저장
+            session.setAttribute("userId", user.getId());
+
+            // ✅ SecurityContext 수동 인증 설정
+            UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                    user.getEmail(),
+                    null,
+                    List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())) // 예: ROLE_USER
+                );
+            // ✅ 핵심: SecurityContext를 세션에 직접 저장해야 유지됨
+            SecurityContextImpl securityContext = new SecurityContextImpl(authentication);
+            session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                securityContext
+            );
+
+
+
+            // ✅ 이후 인증 상태 유지됨 → 다른 요청에서도 인증됨
+            return "redirect:/routines";
         } catch (CommonException e) {
             model.addAttribute("loginError", "이메일 또는 비밀번호가 일치하지 않습니다.");
             return "user/signin";
