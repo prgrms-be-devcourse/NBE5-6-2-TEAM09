@@ -35,22 +35,29 @@
       z-index: 900;
     }
     main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       margin-left: 250px;
-      margin-top: 116px;
+      margin-top: -31vw; /* 캘린더 페이지와 동일하게 음수 마진 적용 */
       padding: 40px;
     }
+
     .routine-wrapper {
       background-color: #d8e3ff;
       padding: 40px;
       border-radius: 12px;
+      margin-top: 40px; /* 상단 여백 추가 */
+      width: 100%;
       max-width: 800px;
-      margin: 0 auto;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     }
     .routine-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .routine-header h2 {
       font-size: 28px;
