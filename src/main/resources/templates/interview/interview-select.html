@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>CodeMap - 카테고리 선택</title>
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+    <style>
+        main {
+            margin-left: 260px; /* 사이드 네비게이션 너비 */
+            padding: 40px;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .category-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #e9f0ff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .category-container h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .category-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            border: 2px solid #dcdcdc;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .category-option:hover {
+            background-color: #dce9ff;
+        }
+
+        .category-option input[type="checkbox"] {
+            accent-color: #e6ff00; /* 강조 색 지정 */
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .category-button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #ffffff;
+            border: 2px solid #dcdcdc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .category-button:hover {
+            background-color: #dce9ff;
+        }
+
+        .submit-btn {
+            margin-top: 30px;
+            padding: 12px 40px;
+            font-size: 16px;
+            background-color: #3f86ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #336ed3;
+        }
+    </style>
+</head>
+<body>
+
+<header th:replace="~{fragments/header/index :: header}"></header>
+
+<main>
+    <div class="category-container">
+        <h2>카테고리 선택</h2>
+        <form th:action="@{/interview/select}" method="post">
+            <label class="category-option">
+                <input type="checkbox" name="category" value="알고리즘">
+                <span>알고리즘</span>
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="자료구조">
+                <span>자료구조</span>
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="데이터베이스">
+                <span>데이터베이스</span>
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="운영체제">
+                <span>운영체제</span>
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="네트워크">
+                <span>네트워크</span>
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="컴퓨터구조">
+                <span>컴퓨터구조</span>
+            </label>
+            <button type="submit" class="submit-button">확인</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

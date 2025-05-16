@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMap - 문항 목록</title>
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f4f6fc;
+        }
+        main {
+            padding: 40px 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .category-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0019a5;
+        }
+        .add-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 999px;
+            background-color: #3b82f6;
+            color: white;
+            cursor: pointer;
+        }
+        .question-list {
+            background: #e8f0ff;
+            padding: 32px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .question-item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kebab-menu {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 28px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .dropdown a {
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #333;
+            white-space: nowrap;
+        }
+        .dropdown a:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+
+<!-- 사이드 네비게이션 (사용자용) -->
+<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+<main>
+    <div class="header-row">
+        <div class="category-title" th:text="${category}">카테고리명</div>
+        <a class="add-button"
+           th:href="@{/admin/questions/new(category=${category})}">
+            문항 추가
+        </a>
+    </div>
+
+    <div class="question-list">
+        <div class="question-item" th:each="question : ${questions}">
+            <span th:text="${question.questionText}">문제 A</span>
+            <div class="kebab-menu" onclick="toggleDropdown(this)">
+                ⋮
+                <div class="dropdown">
+                    <!-- 삭제 모달 트리거 -->
+                    <a href="javascript:void(0)"
+                       th:attr="data-id=${question.id}, data-category=${category}"
+                       onclick="showDeleteModalFromAttr(this)">
+                        삭제
+                    </a>
+                    <!-- 수정 링크에 category 파라미터 포함 -->
+                    <a th:href="@{'/admin/questions/' + ${question.id} + '/edit'(category=${category})}">
+                        수정
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="confirm-button">확인</button>
+</main>
+
+
+<!-- ✅ 모달 HTML -->
+<div id="deleteModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+    <div style="background: white; padding: 32px; border-radius: 12px; width: 400px; text-align: center;">
+        <h2 style="margin-bottom: 16px; color: #0019a5;">문항 삭제</h2>
+        <p style="margin-bottom: 24px;">정말로 이 문항을 삭제하시겠습니까?</p>
+        <form id="deleteForm" method="post">
+<!--            <input type="hidden" name="_method" value="delete" />-->
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button type="submit" style="padding: 10px 20px; background-color: #dc2626; color: white; border: none; border-radius: 999px;">삭제</button>
+                <button type="button" onclick="closeDeleteModal()" style="padding: 10px 20px; background-color: #ccc; color: #333; border: none; border-radius: 999px;">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ✅ JS 코드 -->
+<script>
+    let openDropdown = null;
+
+    function toggleDropdown(button) {
+        const dropdown = button.querySelector('.dropdown');
+        if (openDropdown && openDropdown !== dropdown) {
+            openDropdown.style.display = 'none';
+        }
+        if (dropdown.style.display === 'flex') {
+            dropdown.style.display = 'none';
+            openDropdown = null;
+        } else {
+            dropdown.style.display = 'flex';
+            openDropdown = dropdown;
+        }
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.kebab-menu')) {
+            if (openDropdown) {
+                openDropdown.style.display = 'none';
+                openDropdown = null;
+            }
+        }
+    });
+
+    function showDeleteModalFromAttr(element) {
+        const id = element.getAttribute("data-id");
+        const category = element.getAttribute("data-category");
+        showDeleteModal(id, category);
+    }
+
+    function showDeleteModal(questionId, category) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        form.action = `/admin/questions/${questionId}/delete?category=${encodeURIComponent(category)}`;
+        modal.style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+</script>
+</body>
+</html>

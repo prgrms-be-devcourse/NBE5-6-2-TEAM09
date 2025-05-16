@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMap - 문항 등록</title>
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f4f6fc;
+        }
+
+        main {
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #0019a5;
+            margin-bottom: 24px;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            width: 600px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #0019a5;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .save-button {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .save-button:hover {
+            background-color: #2563eb;
+        }
+
+        .cancel-button {
+            background-color: #ccc;
+            color: #333;
+        }
+
+        .cancel-button:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+
+<!-- 사이드 네비게이션 (사용자용) -->
+<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+<main>
+    <h1 th:text="${isEdit} ? '문항 수정' : '문항 등록'">문항 등록</h1>
+
+    <form th:action="@{${formAction}}" th:object="${form}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <label for="category">카테고리</label>
+        <input type="text" id="category" th:field="*{category}" required />
+
+        <label for="questionText">질문</label>
+        <input type="text" id="questionText" th:field="*{questionText}" required />
+
+        <label for="difficulty">난이도</label>
+        <select id="difficulty" th:field="*{difficulty}" required>
+            <option value="하">하</option>
+            <option value="중">중</option>
+            <option value="상">상</option>
+        </select>
+
+        <label for="answerText">모범 답안</label>
+        <textarea id="answerText" th:field="*{answerText}"></textarea>
+
+        <div class="form-actions">
+            <button type="submit" class="save-button" th:text="${isEdit} ? '수정하기' : '등록하기'">저장</button>
+            <button type="button" class="cancel-button" onclick="history.back()">취소</button>
+        </div>
+    </form>
+</main>
+
+</body>
+</html>

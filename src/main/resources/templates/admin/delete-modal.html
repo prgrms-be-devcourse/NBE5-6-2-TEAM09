@@ -1,0 +1,77 @@
+<!-- ✅ 삭제 모달 -->
+<div id="deleteModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+    <div style="background: white; padding: 32px; border-radius: 12px; width: 400px; text-align: center;">
+        <h2 style="margin-bottom: 16px; color: #0019a5;">문항 삭제</h2>
+        <p style="margin-bottom: 24px;">정말로 이 문항을 삭제하시겠습니까?</p>
+
+        <!-- 🔥 삭제 요청 폼 -->
+        <form id="deleteForm" method="post">
+            <!-- ✅ category 파라미터 hidden으로 전달 -->
+            <input type="hidden" name="category" id="deleteCategoryInput" />
+
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button type="submit" style="padding: 10px 20px; background-color: #dc2626; color: white; border: none; border-radius: 999px;">삭제</button>
+                <button type="button" onclick="closeDeleteModal()" style="padding: 10px 20px; background-color: #ccc; color: #333; border: none; border-radius: 999px;">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ✅ 모달 관련 JS -->
+<script>
+    let openDropdown = null;
+
+    function toggleDropdown(button) {
+        const dropdown = button.querySelector('.dropdown');
+        if (openDropdown && openDropdown !== dropdown) {
+            openDropdown.style.display = 'none';
+        }
+        if (dropdown.style.display === 'flex') {
+            dropdown.style.display = 'none';
+            openDropdown = null;
+        } else {
+            dropdown.style.display = 'flex';
+            openDropdown = dropdown;
+        }
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.kebab-menu')) {
+            if (openDropdown) {
+                openDropdown.style.display = 'none';
+                openDropdown = null;
+            }
+        }
+    });
+
+    // ✅ 삭제 모달 열기 (속성 기반)
+    function showDeleteModalFromAttr(element) {
+        const id = element.getAttribute("data-id");
+        const category = element.getAttribute("data-category");
+        showDeleteModal(id, category);
+    }
+
+    // ✅ 삭제 모달 열기
+    function showDeleteModal(questionId, category) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        const categoryInput = document.getElementById('deleteCategoryInput');
+
+        // form 설정
+        form.action = `/admin/questions/${questionId}/delete`;
+        form.method = "post";
+
+        // category 설정
+        categoryInput.value = category;
+
+        console.log("✅ form.action:", form.action);
+        console.log("✅ form.method:", form.method);
+
+        modal.style.display = 'flex';
+    }
+
+    // ✅ 삭제 모달 닫기
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+</script>
