@@ -31,35 +31,35 @@ public class SecurityConfig {
 //    private String rememberMeKey;
 
 
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-            .build();
-    }
-
-
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request,
-                HttpServletResponse response, Authentication authentication)
-                throws IOException, ServletException {
-
-                boolean isAdmin = authentication.getAuthorities()
-                    .stream()
-                    .anyMatch(authority ->
-                        authority.getAuthority().equals("ROLE_ADMIN"));
-
-                if (isAdmin) {
-                    response.sendRedirect("/admin/manage-members");
-                    return;
-                }
-
-                response.sendRedirect("/routines");
-            }
-        };
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+//        return http.getSharedObject(AuthenticationManagerBuilder.class)
+//            .build();
+//    }
+//
+//
+//    @Bean
+//    public AuthenticationSuccessHandler successHandler() {
+//        return new AuthenticationSuccessHandler() {
+//            @Override
+//            public void onAuthenticationSuccess(HttpServletRequest request,
+//                HttpServletResponse response, Authentication authentication)
+//                throws IOException, ServletException {
+//
+//                boolean isAdmin = authentication.getAuthorities()
+//                    .stream()
+//                    .anyMatch(authority ->
+//                        authority.getAuthority().equals("ROLE_ADMIN"));
+//
+//                if (isAdmin) {
+//                    response.sendRedirect("/admin/manage-members");
+//                    return;
+//                }
+//
+//                response.sendRedirect("/routines");
+//            }
+//        };
+//    }
 
 
     @Bean
@@ -74,17 +74,13 @@ public class SecurityConfig {
                     .requestMatchers(POST, "/chatbot/**", "/chatbot/message/**").permitAll()
                     .anyRequest().authenticated()
             )
-            .formLogin((form) -> form
-                .loginPage("/user/signin")
-                .usernameParameter("email")
-                .loginProcessingUrl("/user/signin")
-                .defaultSuccessUrl("/")
-                .successHandler(successHandler())
-                .permitAll()
-            )
             //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
             .logout(LogoutConfigurer::permitAll)
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**"));
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**"))
+            .sessionManagement(session -> session
+                .sessionFixation().none()
+            );
+
 
         return http.build();
     }

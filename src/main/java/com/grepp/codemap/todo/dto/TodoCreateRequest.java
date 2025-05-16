@@ -15,9 +15,8 @@ public record TodoCreateRequest(
     String description,
 
     @NotNull(message = "시작 시간을 입력해주세요.")
-    LocalDateTime startTime,
+    String startTime,
 
     @NotNull(message = "완료 시간을 입력해주세요.")
-    @FutureOrPresent(message = "완료 시간은 현재 시간 이후여야 합니다.")
-    LocalDateTime completedAt
+    String completedAt
 ) {}
