@@ -119,4 +119,6 @@ public class AdminQuestionController {
     public String redirectToCategorySelect() {
         return "redirect:/admin/category-select";
     }
+
+
 }
