@@ -108,4 +108,10 @@ public class TodoService {
         todo.setIsCompleted(!current);
         return todoRepository.save(todo);
     }
+
+    public List<Todo> getTodosToNotify(Long userId, LocalDateTime now, LocalDateTime tenMinutesLater) {
+        return todoRepository.findAllByUser_IdAndStartTimeBetweenAndIsCompletedFalse(
+            userId, now, tenMinutesLater);
+    }
+
 }

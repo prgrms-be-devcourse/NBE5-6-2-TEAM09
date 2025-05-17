@@ -1,0 +1,30 @@
+<th:block th:fragment="alert-script">
+  <style>
+    @keyframes flash {
+      0%   { background-color: #ffffff; }
+      100% { background-color: #ffeaa7; }
+    }
+  </style>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const alertTodos = /*[[${alertTodos}]]*/ [];
+    console.log("🚨 alertTodos =", alertTodos);
+
+    function playAlertSound() {
+      const audio = new Audio('/sounds/alert.mp3');
+      audio.play().catch(e => console.warn("🔇 자동 재생 차단:", e));
+    }
+
+    if (alertTodos.length > 0) {
+      // ✅ 화면 점멸
+      document.body.style.animation = "flash 0.3s alternate 6";
+
+      // ✅ 첫 클릭 이벤트가 발생하면 그때 알림음 실행 (자동재생 정책 회피용)
+      document.addEventListener('click', function handler() {
+        playAlertSound();
+        document.removeEventListener('click', handler);
+      });
+    }
+    /*]]>*/
+  </script>
+</th:block>
