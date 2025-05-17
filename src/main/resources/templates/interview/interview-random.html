@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>면접 질문</title>
+<!--    <link rel="stylesheet" th:href="@{/css/header/global.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/header/style.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}">-->
+    <style>
+        main {
+            margin-left: 260px;
+            padding: 40px;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .question-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .category-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3f86ff;
+            margin-bottom: 30px;
+        }
+
+        .question-item {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #3f86ff;
+            border-radius: 10px;
+            background-color: #f0f6ff;
+        }
+    </style>
+</head>
+<body>
+
+<main>
+    <div class="question-view">
+        <h2 th:text="'[' + ${category} + '] 면접 질문 ' + (${page} + 1) + ' / ' + ${totalPages}"></h2>
+
+        <div class="question-box">
+            <p th:text="${question.questionText}">질문 내용</p>
+        </div>
+
+        <form th:action="@{'/interview/' + ${question.id} + '/answer'}" method="post">
+            <textarea name="answer" rows="5" placeholder="답변을 입력하세요"></textarea>
+            <button type="submit">제출</button>
+        </form>
+
+        <div class="navigation">
+            <a th:if="${page > 0}"
+               th:href="@{/interview/question(category=${category}, page=${page - 1})}">⬅ 이전</a>
+            <a th:if="${page + 1 < totalPages}"
+               th:href="@{/interview/question(category=${category}, page=${page + 1})}">다음 ➡</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
