@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/globals.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/styleguide.css}" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f4f6fc;
+        }
+        main {
+            margin-left: 287px;
+            padding: 40px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0019a5;
+            margin-bottom: 16px;
+        }
+        .form-box {
+            background: #c9dcff;
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #0019a5;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #0019a5;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .save-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 999px;
+            background-color: #2563eb;
+            color: white;
+            cursor: pointer;
+            align-self: center;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+
+<main>
+    <div class="title">회원정보 수정</div>
+    <form th:action="@{|/admin/users/${user.id}|}" method="post" class="form-box">
+        <input type="hidden" name="_method" value="patch" />
+
+        <label for="nickname">닉네임 수정</label>
+        <input type="text" id="nickname" name="nickname" th:value="${user.nickname}" required />
+
+        <label for="email">이메일 수정</label>
+        <input type="email" id="email" name="email" th:value="${user.email}" required />
+
+        <label for="newPassword">새 비밀번호</label>
+        <input type="password" id="newPassword" name="newPassword" required />
+
+        <button type="submit" class="save-btn">저장</button>
+    </form>
+</main>
+</body>
+</html>

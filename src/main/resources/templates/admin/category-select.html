@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMap - 문제 카테고리 선택</title>
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f4f6fc;
+        }
+
+        main {
+            padding: 40px 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #0019a5;
+            margin-bottom: 32px;
+        }
+
+        .category-box {
+            background: #e8f0ff;
+            padding: 32px;
+            border-radius: 16px;
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .category-option {
+            border: 2px solid #ccc;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #0019a5;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            background-color: #D9D9D9;
+        }
+
+        .category-option input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .category-option.checked {
+            background-color: #DCF343;
+        }
+
+        .confirm-button {
+            margin-top: 32px;
+            padding: 12px 24px;
+            border: none;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 999px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .confirm-button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+    <script>
+        function toggleCheck(checkbox) {
+            const option = checkbox.closest('.category-option');
+            option.classList.toggle('checked', checkbox.checked);
+        }
+    </script>
+</head>
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+
+<!-- 사이드 네비게이션 (사용자용) -->
+<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+
+<main>
+    <h1>카테고리</h1>
+
+    <form th:action="@{/admin/question-list}" method="get">
+        <div class="category-box">
+            <label class="category-option">
+                <input type="checkbox" name="category" value="알고리즘" class="category-input" />
+                알고리즘
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="자료구조" class="category-input" />
+                자료구조
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="데이터베이스" class="category-input" />
+                데이터베이스
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="운영체제" class="category-input" />
+                운영체제
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="네트워크" class="category-input" />
+                네트워크
+            </label>
+            <label class="category-option">
+                <input type="checkbox" name="category" value="컴퓨터구조" class="category-input" />
+                컴퓨터구조
+            </label>
+        </div>
+        <button type="submit" class="confirm-button">확인</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('.category-input');
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    checkboxes.forEach(other => {
+                        if (other !== cb) {
+                            other.checked = false;
+                            other.closest('.category-option').classList.remove('checked');
+                        }
+                    });
+
+                    // 현재 클릭된 요소만 강조
+                    if (cb.checked) {
+                        cb.closest('.category-option').classList.add('checked');
+                    } else {
+                        cb.closest('.category-option').classList.remove('checked');
+                    }
+                });
+            });
+        });
+    </script>
+</main>
+</body>
+</html>

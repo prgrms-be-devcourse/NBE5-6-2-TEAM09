@@ -32,7 +32,7 @@ public class DailyRoutineController {
     //루틴 목록 조회 페이지
     @GetMapping
     public String getRoutineList(Model model,
-        @SessionAttribute(name = "userId", required = false) Long userId) {
+                                 @SessionAttribute(name = "userId", required = false) Long userId) {
         if (userId == null) {
             // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
             return "redirect:/user/signin";
@@ -69,8 +69,8 @@ public class DailyRoutineController {
     //루틴 추가 처리
     @PostMapping
     public String addRoutine(@ModelAttribute("routine") DailyRoutineDto routineDto,
-        @SessionAttribute("userId") Long userId,
-        RedirectAttributes redirectAttributes) {
+                             @SessionAttribute("userId") Long userId,
+                             RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto savedRoutine = dailyRoutineService.createRoutine(routineDto, userId);
@@ -87,7 +87,7 @@ public class DailyRoutineController {
     @GetMapping("/{id}/edit")
     @ResponseBody
     public ResponseEntity<?> showEditForm(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId) {
+                                          @SessionAttribute("userId") Long userId) {
         try {
             // 서비스 계층의 메서드를 사용하여 루틴 조회
             DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
@@ -104,9 +104,9 @@ public class DailyRoutineController {
     //루틴 수정 처리
     @PatchMapping("/{id}")
     public String updateRoutine(@PathVariable Long id,
-        @ModelAttribute("routine") DailyRoutineDto routineDto,
-        @SessionAttribute("userId") Long userId,
-        RedirectAttributes redirectAttributes) {
+                                @ModelAttribute("routine") DailyRoutineDto routineDto,
+                                @SessionAttribute("userId") Long userId,
+                                RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto updatedRoutine = dailyRoutineService.updateRoutine(id, routineDto, userId);
@@ -125,7 +125,7 @@ public class DailyRoutineController {
     @ResponseBody
     public ResponseEntity<?> deleteRoutine(@PathVariable Long id,
         @SessionAttribute("userId") Long userId) {
-
+      
         try {
             dailyRoutineService.deleteRoutine(id, userId);
             Map<String, Object> response = new HashMap<>();
@@ -145,8 +145,8 @@ public class DailyRoutineController {
     //루틴 완료 처리
     @PatchMapping("/{id}/complete")
     public String completeRoutine(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
-        RedirectAttributes redirectAttributes) {
+                                  @SessionAttribute("userId") Long userId,
+                                  RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto completedRoutine = dailyRoutineService.completeRoutine(id, userId);
@@ -163,8 +163,8 @@ public class DailyRoutineController {
     //루틴 완료 취소 처리
     @PatchMapping("/{id}/cancel")
     public String cancelRoutineCompletion(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
-        RedirectAttributes redirectAttributes) {
+                                          @SessionAttribute("userId") Long userId,
+                                          RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto canceledRoutine = dailyRoutineService.cancelCompletion(id, userId);
@@ -181,8 +181,8 @@ public class DailyRoutineController {
     //루틴 쉬어가기(Skip) 처리
     @PatchMapping("/{id}/skip")
     public String skipRoutine(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
-        RedirectAttributes redirectAttributes) {
+                              @SessionAttribute("userId") Long userId,
+                              RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto passedRoutine = dailyRoutineService.passRoutine(id, userId);
@@ -199,7 +199,7 @@ public class DailyRoutineController {
     //타이머 페이지 로드 및 포모도로 세션 시작
     @GetMapping("/{id}/timer")
     public String startTimer(@PathVariable Long id, Model model,
-        @SessionAttribute("userId") Long userId) {
+                             @SessionAttribute("userId") Long userId) {
 
         User user = userService.getUserById(userId);
 
@@ -229,15 +229,16 @@ public class DailyRoutineController {
     public ResponseEntity<?> pauseTimer(@RequestParam Long sessionId,
         @SessionAttribute("userId") Long userId) {
         // 타이머 일시정지는 js로 구현
+
         return ResponseEntity.ok().build();
     }
 
     //타이머 완료 처리
     @PatchMapping("/timer/complete")
     public String completeTimer(@RequestParam Long sessionId,
-        @RequestParam Long routineId,
-        @SessionAttribute("userId") Long userId,
-        RedirectAttributes redirectAttributes) {
+                                @RequestParam Long routineId,
+                                @SessionAttribute("userId") Long userId,
+                                RedirectAttributes redirectAttributes) {
 
         try {
             // 포모도로 세션 종료
