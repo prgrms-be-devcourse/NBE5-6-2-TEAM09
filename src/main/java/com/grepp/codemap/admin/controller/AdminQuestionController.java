@@ -120,5 +120,4 @@ public class AdminQuestionController {
         return "redirect:/admin/category-select";
     }
 
-
 }
