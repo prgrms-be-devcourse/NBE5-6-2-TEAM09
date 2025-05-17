@@ -28,18 +28,20 @@ public class AdminUserService {
         return userRepository.findById(id);
     }
 
-    public void updateUser(Long id, AdminUserUpdateDto dto) {
+    public void updateUserByAdmin(Long id, AdminUserUpdateDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. id=" + id));
 
-//        user.adminUpdateInfo(
-//                dto.getNickname(),
-//                dto.getEmail(),
-//                dto.getCurrentPassword(),
-//                dto.getNewPassword(),
-//                passwordEncoder
-//        );
+        user.setNickname(dto.getNickname());
+        user.setEmail(dto.getEmail());
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        }
+
+        userRepository.save(user); // 변경 감지 방식이라면 생략 가능
     }
+
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
