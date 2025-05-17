@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원정보 관리</title>
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f4f6fc;
+        }
+        main {
+            padding: 40px 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .category-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0019a5;
+        }
+        .add-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 999px;
+            background-color: #3b82f6;
+            color: white;
+            cursor: pointer;
+        }
+        .question-list {
+            background: #e8f0ff;
+            padding: 32px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .question-item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kebab-menu {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 28px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .dropdown a {
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #333;
+            white-space: nowrap;
+        }
+        .dropdown a:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+
+<!-- 사이드 네비게이션 (사용자용) -->
+<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+
+<main>
+    <h1>회원정보 관리</h1>
+    <div class="user-list-box">
+        <div th:each="user : ${users}" class="user-item">
+            <span th:text="${user.nickname}">유저 닉네임</span>
+            <div class="dropdown">
+                <button class="dropdown-toggle">︙</button>
+                <div class="dropdown-menu">
+                    <a th:href="@{|/admin/users/${user.id}/edit|}">수정</a>
+                    <form th:action="@{|/admin/users/${user.id}|}" method="post"
+                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit">삭제</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="confirm-btn">확인</button>
+</main>
+
+<script>
+    // dropdown 토글 스크립트
+    document.querySelectorAll('.dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', function () {
+            this.nextElementSibling.classList.toggle('show');
+        });
+    });
+</script>
+</body>
+</html>
