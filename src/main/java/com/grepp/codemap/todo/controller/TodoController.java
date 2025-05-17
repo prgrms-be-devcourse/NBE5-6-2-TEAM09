@@ -7,6 +7,7 @@ import com.grepp.codemap.todo.domain.Todo;
 import com.grepp.codemap.todo.service.TodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -133,14 +134,16 @@ public class TodoController {
         return "redirect:/todos?date=" + startTime.toLocalDate(); // ✅ 시작일 기준으로 유지
     }
 
-    /** ✅ 7. 투두 삭제 */
+    /** ✅ 7. 투두 삭제 - RESTful DELETE 방식 */
     @DeleteMapping("/{id}")
-    public String deleteTodo(@PathVariable Long id,
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long id,
         HttpSession session,
         @RequestParam("date") String date) {
+        System.out.println("🟡 삭제 컨트롤러 도착함");
+
         Long userId = (Long) session.getAttribute("userId");
         todoService.deleteTodo(id, userId);
-        return "redirect:/todos?date=" + date;
+        return ResponseEntity.ok().build();
     }
 
     /** ✅ 8. 완료 상태 토글 (체크박스 클릭) */

@@ -94,6 +94,8 @@ public class TodoService {
     }
 
     public void deleteTodo(Long id, Long userId) {
+        System.out.println("🟢 서비스에서도 삭제 호출됨: " + id);
+
         Todo todo = findByIdAndUser(id, userId);
         todoRepository.delete(todo);
     }
