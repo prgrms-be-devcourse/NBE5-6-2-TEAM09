@@ -160,26 +160,30 @@
                class="complete-checkbox"
                th:attr="data-id=${todo.id}, data-date=${selectedDate}"
                th:checked="${todo.completed}" />
-        <span th:text="${todo.title}">투두 제목</span>
+
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span th:text="${todo.title}" style="font-weight: bold;">투두 제목</span>
+          <span th:text="${todo.description}" style="font-size: 14px; color: #555;">내용</span>
+          <span style="font-size: 12px; color: #888;"
+                th:text="'시작: ' + ${#temporals.format(todo.startTime, 'HH:mm')} + ' | 마감: ' + ${#temporals.format(todo.completedAt, 'yyyy-MM-dd')}">
+        시작 / 마감
+      </span>
+        </div>
       </div>
       <div>
         <button class="menu-button">⋯</button>
         <div class="menu-box">
-          <!-- 수정 버튼: data-id, data-date로 JS 전달 -->
           <div class="edit-button"
                th:attr="data-id=${todo.id}, data-date=${selectedDate}">
             수정
           </div>
-          <!-- 삭제는 그대로 -->
           <div class="delete-button"
                th:attr="data-id=${todo.id}, data-date=${selectedDate}">
             삭제
           </div>
-
         </div>
       </div>
     </div>
-  </div>
 </main>
 
 <script>
