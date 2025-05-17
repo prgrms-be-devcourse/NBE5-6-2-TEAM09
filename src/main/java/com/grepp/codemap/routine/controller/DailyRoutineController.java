@@ -5,6 +5,8 @@ import com.grepp.codemap.routine.dto.PomodoroSessionDto;
 import com.grepp.codemap.routine.service.DailyRoutineService;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -120,19 +122,23 @@ public class DailyRoutineController {
 
     //루틴 삭제 처리
     @DeleteMapping("/{id}")
-    public String deleteRoutine(@PathVariable Long id,
-        @SessionAttribute("userId") Long userId,
-        RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<?> deleteRoutine(@PathVariable Long id,
+        @SessionAttribute("userId") Long userId) {
 
         try {
             dailyRoutineService.deleteRoutine(id, userId);
-            redirectAttributes.addFlashAttribute("successMessage", "루틴이 성공적으로 삭제되었습니다.");
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "루틴이 성공적으로 삭제되었습니다.");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("루틴 삭제 중 오류 발생", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "루틴 삭제에 실패했습니다: " + e.getMessage());
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "루틴 삭제에 실패했습니다: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
-
-        return "redirect:/routines";
     }
 
 
@@ -195,15 +201,18 @@ public class DailyRoutineController {
     public String startTimer(@PathVariable Long id, Model model,
         @SessionAttribute("userId") Long userId) {
 
+        User user = userService.getUserById(userId);
+
+        model.addAttribute("user", user);
         try {
             // 루틴 정보 조회
             DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
 
             // 포모도로 세션 시작
-            PomodoroSessionDto session = dailyRoutineService.startPomodoroSession(id, userId);
+            PomodoroSessionDto pomodoroSession  = dailyRoutineService.startPomodoroSession(id, userId);
 
             model.addAttribute("routine", routine);
-            model.addAttribute("session", session);
+            model.addAttribute("pomodoroSession", pomodoroSession );
             model.addAttribute("focusTime", routine.getFocusTime());
             model.addAttribute("breakTime", 10); // 기본 쉬는 시간 10분
 
@@ -219,8 +228,7 @@ public class DailyRoutineController {
     @ResponseBody
     public ResponseEntity<?> pauseTimer(@RequestParam Long sessionId,
         @SessionAttribute("userId") Long userId) {
-        // 실제로는 클라이언트 측에서 일시정지 상태를 관리하고,
-        // 필요한 경우 서버에 진행 상황을 저장할 수 있습니다.
+        // 타이머 일시정지는 js로 구현
         return ResponseEntity.ok().build();
     }
 
