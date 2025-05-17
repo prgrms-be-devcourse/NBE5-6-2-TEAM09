@@ -118,7 +118,6 @@
         </div>
     </div>
 
-    <button class="confirm-button">확인</button>
 </main>
 
 
@@ -128,7 +127,7 @@
         <h2 style="margin-bottom: 16px; color: #0019a5;">문항 삭제</h2>
         <p style="margin-bottom: 24px;">정말로 이 문항을 삭제하시겠습니까?</p>
         <form id="deleteForm" method="post">
-<!--            <input type="hidden" name="_method" value="delete" />-->
+            <input type="hidden" name="_method" value="delete" />
             <div style="display: flex; justify-content: center; gap: 12px;">
                 <button type="submit" style="padding: 10px 20px; background-color: #dc2626; color: white; border: none; border-radius: 999px;">삭제</button>
                 <button type="button" onclick="closeDeleteModal()" style="padding: 10px 20px; background-color: #ccc; color: #333; border: none; border-radius: 999px;">취소</button>

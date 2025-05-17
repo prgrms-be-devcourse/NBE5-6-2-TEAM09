@@ -92,7 +92,7 @@ public class AdminQuestionController {
     }
 
     // 7️⃣ 질문 수정 처리
-    @PostMapping("/questions/{id}/edit")
+    @PatchMapping("/questions/{id}/edit")
     public String updateQuestion(@PathVariable Long id,
                                  @ModelAttribute("form") InterviewQuestionFormDto formDto,
                                  RedirectAttributes redirectAttributes) {
@@ -103,7 +103,7 @@ public class AdminQuestionController {
     }
 
     // 8️⃣ 질문 삭제 처리
-    @PostMapping("/questions/{id}/delete")
+    @DeleteMapping("/questions/{id}/delete")
     public String deleteQuestion(@PathVariable Long id,
                                  @RequestParam("category") String category,
                                  RedirectAttributes redirectAttributes) {
