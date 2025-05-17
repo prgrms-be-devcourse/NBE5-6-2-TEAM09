@@ -1,6 +1,5 @@
 <!-- templates/todo/todo-update.html -->
 <div id="todoModal">
-  <button id="closeButton" onclick="closeModal()">×</button>
   <h2>투두 수정하기</h2>
   <form th:action="@{'/todos/' + ${todo.id}}" method="post">
     <input type="hidden" name="_method" value="patch"/>
@@ -14,14 +13,18 @@
               th:text="${todo.description}"></textarea>
 
     <!-- 시작 시간 -->
-    <input type="time" name="startTime"
+    <label for="startTime" class="input-label">🕒 시작 시간</label>
+    <input type="time" id="startTime" name="startTime"
            th:value="${#temporals.format(todo.startTime.toLocalTime(), 'HH:mm')}" required />
 
     <!-- 마감일 -->
-    <input type="date" name="completedAt"
+    <label for="completedAt" class="input-label">📅 마감 날짜</label>
+    <input type="date" id="completedAt" name="completedAt"
            th:value="${#temporals.format(todo.completedAt.toLocalDate(), 'yyyy-MM-dd')}" required />
 
-    <button type="submit">수정</button>
+    <!-- 버튼 영역 -->
+    <button type="submit" class="submit-button">수정</button>
+    <button type="button" class="cancel-button" onclick="closeModal()">취소</button>
   </form>
 </div>
 
@@ -35,35 +38,46 @@
     background: #f4f4fb;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     z-index: 2000;
     width: 400px;
   }
-  #todoModal input, #todoModal textarea, #todoModal button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 14px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
+
   #todoModal h2 {
     margin-bottom: 20px;
     font-size: 20px;
     color: #1b2c50;
   }
+
+  #todoModal input,
+  #todoModal textarea,
   #todoModal button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: "Pretendard", sans-serif;
+  }
+
+  .input-label {
+    display: block;
+    margin: 6px 0 4px 2px;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .submit-button {
     background-color: #4e6df2;
     color: white;
     border: none;
     font-size: 16px;
   }
-  #closeButton {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    cursor: pointer;
-    background: none;
+
+  .cancel-button {
+    background-color: #d3d6db;
+    color: #333;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
   }
 </style>
