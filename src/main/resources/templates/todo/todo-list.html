@@ -155,7 +155,10 @@
     <!-- 투두 목록 반복 -->
     <div th:each="todo : ${todos}" class="todo-item" th:classappend="${todo.completed} ? 'todo-complete'">
       <div class="todo-left">
-        <input type="checkbox" th:checked="${todo.completed}" />
+        <input type="checkbox"
+               class="complete-checkbox"
+               th:attr="data-id=${todo.id}, data-date=${selectedDate}"
+               th:checked="${todo.completed}" />
         <span th:text="${todo.title}">투두 제목</span>
       </div>
       <div>
@@ -215,6 +218,31 @@
       });
     };
 
+    // ✅ 삭제 모달 열기
+    window.openDeleteModal = function (id, date) {
+      fetch(`/todos/${id}/confirm-delete?date=${date}`)
+      .then(res => res.text())
+      .then(html => {
+        const container = document.getElementById('modalContainer');
+        container.innerHTML = html;
+        container.style.display = 'block';
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+          fetch(`/todos/${id}?date=${date}`, {
+            method: "DELETE"
+          }).then(res => {
+            if (res.ok) {
+              window.location.href = `/todos?date=${date}`;
+            } else {
+              alert("삭제 실패");
+            }
+          });
+        });
+      });
+    };
+
+
+
     // ✅ 모달 닫기
     window.closeModal = function () {
       const container = document.getElementById('modalContainer');
@@ -242,19 +270,11 @@
     });
 
       // 삭제 버튼 클릭 처리
-      document.querySelectorAll('.delete-button').forEach(btn => {
-        btn.addEventListener('click', function () {
-          const id = this.getAttribute('data-id');
-          const date = this.getAttribute('data-date');
-          const confirmed = confirm("정말 삭제하시겠습니까?");
-          if (confirmed) {
-            fetch(`/todos/${id}?date=${date}`, {
-              method: "DELETE"
-            }).then(() => {
-              window.location.href = `/todos?date=${date}`;
-            });
-          }
-        });
+    document.querySelectorAll('.delete-button').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const id = this.getAttribute('data-id');
+        const date = this.getAttribute('data-date');
+        openDeleteModal(id, date);
       });
     });
 
@@ -265,6 +285,21 @@
         const date = this.getAttribute('data-date');
         openEditModal(id, date);
       });
+
+  });
+  });
+
+  // ✅ 완료 체크 토글 처리
+  document.querySelectorAll('.complete-checkbox').forEach(box => {
+    box.addEventListener('change', function () {
+      const id = this.getAttribute('data-id');
+      const date = this.getAttribute('data-date');
+      fetch(`/todos/${id}/complete?date=${date}`, {
+        method: "PATCH"
+      }).then(() => {
+        window.location.href = `/todos?date=${date}`;
+      });
+    });
   });
 </script>
 </body>

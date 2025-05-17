@@ -5,6 +5,7 @@ import com.grepp.codemap.todo.dto.TodoResponse;
 import com.grepp.codemap.todo.repository.TodoRepository;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.repository.UserRepository;
+import java.util.Comparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class TodoService {
     public List<TodoResponse> getTodosByDate(Long userId, LocalDateTime start, LocalDateTime end) {
         List<Todo> todos = todoRepository.findAllByUser_IdAndStartTimeBetween(userId, start, end);
         return todos.stream()
+            .sorted(Comparator.comparing(Todo::getIsCompleted)) // 완료된 투두는 맨 아래로 이동
             .map(TodoResponse::of)
             .collect(Collectors.toList());
     }

@@ -146,6 +146,15 @@ public class TodoController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}/confirm-delete")
+    public String showDeleteModal(@PathVariable Long id,
+        @RequestParam("date") String date,
+        Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("selectedDate", date);
+        return "todo/todo-delete"; // HTML 모달 템플릿 파일
+    }
+
     /** ✅ 8. 완료 상태 토글 (체크박스 클릭) */
     @PatchMapping("/{id}/complete")
     public String toggleComplete(@PathVariable Long id,
