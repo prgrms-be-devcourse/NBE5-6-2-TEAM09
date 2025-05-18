@@ -73,8 +73,8 @@
 
 <main>
     <div class="title">회원정보 수정</div>
-    <form th:action="@{|/admin/users/${user.id}|}" method="post" class="form-box">
-        <input type="hidden" name="_method" value="patch" />
+    <form th:action="@{'/admin/users/' + ${user.id}}" method="post" class="form-box">
+    <input type="hidden" name="_method" value="PATCH" />
 
         <label for="nickname">닉네임 수정</label>
         <input type="text" id="nickname" name="nickname" th:value="${user.nickname}" required />

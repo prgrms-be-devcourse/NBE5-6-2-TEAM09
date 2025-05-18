@@ -7,6 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/header/global.css}" />
     <link rel="stylesheet" th:href="@{/css/header/style.css}" />
     <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/globals.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/styleguide.css}" />
     <style>
         body {
             margin: 0;
@@ -93,13 +96,11 @@
 </head>
 <body>
 <header th:replace="fragments/header/header :: header"></header>
-
-<!-- 사이드 네비게이션 (사용자용) -->
 <aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
 <main>
     <h1 th:text="${isEdit} ? '문항 수정' : '문항 등록'">문항 등록</h1>
 
-    <form th:action="@{${formAction}}" th:object="${form}" method="post">
+    <form th:action="@{'/admin/contents/questions/' + ${form.id} + '/edit'}" th:object="${form}" method="post">
         <input type="hidden" name="_method" value="patch" th:if="${isEdit}" />
         <input type="hidden" th:field="*{id}" />
 
