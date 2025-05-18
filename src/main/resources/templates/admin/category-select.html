@@ -7,6 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/header/global.css}" />
     <link rel="stylesheet" th:href="@{/css/header/style.css}" />
     <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/globals.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/styleguide.css}" />
     <style>
         body {
             margin: 0;
@@ -84,8 +87,6 @@
 </head>
 <body>
 <header th:replace="fragments/header/header :: header"></header>
-
-<!-- 사이드 네비게이션 (사용자용) -->
 <aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
 
 <main>
