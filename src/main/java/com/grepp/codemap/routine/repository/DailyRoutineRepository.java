@@ -3,6 +3,7 @@ package com.grepp.codemap.routine.repository;
 import com.grepp.codemap.routine.domain.DailyRoutine;
 import com.grepp.codemap.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -43,4 +44,8 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
             GROUP BY r.category
         """)
     List<Object[]> countByCategory(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("DELETE FROM DailyRoutine dr WHERE dr.user.id = :userId")
+    void deleteByUserId(@Param("userId") Long userId);
 }
