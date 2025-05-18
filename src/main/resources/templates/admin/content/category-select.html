@@ -86,13 +86,13 @@
     </script>
 </head>
 <body>
-<header th:replace="fragments/header/header :: header"></header>
-<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/admin/admin-sidenav :: sidebar}"></aside>
 
 <main>
     <h1>카테고리</h1>
 
-    <form th:action="@{/admin/question-list}" method="get">
+    <form th:action="@{/admin/contents/question-list}" method="get">
         <div class="category-box">
             <label class="category-option">
                 <input type="checkbox" name="category" value="알고리즘" class="category-input" />

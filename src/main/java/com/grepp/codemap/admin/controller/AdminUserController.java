@@ -24,7 +24,7 @@ public class AdminUserController {
     public String showUserList(Model model) {
         List<User> users = adminService.findAllUsers(); // 모든 회원 조회
         model.addAttribute("users", users);
-        return "admin/manage-users";
+        return "admin/user/manage-users";
     }
 
     @GetMapping("/{id}/edit")
@@ -32,7 +32,7 @@ public class AdminUserController {
         User user = adminService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. id=" + id));
         model.addAttribute("user", user);
-        return "admin/edit-users";
+        return "admin/user/edit-users";
     }
 
     @PatchMapping("/{id}")
