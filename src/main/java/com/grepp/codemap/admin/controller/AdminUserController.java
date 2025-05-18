@@ -40,13 +40,15 @@ public class AdminUserController {
                              @ModelAttribute AdminUserUpdateDto dto,
                              RedirectAttributes redirectAttributes) {
         try {
-            adminService.updateUser(id, dto);
+            // currentPassword 검증 없이 새 비밀번호 바로 반영
+            adminService.updateUserByAdmin(id, dto); // 메서드 이름도 명확히 분리 추천
             redirectAttributes.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/admin/users";
     }
+
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {

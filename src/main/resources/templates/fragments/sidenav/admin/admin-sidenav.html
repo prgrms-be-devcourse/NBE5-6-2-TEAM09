@@ -16,7 +16,7 @@
           <div class="side-navigation-bar">
             <div class="frame">
               <div class="div">
-                <button class="home nav-link-button" onclick="location.href='/admin/manage-users'">회원 관리</button>
+                <button class="home nav-link-button" th:onclick="|location.href='@{/admin/users}'|">회원 관리</button>
                 <img class="img" th:src="@{/img/users.png}" />
                 <img class="chevron-right" th:src="@{/img/chevron.png}" />
               </div>

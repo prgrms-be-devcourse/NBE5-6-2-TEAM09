@@ -7,7 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/header/global.css}" />
     <link rel="stylesheet" th:href="@{/css/header/style.css}" />
     <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
-
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/globals.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/admin/styleguide.css}" />
     <style>
         body {
             margin: 0;
@@ -15,97 +17,73 @@
             background-color: #f4f6fc;
         }
         main {
+            margin-left: 287px;
             padding: 40px 80px;
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 24px;
         }
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .category-title {
+        .title {
             font-size: 24px;
             font-weight: 700;
             color: #0019a5;
+            margin-bottom: 16px;
         }
-        .add-button {
-            padding: 10px 20px;
-            font-size: 14px;
+        .form-box {
+            background: #c9dcff;
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #0019a5;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #0019a5;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .save-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            font-size: 16px;
             border: none;
             border-radius: 999px;
-            background-color: #3b82f6;
+            background-color: #2563eb;
             color: white;
             cursor: pointer;
-        }
-        .question-list {
-            background: #e8f0ff;
-            padding: 32px;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .question-item {
-            background-color: white;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .kebab-menu {
-            position: relative;
-            cursor: pointer;
-            font-size: 20px;
-        }
-        .dropdown {
-            position: absolute;
-            right: 0;
-            top: 28px;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            z-index: 10;
-        }
-        .dropdown a {
-            padding: 8px 16px;
-            text-decoration: none;
-            color: #333;
-            white-space: nowrap;
-        }
-        .dropdown a:hover {
-            background-color: #f0f0f0;
+            align-self: center;
         }
     </style>
 </head>
 <body>
 <header th:replace="fragments/header/header :: header"></header>
-
-<!-- 사이드 네비게이션 (사용자용) -->
 <aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
 
 <main>
-    <h1>회원정보 수정</h1>
-    <form th:action="@{|/admin/users/${user.id}|}" method="post">
+    <div class="title">회원정보 수정</div>
+    <form th:action="@{|/admin/users/${user.id}|}" method="post" class="form-box">
         <input type="hidden" name="_method" value="patch" />
 
-        <label>닉네임 수정</label>
-        <input type="text" name="nickname" th:value="${user.nickname}" required />
+        <label for="nickname">닉네임 수정</label>
+        <input type="text" id="nickname" name="nickname" th:value="${user.nickname}" required />
 
-        <label>이메일 수정</label>
-        <input type="email" name="email" th:value="${user.email}" required />
+        <label for="email">이메일 수정</label>
+        <input type="email" id="email" name="email" th:value="${user.email}" required />
 
-        <label>현재 비밀번호 확인</label>
-        <input type="password" name="currentPassword" required />
-
-        <label>새 비밀번호</label>
-        <input type="password" name="newPassword" required />
+        <label for="newPassword">새 비밀번호</label>
+        <input type="password" id="newPassword" name="newPassword" required />
 
         <button type="submit" class="save-btn">저장</button>
     </form>

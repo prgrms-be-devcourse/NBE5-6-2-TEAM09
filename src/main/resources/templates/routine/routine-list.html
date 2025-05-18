@@ -42,7 +42,7 @@
       align-items: center;
       justify-content: center;
       margin-left: 250px;
-      margin-top: -31vw; /* 캘린더 페이지와 동일하게 음수 마진 적용 */
+      margin-top: -31vw;
       padding: 40px;
     }
 
@@ -293,7 +293,7 @@
       </div>
 
     <!-- 루틴이 없을 때 보여줄 빈 상태 -->
-    <div th:if="${activeRoutines == null or activeRoutines.isEmpty()}" class="empty-state">
+    <div th:if="${activeRoutines.isEmpty() and (passedRoutines == null or passedRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty())}" class="empty-state">
       <p>등록된 데일리 루틴이 없습니다.</p>
       <p>오늘의 루틴을 추가해 보세요!</p>
     </div>
@@ -445,26 +445,40 @@
   }
   function deleteRoutine(routineId) {
     if (confirm('정말 이 루틴을 삭제하시겠습니까?')) {
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = `/routines/${routineId}`;
-
-      const methodInput = document.createElement('input');
-      methodInput.type = 'hidden';
-      methodInput.name = '_method';
-      methodInput.value = 'DELETE';
-
-      form.appendChild(methodInput);
-
+      // CSRF 토큰 가져오기
       const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-      const csrfInput = document.createElement('input');
-      csrfInput.type = 'hidden';
-      csrfInput.name = '_csrf';
-      csrfInput.value = csrfToken;
-      form.appendChild(csrfInput);
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
-      document.body.appendChild(form);
-      form.submit();
+      fetch(`/routines/${routineId}`, {
+        method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // 성공 시 해당 요소만 DOM에서 제거
+          const routineElement = document.querySelector(`.routine-item:has([onclick*="deleteRoutine(${routineId})"])`);
+          if (routineElement) {
+            routineElement.remove();
+            // 성공 메시지 표시
+            showNotification(data.message);
+
+            // 해당 섹션이 비어있게 되면 섹션 숨기기
+            checkEmptySections();
+          } else {
+            // 요소를 찾지 못하면 페이지 새로고침
+            window.location.reload();
+          }
+        } else {
+          alert(data.message || '루틴 삭제에 실패했습니다.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('루틴 삭제 중 오류가 발생했습니다.');
+      });
     }
   }
 
@@ -490,7 +504,6 @@
     document.body.appendChild(form);
     form.submit();
   }
-  // routine-list.html 스크립트 영역에 추가
   function cancelPass(routineId) {
     const form = document.createElement('form');
     form.method = 'POST';
@@ -536,6 +549,54 @@
 
     document.body.appendChild(form);
     form.submit();
+  }
+  function showNotification(message) {
+    // 이미 알림 요소가 있으면 제거
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+      existingNotification.remove();
+    }
+
+    // 알림 요소 생성
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '10px 20px';
+    notification.style.backgroundColor = '#4e6df2';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '5px';
+    notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+    notification.style.zIndex = '9999';
+
+    document.body.appendChild(notification);
+
+    // 3초 후 자동으로 제거
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.5s';
+      setTimeout(() => notification.remove(), 500);
+    }, 3000);
+  }
+
+  // 섹션이 비어있는지 확인하고 처리하는 함수
+  function checkEmptySections() {
+    // 활성 루틴 섹션
+    const activeRoutines = document.querySelectorAll('.routine-item:not(.routine-complete):not(.passed-routine)');
+    if (activeRoutines.length === 0) {
+      // 빈 상태 메시지 표시
+      const emptyState = document.createElement('div');
+      emptyState.className = 'empty-state';
+      emptyState.innerHTML = '<p>등록된 데일리 루틴이 없습니다.</p><p>오늘의 루틴을 추가해 보세요!</p>';
+
+      const routineWrapper = document.querySelector('.routine-wrapper');
+      const header = document.querySelector('.routine-header');
+
+      // 헤더 다음에 빈 상태 메시지 삽입
+      routineWrapper.insertBefore(emptyState, header.nextSibling);
+    }
   }
 </script>
 </body>
