@@ -158,6 +158,7 @@
     }
 
     .timer-progress {
+      display: none;
       width: 100%;
       height: 10px;
       background-color: #f0f4ff;
@@ -176,9 +177,12 @@
       border-radius: 5px;
       transition: width 1s linear;
     }
+    .break-progress-container .timer-progress {
+      display: block;
+    }
 
     .timer-times {
-      display: flex;
+      display: none;
       justify-content: space-between;
       color: #666;
       font-size: 14px;
@@ -318,6 +322,25 @@
       background-color: #4e6df2;
       color: white;
     }
+    .break-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background-color: #43a047;
+      border-radius: 5px;
+      width: 0%;
+      transition: width 1s linear;
+      z-index: 5;
+    }
+    /* 휴식 시간 표시 스타일 */
+    #breakTimeDisplay {
+      margin-top: 10px;
+      color: #43a047;
+      font-weight: bold;
+    }
+
+
   </style>
 </head>
 <body>
@@ -389,20 +412,21 @@
   const routineId = [[${routine.id}]];
   const pomodoroSessionId  = [[${pomodoroSession.id}]];
   const focusTimeMinutes = [[${routine.focusTime}]];
-  const breakTimeMinutes = 5; // 기본 휴식 시간 5분 설정
+  const breakTimeMinutes = 1; // 기본 휴식 시간 설정
   const nextRoutineId = [[${nextRoutine != null ? nextRoutine.id : null}]];
 
   // 타이머 관련 변수
   let timerInterval;
+  let breakInterval;
   let isPaused = false;
   let isBreakTime = false;
   let totalSeconds = focusTimeMinutes * 60;
   let currentSeconds = totalSeconds;
+  let breakSeconds = 0;
   let startTime;
 
   // DOM 요소
   const timerDisplay = document.getElementById('timerDisplay');
-  const progressBar = document.getElementById('progressBar');
   const pauseButton = document.getElementById('pauseButton');
   const pauseIcon = document.getElementById('pauseIcon');
   const completeButton = document.getElementById('completeButton');
@@ -417,14 +441,32 @@
   const modalCancel = document.getElementById('modalCancel');
   const modalConfirm = document.getElementById('modalConfirm');
 
+  const progressBar = document.getElementById('progressBar');
+  let breakTimeDisplay = null;
+  let breakProgressBar = document.createElement('div');
+  breakProgressBar.className = 'break-progress-bar';
+  breakProgressBar.style.position = 'absolute';
+  breakProgressBar.style.top = '0';
+  breakProgressBar.style.left = '0';
+  breakProgressBar.style.height = '100%';
+  breakProgressBar.style.backgroundColor = '#43a047';
+  breakProgressBar.style.borderRadius = '5px';
+  breakProgressBar.style.width = '0%';
+  breakProgressBar.style.transition = 'width 1s linear';
+  document.querySelector('.timer-progress').appendChild(breakProgressBar);
+
+
   // 페이지 로드 시 시작 시간 설정
   document.addEventListener('DOMContentLoaded', function() {
     startTime = new Date();
 
-    // 시작 시간과 예상 종료 시간 표시
-    const endTime = new Date(startTime.getTime() + totalSeconds * 1000);
-    startTimeElement.textContent = formatTimeForDisplay(startTime);
-    endTimeElement.textContent = formatTimeForDisplay(endTime);
+    // 휴식 시간 초기화 (페이지 로드 시 한 번만)
+    breakSeconds = 0;
+
+    // 휴식 시간 표시 요소 추가
+    addBreakTimeDisplay();
+
+
 
     // 타이머 시작
     startTimer();
@@ -433,14 +475,16 @@
     window.addEventListener('beforeunload', function(e) {
       if (!isPaused && !isBreakTime) {
         e.preventDefault();
-        e.returnValue = '타이머가 실행 중입니다. 정말 페이지를 나가시겠습니까?';
       }
     });
 
+    // 휴식 시간 UI 업데이트
+    document.getElementById('breakInfo').textContent = breakTimeMinutes + '분';
     // 포커스 아웃 시 타이머 일시정지
     document.addEventListener('visibilitychange', function() {
       if (document.visibilityState === 'hidden' && !isPaused && !isBreakTime) {
         pauseTimer();
+        startBreakTimer(); // 휴식 시간 시작
       }
     });
 
@@ -457,6 +501,7 @@
         completeRoutine(false);
       };
     });
+
     nextButton.addEventListener('click', function() {
       if (nextRoutineId) {
         modalText.textContent = '이 루틴을 완료하고 다음 루틴으로 이동하시겠습니까?';
@@ -489,9 +534,16 @@
       isPaused = false;
       pauseIcon.className = 'icon-pause';
       startTimer();
+
+      // 휴식 타이머 중지
+      clearInterval(breakInterval);
+      breakInterval = null;
+
     } else {
       // 타이머 일시정지
       pauseTimer();
+      startBreakTimer();
+
     }
   }
 
@@ -501,6 +553,94 @@
     pauseIcon.className = 'icon-play';
     clearInterval(timerInterval);
     timerInterval = null;
+  }
+
+  // 휴식시간 타이머 시작 함수
+  function startBreakTimer() {
+
+    if (breakInterval) {
+      return;
+    }
+
+
+    // 휴식 타이머 시작
+    breakInterval = setInterval(updateBreakTimer, 1000);
+    updateBreakProgressBar();
+
+  }
+
+  // 휴식 시간 표시 요소 생성 함수
+  function createBreakTimeDisplay() {
+    // 이미 생성된 요소가 있는지 확인
+    if (document.getElementById('breakTimeDisplay') || document.querySelector('.break-progress-container')) {
+      return;
+    }
+
+    // 휴식 시간 표시 요소 생성
+    breakTimeDisplay = document.createElement('div');
+    breakTimeDisplay.id = 'breakTimeDisplay';
+    breakTimeDisplay.style.marginTop = '10px';
+    breakTimeDisplay.style.color = '#43a047';
+    breakTimeDisplay.style.fontWeight = 'bold';
+    breakTimeDisplay.textContent = '휴식: 0:00';
+
+    // 프로그레스 바 다음에 추가
+    document.querySelector('.timer-progress').after(breakTimeDisplay);
+  }
+
+  // 휴식시간 업데이트 함수
+  function updateBreakTimer() {
+    breakSeconds++;
+    updateBreakProgressBar();
+
+    // 휴식 시간이 종료되었는지 확인
+    const maxBreakTime = breakTimeMinutes * 60;
+    if (breakSeconds >= maxBreakTime) {
+      // 휴식 시간 종료 처리
+      clearInterval(breakInterval);
+      breakInterval = null;
+
+      // 휴식 시간 초기화
+      breakSeconds = 0;
+      breakProgressBar.style.width = '0%';
+
+      // 일시 정지 상태 해제
+      isPaused = false;
+      pauseIcon.className = 'icon-pause';
+
+      // 타이머 재개
+      startTimer();
+
+      // 알림 표시
+      alert('휴식 시간이 종료되었습니다. 다시 루틴을 진행해 주세요.');
+
+      // 집중 시간 표시로 변경
+      phaseText.textContent = '집중 시간';
+      phaseText.className = 'phase-focus';
+    }
+  }
+
+  // 휴식시간 바 업데이트 함수
+  function updateBreakProgressBar() {
+
+    const breakTimeDisplayElement = document.getElementById('breakTimeDisplay');
+    if (!breakTimeDisplayElement) {
+      console.log("Break time display element not found!");
+      return;
+    }
+
+    // 최대 휴식 시간 설정
+    const maxBreakTime = breakTimeMinutes * 60;
+    const breakProgress = Math.min((breakSeconds / maxBreakTime) * 100, 100);
+
+    breakProgressBar.style.width = `${breakProgress}%`;
+    breakProgressBar.style.display = 'block';
+
+    const breakMinutes = Math.floor(breakSeconds / 60);
+    const breakRemainingSeconds = breakSeconds % 60;
+
+    document.getElementById('breakTimeDisplay').textContent =
+        `휴식: ${breakMinutes}:${breakRemainingSeconds.toString().padStart(2, '0')}`;
   }
 
   // 타이머 업데이트 함수
@@ -516,21 +656,22 @@
         phaseText.textContent = '집중 시간';
         phaseText.className = 'phase-focus';
 
+        // 휴식시간 바 초기화
+        breakProgressBar.style.width = '0%';
+
         // 알림
-        alert('휴식 시간이 종료되었습니다. 다시 집중 시간을 시작합니다.');
+        alert('휴식 시간이 종료되었습니다. 다시 루틴을 진행해 주세요.');
+
+        // 타이머 재시작
+        startTimer();
       } else {
-        // 포모도로 종료 후 휴식 시간 시작
-        isBreakTime = true;
-        currentSeconds = breakTimeMinutes * 60;
-        phaseText.textContent = '휴식 시간';
-        phaseText.className = 'phase-break';
+        // 포모도로 종료 후 루틴 완료 처리 및 메인 페이지로 이동
+        alert('루틴이 완료되었습니다.');
 
-        // 알림
-        alert('집중 시간이 종료되었습니다. 휴식 시간을 시작합니다.');
+        // 루틴 완료 처리 함수 호출 (false = 다음 루틴으로 이동하지 않음)
+        completeRoutine(false);
+
       }
-
-      // 타이머 재시작
-      startTimer();
     } else {
       currentSeconds--;
       updateTimerDisplay();
@@ -543,10 +684,6 @@
     const seconds = currentSeconds % 60;
     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-    // 진행 바 업데이트
-    const totalTime = isBreakTime ? breakTimeMinutes * 60 : totalSeconds;
-    const progress = 100 - (currentSeconds / totalTime * 100);
-    progressBar.style.width = `${progress}%`;
   }
 
   // 시간 포맷팅 함수
@@ -557,6 +694,21 @@
   // 루틴 완료 함수
   function completeRoutine(goToNext) {
     confirmModal.style.display = 'none';
+
+    // 휴식 시간 초기화
+    breakSeconds = 0;
+
+    if (breakInterval) {
+      clearInterval(breakInterval);
+      breakInterval = null;
+    }
+
+    // 휴식 시간 프로그레스 바 초기화
+    if (breakProgressBar) {
+      breakProgressBar.style.width = '0%';
+    }
+
+    breakProgressBar.style.width = '0%';
 
     // 폼 생성
     const form = document.createElement('form');
@@ -591,8 +743,51 @@
     methodInput.value = 'PATCH';
     form.appendChild(methodInput);
 
+    if (goToNext && nextRoutineId) {
+      const nextInput = document.createElement('input');
+      nextInput.type = 'hidden';
+      nextInput.name = 'nextRoutineId';
+      nextInput.value = nextRoutineId;
+      form.appendChild(nextInput);
+    }
+
     document.body.appendChild(form);
     form.submit();
+  }
+  function addBreakTimeDisplay() {
+    // 기존 휴식 시간 텍스트 요소
+    const breakTimeDisplay = document.createElement('div');
+    breakTimeDisplay.id = 'breakTimeDisplay';
+    breakTimeDisplay.style.marginTop = '10px';
+    breakTimeDisplay.style.color = '#43a047';
+    breakTimeDisplay.style.fontWeight = 'bold';
+    breakTimeDisplay.textContent = '휴식: 0:00';
+
+    // 새로운 휴식 시간 프로그레스 바 컨테이너
+    const breakProgressContainer = document.createElement('div');
+    breakProgressContainer.className = 'break-progress-container';
+    breakProgressContainer.style.marginTop = '20px';
+
+    // 휴식 시간 프로그레스 바
+    const breakProgressBarContainer = document.createElement('div');
+    breakProgressBarContainer.className = 'timer-progress';
+
+    // 휴식 시간 프로그레스 바 (실제 진행 상태 표시)
+    const breakProgressBarElement = document.createElement('div');
+    breakProgressBarElement.className = 'break-progress-bar';
+    breakProgressBarElement.style.width = '0%';
+    breakProgressBarContainer.appendChild(breakProgressBarElement);
+
+
+    // 요소들을 컨테이너에 추가
+    breakProgressContainer.appendChild(breakTimeDisplay);
+    breakProgressContainer.appendChild(breakProgressBarContainer);
+
+    // 기존 타이머 프로그레스 바 다음에 추가
+    document.querySelector('.timer-progress').after(breakProgressContainer);
+
+    // breakProgressBar 참조 업데이트
+    breakProgressBar = breakProgressBarElement;
   }
 </script>
 </body>

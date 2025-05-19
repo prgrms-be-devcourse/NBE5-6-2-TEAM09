@@ -211,10 +211,13 @@ public class DailyRoutineController {
             // 포모도로 세션 시작
             PomodoroSessionDto pomodoroSession  = dailyRoutineService.startPomodoroSession(id, userId);
 
+            // 다음 루틴 정보 조회
+            DailyRoutineDto nextRoutine = dailyRoutineService.getNextRoutine(id, userId);
+
             model.addAttribute("routine", routine);
             model.addAttribute("pomodoroSession", pomodoroSession );
             model.addAttribute("focusTime", routine.getFocusTime());
-            model.addAttribute("breakTime", 10); // 기본 쉬는 시간 10분
+            model.addAttribute("nextRoutine", nextRoutine);
 
             return "routine/timer";
         } catch (Exception e) {
@@ -237,6 +240,7 @@ public class DailyRoutineController {
     @PatchMapping("/timer/complete")
     public String completeTimer(@RequestParam Long sessionId,
                                 @RequestParam Long routineId,
+                                @RequestParam(required = false) Long nextRoutineId,
                                 @SessionAttribute("userId") Long userId,
                                 RedirectAttributes redirectAttributes) {
 
@@ -248,6 +252,11 @@ public class DailyRoutineController {
             DailyRoutineDto completedRoutine = dailyRoutineService.completeRoutine(routineId, userId);
 
             redirectAttributes.addFlashAttribute("successMessage", "루틴이 성공적으로 완료되었습니다!");
+
+            // 다음 루틴이 있는 경우 해당 루틴의 타이머 페이지로 이동
+            if (nextRoutineId != null) {
+                return "redirect:/routines/" + nextRoutineId + "/timer";
+            }
         } catch (Exception e) {
             log.error("타이머 완료 처리 중 오류 발생", e);
             redirectAttributes.addFlashAttribute("errorMessage", "타이머 완료 처리에 실패했습니다: " + e.getMessage());
