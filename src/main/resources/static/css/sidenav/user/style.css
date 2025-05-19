@@ -1,3 +1,5 @@
+/* ✅ 전체 사이드바 아이템 수평 정렬 적용 */
+
 .box {
   width: 287px;
   height: 682px;
@@ -5,7 +7,7 @@
 
 .box .group {
   position: fixed;
-  top: 180px; /* 💡 헤더 높이만큼 내려서 겹침 방지 */
+  top: 180px;
   left: 0;
   width: 287px;
   height: calc(100% - 180px);
@@ -40,58 +42,93 @@
   position: relative;
   top: 546px;
   left: 16px;
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-color: #eef0f4;
+  border-top: 1px solid #eef0f4;
 }
 
-.box .div {
-  position: relative;
+.box .div,
+.box .side-navigation-item,
+.box .side-navigation-item-2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: 234px;
   height: 52px;
+  padding: 0 16px;
   border-radius: 8px;
-  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.box .home {
-  top: 15px;
+.box .div:hover,
+.box .side-navigation-item:hover,
+.box .side-navigation-item-2:hover {
+  background-color: #f3f4f6;
+}
+
+/* ✅ hover 상태와 같은 효과를 active 상태에서도 고정 적용 */
+.nav-link-button.active {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  padding: 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.box .home,
+.box .home-2,
+.box .home-3 {
+  all: unset;
   font-family: "Inter-Regular", Helvetica;
-  font-weight: 400;
-  position: absolute;
-  height: 22px;
-  left: 64px;
-  color: #545f70;
   font-size: 16px;
-  letter-spacing: -0.32px;
+  color: #545f70;
   line-height: 22px;
   white-space: nowrap;
+  cursor: pointer;
+  flex-grow: 1;
+  text-align: left;
+  padding: 0;
+  margin: 0;
 }
 
-.box .img {
-  position: absolute;
+/* ✅ 텍스트 강조 통일 */
+.nav-link-button.active span,
+.side-navigation-item-2.active-nav .home-3,
+.side-navigation-item.active-nav .home-2 {
+  font-weight: 600;
+  color: #545f70;
+}
+
+/* ✅ 전체 박스에도 hover 스타일 고정 */
+.side-navigation-item.active-nav,
+.side-navigation-item-2.active-nav,
+.div.active-nav {
+  background-color: #f3f4f6;
+  border-radius: 8px;
+}
+
+.box .img,
+.box .img-2 {
   width: 24px;
   height: 24px;
-  top: 14px;
-  left: 16px;
 }
 
-.box .chevron-right {
-  position: absolute;
+.box .chevron-right,
+.box .icon-2 {
   width: 20px;
   height: 20px;
-  top: 16px;
-  left: 206px;
+  margin-left: auto;
 }
 
 .box .icon {
-  position: absolute;
   width: 20px;
   height: 18px;
+  position: absolute;
   top: 583px;
   left: 40px;
 }
 
-/* div-wrapper - 회색 배경 컨테이너 */
 .box .div-wrapper {
   display: flex;
   width: auto;
@@ -108,7 +145,6 @@
   overflow: hidden;
 }
 
-/* text-wrapper - 닉네임 텍스트 */
 .box .text-wrapper {
   width: auto;
   max-width: 180px;
@@ -122,7 +158,6 @@
   padding: 0 8px;
   margin: 0;
 }
-
 
 .box .group-2 {
   position: absolute;
@@ -145,56 +180,28 @@
   width: 234px;
   height: 70px;
   top: 112px;
+}
+
+.box .overlap-group,
+.box .overlap-2,
+.box .overlap-3 {
+  position: absolute;
+  width: 234px;
+  height: 70px;
   left: 9px;
+  border-radius: 8px;
 }
 
 .box .overlap-group {
-  position: absolute;
-  width: 234px;
-  height: 70px;
   top: 0;
-  left: 0;
-  border-radius: 8px;
 }
 
-.box .side-navigation-item {
-  width: 234px;
-  height: 70px;
-  border-radius: 8px;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
+.box .overlap-2 {
+  top: 252px;
 }
 
-.box .home-2 {
-  top: 24px;
-  font-family: "Inter-Regular", Helvetica;
-  font-weight: 400;
-  position: absolute;
-  height: 22px;
-  left: 64px;
-  color: #545f70;
-  font-size: 16px;
-  letter-spacing: -0.32px;
-  line-height: 22px;
-  white-space: nowrap;
-}
-
-.box .img-2 {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  top: 21px;
-  left: 16px;
-}
-
-.box .icon-2 {
-  position: absolute;
-  width: 8px;
-  height: 14px;
-  top: 28px;
-  left: 206px;
+.box .overlap-3 {
+  top: 182px;
 }
 
 .box .icon-3 {
@@ -205,53 +212,6 @@
   left: 4300px;
 }
 
-.box .overlap-2 {
-  position: absolute;
-  width: 234px;
-  height: 70px;
-  top: 252px;
-  left: 9px;
-  border-radius: 8px;
-}
-
-.box .overlap-3 {
-  position: absolute;
-  width: 234px;
-  height: 70px;
-  top: 182px;
-  left: 9px;
-  border-radius: 8px;
-}
-
-.box .side-navigation-item-2 {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 16px;
-  height: 70px; /* ✅ 기존 유지 */
-  position: absolute;
-  width: 234px;
-  top: 0;
-  left: 0;
-  border-radius: 8px;
-
-}
-
-.box .home-3 {
-  top: 24px;
-  font-family: "Inter-Regular", Helvetica;
-  font-weight: 400;
-  position: absolute;
-  height: 22px;
-  left: 64px;
-  color: #545f70;
-  font-size: 16px;
-  letter-spacing: -0.32px;
-  line-height: 22px;
-  white-space: nowrap;
-
-}
-
 .box .icon-4 {
   position: absolute;
   width: 20px;
@@ -260,21 +220,13 @@
   left: 40px;
 }
 
-.nav-link-button.active {
-  background-color: #eef0f4;
-  font-weight: 600;
-}
-
+/* ✅ 투두 전용 활성화 스타일 */
 .side-navigation-item-2.active-nav {
-  background-color: #eef0f4;
+  background-color: #f3f4f6;
   border-radius: 8px;
   display: flex;
   align-items: center;
-  padding-top: 10px;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding: 0;
-
+  padding: 0 16px;
 }
 
 .side-navigation-item-2.active-nav .home-3 {
@@ -282,6 +234,6 @@
   color: #545f70;
   flex-grow: 1;
   text-align: left;
-  padding-left: 15px; /* ✅ 다른 메뉴들과 텍스트 들여쓰기 통일 */
-  margin-top: 1px;    /* ✅ 텍스트 위치 미세 조정 */
+  padding-left: 15px;
+  margin-top: 1px;
 }
