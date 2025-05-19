@@ -299,4 +299,17 @@ public class DailyRoutineService {
             .map(DailyRoutineDto::fromEntity)
             .collect(Collectors.toList());
     }
+
+    public DailyRoutineDto getNextRoutine(Long currentRoutineId, Long userId) {
+        User user = userService.getUserById(userId);
+        DailyRoutine currentRoutine = dailyRoutineRepository.findById(currentRoutineId)
+            .orElseThrow(() -> new IllegalArgumentException("Routine not found"));
+
+        List<DailyRoutine> activeRoutines = dailyRoutineRepository.findByUserAndStatusAndNotDeleted(user, "ACTIVE");
+        return activeRoutines.stream()
+            .filter(routine -> routine.getCreatedAt().isAfter(currentRoutine.getCreatedAt()))
+            .min((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()))
+            .map(DailyRoutineDto::fromEntity)
+            .orElse(null);
+    }
 }

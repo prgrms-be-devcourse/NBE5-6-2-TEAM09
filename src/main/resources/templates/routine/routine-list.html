@@ -246,6 +246,7 @@
       <button onclick="openModal()">추가</button>
     </div>
 
+    <div class="active-routibes-section">
     <!-- 활성 루틴 목록 -->
     <div th:if="${activeRoutines != null and !activeRoutines.isEmpty()}">
       <div th:each="routine : ${activeRoutines}" class="routine-item">
@@ -265,7 +266,7 @@
           </div>
        </div>
     </div>
-
+    </div>
       <!-- 쉬어가기 루틴 목록 -->
       <div th:if="${passedRoutines != null and !passedRoutines.isEmpty()}" class="passed-routines">
         <h3>쉬어가는 루틴</h3>
@@ -295,6 +296,7 @@
       <p>등록된 데일리 루틴이 없습니다.</p>
       <p>오늘의 루틴을 추가해 보세요!</p>
     </div>
+
 
     <!-- 완료된 루틴 목록 -->
     <div th:if="${completedRoutines != null and !completedRoutines.isEmpty()}" class="completed-routines">
