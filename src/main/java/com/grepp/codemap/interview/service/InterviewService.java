@@ -4,6 +4,8 @@ import com.grepp.codemap.interview.domain.InterviewQuestion;
 import com.grepp.codemap.interview.repository.InterviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +27,12 @@ public class InterviewService {
     }
 
     // ✅ 사용자용: 카테고리 기반 랜덤 질문 3개 추출
-    public List<InterviewQuestion> pickFiveByCategory(String category) {
-        List<InterviewQuestion> list = interviewRepository.findByCategory(category);
-        Collections.shuffle(list);
-        return list.stream().limit(5).collect(Collectors.toList());
+    public List<InterviewQuestion> pickFiveRandomByCategories(List<String> categories) {
+        Pageable limitFive = PageRequest.of(0, 5);
+        return interviewRepository.findRandomFiveByCategoryIn(categories, limitFive);
     }
+
+
 
     // ✅ 사용자/관리자 공통: ID로 질문 찾기
     public InterviewQuestion findById(Long questionId) {

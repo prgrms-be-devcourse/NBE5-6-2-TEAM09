@@ -98,7 +98,7 @@
 </head>
 <body>
 <!--알림 -->
-<th:block th:replace="~{fragments/common/alert-script :: alert-script}"></th:block>
+<!--<th:block th:replace="~{fragments/common/alert-script :: alert-script}"></th:block>-->
 <header th:replace="~{fragments/header/header :: header}"></header>
 <aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
 
@@ -107,27 +107,27 @@
         <h2>카테고리 선택</h2>
         <form th:action="@{/interview/select}" method="post">
             <label class="category-option">
-                <input type="checkbox" name="category" value="알고리즘">
+                <input type="checkbox" name="categoryList" value="알고리즘">
                 <span>알고리즘</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="자료구조">
+                <input type="checkbox" name="categoryList" value="자료구조">
                 <span>자료구조</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="데이터베이스">
+                <input type="checkbox" name="categoryList" value="데이터베이스">
                 <span>데이터베이스</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="운영체제">
+                <input type="checkbox" name="categoryList" value="운영체제">
                 <span>운영체제</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="네트워크">
+                <input type="checkbox" name="categoryList" value="네트워크">
                 <span>네트워크</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="컴퓨터구조">
+                <input type="checkbox" name="categoryList" value="컴퓨터구조">
                 <span>컴퓨터구조</span>
             </label>
             <button type="submit" class="submit-button">확인</button>

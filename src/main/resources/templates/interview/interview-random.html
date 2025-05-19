@@ -49,8 +49,9 @@
 
 <main>
     <div class="question-container">
+        <!-- ✅ 카테고리 + 난이도 표시 -->
         <div class="category-title">
-            [[${category}]] 질문 ([[${page + 1}]] / [[${totalPages}]])
+            [[${question.category}]] | 난이도: [[${question.difficulty}]] ([[${page + 1}]] / [[${totalPages}]])
         </div>
 
         <div class="question-item">
@@ -64,11 +65,10 @@
         </form>
 
         <div class="navigation" style="margin-top: 16px;">
-            <a th:if="${page > 0}" th:href="@{/interview/question(category=${category}, page=${page - 1})}">⬅ 이전</a>
-            <a th:if="${page + 1 < totalPages}" th:href="@{/interview/question(category=${category}, page=${page + 1})}" style="margin-left: 16px;">다음 ➡</a>
+            <a th:if="${page > 0}" th:href="@{/interview/question(page=${page - 1})}">⬅ 이전</a>
+            <a th:if="${page + 1 < totalPages}" th:href="@{/interview/question(page=${page + 1})}" style="margin-left: 16px;">다음 ➡</a>
         </div>
     </div>
-
 </main>
 </body>
 </html>

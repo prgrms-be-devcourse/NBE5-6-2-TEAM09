@@ -42,44 +42,39 @@ public class  InterviewController {
 
     @PostMapping("/select") // 카테 선택 후 질문 3개 랜덤 추출
     public String showRandomQuestion(
-            @RequestParam("category") String category,
+            @RequestParam("categoryList") List<String> categoryList,
             Model model,
             HttpSession session) {
 
-        List<InterviewQuestion> questions = interviewService.pickFiveByCategory(category);
+        List<InterviewQuestion> questions = interviewService.pickFiveRandomByCategories(categoryList);
 
         if (questions == null || questions.isEmpty()) {
-            log.warn("questions가 null 또는 비어 있음");
-            return "redirect:/interview/select"; // 또는 에러 페이지
+            return "redirect:/interview/select";
         }
 
         session.setAttribute("questions", questions);
-        session.setAttribute("category", category);
+        session.setAttribute("selectedCategories", categoryList); // ✅ 추후 보여주기용
 
+        model.addAttribute("question", questions.get(0));
+        model.addAttribute("page", 0);
+        model.addAttribute("totalPages", questions.size());
 
-        model.addAttribute("questions", questions);
-        model.addAttribute("category", category);
-        model.addAttribute("page", 0); // ✅ 추가
-        model.addAttribute("totalPages", questions.size()); // ✅ 추가
-
-        model.addAttribute("question", questions.get(0)); // ✅ 질문 1개 보여주기
         return "interview/interview-random";
     }
 
     @GetMapping("/question")
     public String showQuestionPage(
-            @RequestParam("category") String category,
+            @RequestParam("category") List<String> categories,
             @RequestParam("page") int page,
             HttpSession session,
             Model model) {
 
         List<InterviewQuestion> questions = (List<InterviewQuestion>) session.getAttribute("questions");
-        log.info("선택된 category = {}", category);
-        log.info("뽑힌 질문 개수 = {}", questions.size());
 
         if (questions == null || questions.isEmpty()) {
-            questions = interviewService.pickFiveByCategory(category);
+            questions = interviewService.pickFiveRandomByCategories(categories); // ✅ 서비스 메서드 사용
             session.setAttribute("questions", questions);
+            session.setAttribute("selectedCategories", categories);
         }
 
         if (page < 0 || page >= questions.size()) {
@@ -92,7 +87,7 @@ public class  InterviewController {
         model.addAttribute("question", currentQuestion);
         model.addAttribute("page", page);
         model.addAttribute("totalPages", questions.size());
-        model.addAttribute("category", category);
+        model.addAttribute("category", currentQuestion.getCategory());
 
         return "interview/interview-random";
     }
@@ -158,10 +153,10 @@ public class  InterviewController {
     @GetMapping("/next")
     public String goToNextQuestion(HttpSession session, @RequestParam("page") int currentPage, Model model) {
         List<InterviewQuestion> questions = (List<InterviewQuestion>) session.getAttribute("questions");
-        String category = (String) session.getAttribute("category");
+        List<String> categories = (List<String>) session.getAttribute("selectedCategories");
 
         if (questions == null || questions.isEmpty() || currentPage + 1 >= questions.size()) {
-            return "redirect:/interview/select"; // 모든 질문 완료 시 선택 페이지로 이동
+            return "redirect:/interview/select"; // ✅ 모든 질문 완료 시
         }
 
         int nextPage = currentPage + 1;
@@ -170,10 +165,15 @@ public class  InterviewController {
         model.addAttribute("question", nextQuestion);
         model.addAttribute("page", nextPage);
         model.addAttribute("totalPages", questions.size());
-        model.addAttribute("category", category);
+        model.addAttribute("category", nextQuestion.getCategory()); // ✅ 질문마다 다름
+
+        log.info("✅ [NEXT] 현재 페이지: {}", currentPage);
+        log.info("✅ [NEXT] 총 질문 수: {}", questions.size());
+        log.info("✅ [NEXT] 다음 질문: {}", nextQuestion.getQuestionText());
 
         return "interview/interview-random";
     }
+
 
 
 

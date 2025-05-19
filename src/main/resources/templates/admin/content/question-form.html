@@ -100,7 +100,7 @@
 <main>
     <h1 th:text="${isEdit} ? '문항 수정' : '문항 등록'">문항 등록</h1>
 
-    <form th:action="@{'/admin/contents/questions/' + ${form.id} + '/edit'}" th:object="${form}" method="post">
+    <form th:action="@{${formAction}}" th:object="${form}" method="post">
         <input type="hidden" name="_method" value="patch" th:if="${isEdit}" />
         <input type="hidden" th:field="*{id}" />
 
