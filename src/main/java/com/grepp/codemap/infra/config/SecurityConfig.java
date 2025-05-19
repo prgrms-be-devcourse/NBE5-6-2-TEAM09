@@ -77,7 +77,7 @@ public class SecurityConfig {
             )
             //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
             .logout(LogoutConfigurer::permitAll)
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**", "/admin/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**", "/admin/**", "todos/**"))
             .sessionManagement(session -> session
                 .sessionFixation().none()
             );

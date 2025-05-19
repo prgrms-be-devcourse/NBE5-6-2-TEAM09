@@ -5,6 +5,7 @@ import com.grepp.codemap.todo.dto.TodoResponse;
 import com.grepp.codemap.todo.repository.TodoRepository;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.repository.UserRepository;
+import java.util.Comparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class TodoService {
     public List<TodoResponse> getTodosByDate(Long userId, LocalDateTime start, LocalDateTime end) {
         List<Todo> todos = todoRepository.findAllByUser_IdAndStartTimeBetween(userId, start, end);
         return todos.stream()
+            .sorted(Comparator.comparing(Todo::getIsCompleted)) // 완료된 투두는 맨 아래로 이동
             .map(TodoResponse::of)
             .collect(Collectors.toList());
     }
@@ -83,15 +85,19 @@ public class TodoService {
         Long userId,
         String title,
         String description,
+        LocalDateTime startTime,
         LocalDateTime completedAt) {
         Todo todo = findByIdAndUser(id, userId);
         todo.setTitle(title);
         todo.setDescription(description);
+        todo.setStartTime(startTime);
         todo.setCompletedAt(completedAt);
         return todoRepository.save(todo);
     }
 
     public void deleteTodo(Long id, Long userId) {
+        System.out.println("🟢 서비스에서도 삭제 호출됨: " + id);
+
         Todo todo = findByIdAndUser(id, userId);
         todoRepository.delete(todo);
     }
@@ -102,4 +108,10 @@ public class TodoService {
         todo.setIsCompleted(!current);
         return todoRepository.save(todo);
     }
+
+    public List<Todo> getTodosToNotify(Long userId, LocalDateTime now, LocalDateTime tenMinutesLater) {
+        return todoRepository.findAllByUser_IdAndStartTimeBetweenAndIsCompletedFalse(
+            userId, now, tenMinutesLater);
+    }
+
 }

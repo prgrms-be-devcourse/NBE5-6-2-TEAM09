@@ -40,6 +40,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     Todo findByIdAndUser_Id(Long id, Long userId);
 
+    List<Todo> findAllByUser_IdAndStartTimeBetweenAndIsCompletedFalse(Long userId, LocalDateTime now, LocalDateTime threshold);
+
     @Modifying
     @Query("DELETE FROM Todo t WHERE t.user.id = :userId")
     void deleteByUserId(@Param("userId") Long userId);
