@@ -8,7 +8,10 @@ import com.grepp.codemap.todo.service.TodoService;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
 import jakarta.validation.Valid;
+import java.time.YearMonth;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +39,8 @@ public class TodoController {
         User user = userService.getUserById(userId);
 
         model.addAttribute("user", user);
+
+
 
 
         return "todo/calender";
