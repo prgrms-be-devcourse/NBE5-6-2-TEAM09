@@ -64,7 +64,7 @@ public class AdminQuestionController {
         form.setCategory(category);
         model.addAttribute("form", form);
         model.addAttribute("isEdit", false);
-        model.addAttribute("formAction", "/admin/questions");
+        model.addAttribute("formAction", "/admin/contents/questions");
         return "admin/content/question-form";
     }
 
@@ -94,7 +94,7 @@ public class AdminQuestionController {
         InterviewQuestionFormDto formDto = InterviewQuestionFormDto.from(question);
         model.addAttribute("form", formDto);
         model.addAttribute("isEdit", true);
-        model.addAttribute("formAction", "/admin/questions/" + id + "/edit");
+        model.addAttribute("formAction", "/admin/contents/questions/" + id + "/edit");
         return "admin/content/question-form";
     }
 
