@@ -10,8 +10,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,10 +36,6 @@ public class DailyRoutineController {
             return "redirect:/user/signin";
         }
 
-        User user = userService.getUserById(userId);
-
-        model.addAttribute("user", user);
-
         // 활성 루틴 목록
         List<DailyRoutineDto> activeRoutines = dailyRoutineService.getActiveRoutinesByUser(userId);
         // 완료된 루틴 목록
@@ -49,6 +43,7 @@ public class DailyRoutineController {
         // 쉬어가기 루틴 목록
         List<DailyRoutineDto> passedRoutines = dailyRoutineService.getPassedRoutinesByUser(userId);
 
+        User user = userService.getUserById(userId);
         model.addAttribute("user", user);
         model.addAttribute("activeRoutines", activeRoutines);
         model.addAttribute("completedRoutines", completedRoutines);

@@ -469,12 +469,7 @@
     // 타이머 시작
     startTimer();
 
-    // 페이지를 벗어날 때 경고
-    window.addEventListener('beforeunload', function(e) {
-      if (!isPaused && !isBreakTime) {
-        e.preventDefault();
-      }
-    });
+    window.addEventListener('beforeunload', beforeUnloadHandler);
 
     // 휴식 시간 UI 업데이트
     document.getElementById('breakInfo').textContent = breakTimeMinutes + '분';
@@ -689,6 +684,13 @@
     return date.toTimeString().split(' ')[0];
   }
 
+  function beforeUnloadHandler(e) {
+    if (!isPaused && !isBreakTime) {
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    }
+  }
   // 루틴 완료 함수
   function completeRoutine(goToNext) {
     confirmModal.style.display = 'none';
@@ -707,6 +709,10 @@
     }
 
     breakProgressBar.style.width = '0%';
+
+
+
+    window.removeEventListener('beforeunload', beforeUnloadHandler);
 
     // 폼 생성
     const form = document.createElement('form');

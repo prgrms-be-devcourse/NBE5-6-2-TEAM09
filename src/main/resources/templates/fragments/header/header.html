@@ -12,7 +12,9 @@
     <div class="div-wrapper">
       <div class="div">
         <div class="group">
-          <img class="vector" th:src="@{/img/codemap_white.png}" />
+          <a th:href="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/routines}">
+          <img class="vector" th:src="@{/img/codemap_white.png}" style="cursor: pointer;" />
+          </a>
         </div>
         <div class="auto-layout">
           <div class="style-filled">
