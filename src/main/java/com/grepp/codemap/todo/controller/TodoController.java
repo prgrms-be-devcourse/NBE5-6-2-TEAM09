@@ -5,6 +5,8 @@ import com.grepp.codemap.todo.dto.TodoUpdateRequest;
 import com.grepp.codemap.todo.dto.TodoResponse;
 import com.grepp.codemap.todo.domain.Todo;
 import com.grepp.codemap.todo.service.TodoService;
+import com.grepp.codemap.user.domain.User;
+import com.grepp.codemap.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +26,18 @@ import java.util.List;
 public class TodoController {
 
     private final TodoService todoService;
+    private final UserService userService;
 
     /** ✅ 1. 캘린더 진입 화면 */
     @GetMapping("/calender")
-    public String showCalendarPage() {
+    public String showCalendarPage(Model model,
+        @SessionAttribute(name = "userId", required = false) Long userId) {
+
+        User user = userService.getUserById(userId);
+
+        model.addAttribute("user", user);
+
+
         return "todo/calender";
     }
 
@@ -35,9 +45,14 @@ public class TodoController {
     @GetMapping
     public String getTodoList(@RequestParam("date") String date,
         HttpSession session,
-        Model model) {
+        Model model,
+        @SessionAttribute(name = "userId", required = false) Long userId) {
 
-        Long userId = (Long) session.getAttribute("userId");
+        User user = userService.getUserById(userId);
+
+        model.addAttribute("user", user);
+
+        userId = (Long) session.getAttribute("userId");
 
         if (userId == null) {
             model.addAttribute("todos", List.of());  // 빈 리스트
