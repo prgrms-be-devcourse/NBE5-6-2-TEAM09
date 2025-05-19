@@ -31,8 +31,11 @@ public class  InterviewController {
 
 
     @GetMapping("/select")
-    public String showCategory(Model model){
+    public String showCategory(Model model,
+        @SessionAttribute(name = "userId", required = false) Long userId){
         List<String> categories = interviewService.getAllCategories();
+        User user = userService.getUserById(userId);
+        model.addAttribute("user", user);
         model.addAttribute("categories", categories);
         return "interview/interview-select";
     }
