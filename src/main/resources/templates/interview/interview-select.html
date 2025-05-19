@@ -12,19 +12,22 @@
     <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
     <style>
         main {
-            margin-left: 260px; /* 사이드 네비게이션 너비 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 250px;
+            margin-top: -31vw;
             padding: 40px;
-            background-color: #f5f7fa;
-            min-height: 100vh;
         }
 
         .category-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #e9f0ff;
+            background-color: #d8e3ff;
             padding: 40px;
-            border-radius: 20px;
-            text-align: center;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
         }
 
         .category-container h2 {
@@ -75,26 +78,29 @@
             background-color: #dce9ff;
         }
 
-        .submit-btn {
-            margin-top: 30px;
-            padding: 12px 40px;
-            font-size: 16px;
-            background-color: #3f86ff;
+        .submit-button {
+            background-color: #4e6df2; /* 루틴 페이지의 추가 버튼과 동일한 파란색 */
             color: white;
             border: none;
-            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
             cursor: pointer;
+            display: block; /* 블록 요소로 변경 */
+            margin: 30px auto 0; /* 상단 여백 30px, 좌우 자동(중앙 정렬), 하단 여백 0 */
+            width: fit-content; /* 내용에 맞게 너비 조정 */
         }
 
-        .submit-btn:hover {
-            background-color: #336ed3;
+        .submit-button:hover {
+            background-color: #3b6fe0; /* 호버 효과 */
         }
     </style>
 </head>
 <body>
 <!--알림 -->
-<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
-<header th:replace="~{fragments/header/index :: header}"></header>
+<th:block th:replace="~{fragments/common/alert-script :: alert-script}"></th:block>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
 
 <main>
     <div class="category-container">

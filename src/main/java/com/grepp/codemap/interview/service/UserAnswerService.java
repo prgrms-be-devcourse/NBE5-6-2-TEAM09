@@ -16,7 +16,7 @@ public class UserAnswerService {
     private final UserAnswerRepository userAnswerRepository;
 
     // 사용자 답변 저장
-    public void saveUserAnswer(User user, InterviewQuestion question, String answerText) {
+    public UserAnswer saveUserAnswer(User user, InterviewQuestion question, String answerText) {
         UserAnswer userAnswer = UserAnswer.builder()
                 .user(user)
                 .question(question)
@@ -24,12 +24,13 @@ public class UserAnswerService {
                 .answeredAt(LocalDateTime.now())
                 .build();
 
-        userAnswerRepository.save(userAnswer);
+        return userAnswerRepository.save(userAnswer);
     }
 
     // 사용자 답변 조회 (결과 보기용)
-    public UserAnswer findByUserAndQuestion(User user, InterviewQuestion question) {
-        return userAnswerRepository.findByUserAndQuestion(user, question)
+    public UserAnswer findLatestAnswer(User user, InterviewQuestion question) {
+        return userAnswerRepository.findTopByUserAndQuestionOrderByIdDesc(user, question)
                 .orElseThrow(() -> new RuntimeException("답변이 존재하지 않습니다."));
     }
+
 }

@@ -31,18 +31,38 @@ public class  InterviewController {
 
 
     @GetMapping("/select")
-    public String showCategory(Model model){
+    public String showCategory(Model model,
+        @SessionAttribute(name = "userId", required = false) Long userId){
         List<String> categories = interviewService.getAllCategories();
+        User user = userService.getUserById(userId);
+        model.addAttribute("user", user);
         model.addAttribute("categories", categories);
         return "interview/interview-select";
     }
 
     @PostMapping("/select") // 카테 선택 후 질문 3개 랜덤 추출
-    public String showRandomQuestion(@RequestParam("category") String category, Model model) {
-        List<InterviewQuestion> questions = interviewService.pickThreeByCategory(category);
+    public String showRandomQuestion(
+            @RequestParam("category") String category,
+            Model model,
+            HttpSession session) {
+
+        List<InterviewQuestion> questions = interviewService.pickFiveByCategory(category);
+
+        if (questions == null || questions.isEmpty()) {
+            log.warn("questions가 null 또는 비어 있음");
+            return "redirect:/interview/select"; // 또는 에러 페이지
+        }
+
+        session.setAttribute("questions", questions);
+        session.setAttribute("category", category);
+
+
         model.addAttribute("questions", questions);
         model.addAttribute("category", category);
-        model.addAttribute("currentPage", 0); // 0번째 질문부터
+        model.addAttribute("page", 0); // ✅ 추가
+        model.addAttribute("totalPages", questions.size()); // ✅ 추가
+
+        model.addAttribute("question", questions.get(0)); // ✅ 질문 1개 보여주기
         return "interview/interview-random";
     }
 
@@ -54,41 +74,18 @@ public class  InterviewController {
             Model model) {
 
         List<InterviewQuestion> questions = (List<InterviewQuestion>) session.getAttribute("questions");
+        log.info("선택된 category = {}", category);
+        log.info("뽑힌 질문 개수 = {}", questions.size());
 
         if (questions == null || questions.isEmpty()) {
-            // 🔽 테스트용 데이터는 주석 처리
-        /*
-                                                                                                     questions = List.of(
-                InterviewQuestion.builder()
-                        .questionText("네트워크에서 TCP와 UDP의 차이점은?")
-                        .category("네트워크")
-                        .difficulty("중")
-                        .answerText("TCP는 연결지향, UDP는 비연결지향이다.")
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
-                        .build(),
-                InterviewQuestion.builder()
-                        .questionText("OSI 7계층을 설명하세요.")
-                        .category("네트워크")
-                        .difficulty("상")
-                        .answerText("7계층 각각의 역할과 예시를 들어 설명합니다.")
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
-                        .build(),
-                InterviewQuestion.builder()
-                        .questionText("HTTP와 HTTPS의 차이점은?")
-                        .category("네트워크")
-                        .difficulty("하")
-                        .answerText("HTTPS는 SSL/TLS 암호화를 적용한 HTTP입니다.")
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
-                        .build()
-        );
-        */
-
-            // 🔽 실제 질문을 서비스에서 불러옴
-            questions = interviewService.pickThreeByCategory(category);
+            questions = interviewService.pickFiveByCategory(category);
             session.setAttribute("questions", questions);
+        }
+
+        if (page < 0 || page >= questions.size()) {
+            // 범위 초과 방어
+            model.addAttribute("error", "올바르지 않은 페이지 번호입니다.");
+            return "redirect:/interview/select";
         }
 
         InterviewQuestion currentQuestion = questions.get(page);
@@ -101,41 +98,81 @@ public class  InterviewController {
     }
 
 
+
     @PostMapping("/{questionId}/answer")
     public String submitAnswer(
             @PathVariable("questionId") Long questionId,
             @RequestParam("answer") String answer,
+            @RequestParam("page") int page,
             Authentication authentication,
-            Model model){
-
-
+            HttpSession session,
+            Model model) {
 
         String email = authentication.getName();
         User user = userService.findByEmail(email);
         InterviewQuestion question = interviewService.findById(questionId);
 
-        userAnswerService.saveUserAnswer(user, question, answer);
+        UserAnswer userAnswer = userAnswerService.saveUserAnswer(user, question, answer);
 
-        model.addAttribute("question", question); // 질문 다시 보여주고 "답안 보기" 버튼 포함해서 렌더링
-        model.addAttribute("answerSubmitted", true);
-        return "interview/interview-random";
+        List<InterviewQuestion> questions = (List<InterviewQuestion>) session.getAttribute("questions");
+
+        model.addAttribute("question", question);
+        model.addAttribute("userAnswer", userAnswer);
+        model.addAttribute("category", question.getCategory());
+        model.addAttribute("page", page);
+        model.addAttribute("totalPages", questions.size());
+
+        return "interview/interview-answer";
     }
+
 
 
     @GetMapping("/{questionId}/result")
     public String showResult(
-            @RequestParam("questionId") Long questionId,
+            @PathVariable("questionId") Long questionId,
+            @RequestParam("page") int page,
             Authentication authentication,
+            HttpSession session,
             Model model){
 
         String email = authentication.getName();
         User user = userService.findByEmail(email);
         InterviewQuestion question = interviewService.findById(questionId);
-        UserAnswer userAnswer = userAnswerService.findByUserAndQuestion(user, question);
+        UserAnswer userAnswer = userAnswerService.findLatestAnswer(user, question);
+
+        log.info("🔍 [showResult] userAnswer 객체 = {}", userAnswer);
+        log.info("🔍 [showResult] userAnswer.answerText = {}", userAnswer.getAnswerText());
+
 
         model.addAttribute("question", question);
         model.addAttribute("userAnswer", userAnswer);
+        model.addAttribute("category", question.getCategory());
+        model.addAttribute("page", page);
+
+        int totalPages = ((List<InterviewQuestion>) session.getAttribute("questions")).size();
+        model.addAttribute("totalPages", totalPages);
+
         return "interview/interview-result";
+    }
+
+    @GetMapping("/next")
+    public String goToNextQuestion(HttpSession session, @RequestParam("page") int currentPage, Model model) {
+        List<InterviewQuestion> questions = (List<InterviewQuestion>) session.getAttribute("questions");
+        String category = (String) session.getAttribute("category");
+
+        if (questions == null || questions.isEmpty() || currentPage + 1 >= questions.size()) {
+            return "redirect:/interview/select"; // 모든 질문 완료 시 선택 페이지로 이동
+        }
+
+        int nextPage = currentPage + 1;
+        InterviewQuestion nextQuestion = questions.get(nextPage);
+
+        model.addAttribute("question", nextQuestion);
+        model.addAttribute("page", nextPage);
+        model.addAttribute("totalPages", questions.size());
+        model.addAttribute("category", category);
+
+        return "interview/interview-random";
     }
 
 

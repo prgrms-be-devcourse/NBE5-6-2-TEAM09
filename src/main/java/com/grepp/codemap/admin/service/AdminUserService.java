@@ -27,7 +27,7 @@ public class AdminUserService {
     private final PomodoroSessionRepository pomodoroSessionRepository;
 
     public List<User> findAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAllByRole("ROLE_USER");
     }
 
     public Optional<User> findById(Long id) {
