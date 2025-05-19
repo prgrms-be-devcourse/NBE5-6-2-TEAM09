@@ -74,7 +74,7 @@ public class UserController {
 
 
             if (user.getRole().equals(Role.ROLE_ADMIN.name())) {
-                return "redirect:/admin/manage-questions";
+                return "redirect:/admin/users";
             }
 
             // ✅ 이후 인증 상태 유지됨 → 다른 요청에서도 인증됨

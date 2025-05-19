@@ -10,29 +10,24 @@
 <body>
 <div th:fragment="sidebar">
   <div class="box">
-    <div class="group">
-      <div class="view">
-        <div class="overlap">
-          <div class="side-navigation-bar">
-            <div class="frame">
-              <div class="div">
-                <button class="home nav-link-button" th:onclick="|location.href='@{/admin/users}'|">회원 관리</button>
-                <img class="img" th:src="@{/img/users.png}" />
-                <img class="chevron-right" th:src="@{/img/chevron.png}" />
-              </div>
-              <div class="div">
-                <button class="home nav-link-button" onclick="location.href='/admin/question-list'">컨텐츠 관리</button>
-                <img class="img" th:src="@{/img/pencil-alt.png}" />
-                <img class="chevron-right" th:src="@{/img/chevron.png}" />
-              </div>
-            </div>
+    <img class="user-circle" th:src="@{/img/user-circle.png}" />
+    <div class="text-wrapper">ADMIN</div>
+    <div class="side-navigation-bar">
+      <div class="frame">
+        <div class="nav-item" onclick="location.href='/admin/users'">
+          <div class="nav-icon-text">
+            <img class="img" th:src="@{/img/users.png}" />
+            <button class="nav-link-button">회원 관리</button>
           </div>
-          <div class="div-wrapper">
-            <div class="text-wrapper">ADMIN</div>
+          <img class="chevron-right" th:src="@{/img/chevron.png}" />
+        </div>
+
+        <div class="nav-item" onclick="location.href='/admin/contents'">
+          <div class="nav-icon-text">
+            <img class="img" th:src="@{/img/pencil-alt.png}" />
+            <button class="nav-link-button">컨텐츠 관리</button>
           </div>
-          <div class="group-2">
-            <img class="user-circle" th:src="@{/img/user-circle.png}" />
-          </div>
+          <img class="chevron-right" th:src="@{/img/chevron.png}" />
         </div>
       </div>
     </div>

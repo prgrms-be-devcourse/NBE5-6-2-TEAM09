@@ -2,6 +2,9 @@ package com.grepp.codemap.admin.service;
 
 
 import com.grepp.codemap.admin.dto.AdminUserUpdateDto;
+import com.grepp.codemap.routine.repository.DailyRoutineRepository;
+import com.grepp.codemap.routine.repository.PomodoroSessionRepository;
+import com.grepp.codemap.todo.repository.TodoRepository;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,9 @@ public class AdminUserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DailyRoutineRepository dailyRoutineRepository;
+    private final TodoRepository todoRepository;
+    private final PomodoroSessionRepository pomodoroSessionRepository;
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
@@ -44,6 +50,12 @@ public class AdminUserService {
 
 
     public void deleteUser(Long id) {
+        // 1. 연관 데이터 먼저 삭제
+        pomodoroSessionRepository.deleteByUserId(id);
+        dailyRoutineRepository.deleteByUserId(id);
+        todoRepository.deleteByUserId(id);
+
+        // 2. 유저 삭제
         userRepository.deleteById(id);
     }
 }

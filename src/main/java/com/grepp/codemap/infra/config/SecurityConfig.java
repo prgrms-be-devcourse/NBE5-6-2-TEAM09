@@ -19,8 +19,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -72,6 +71,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
                     .requestMatchers(POST, "/chatbot/**", "/chatbot/message/**").permitAll()
+                        .requestMatchers(PATCH, "/admin/**").permitAll()
+                        .requestMatchers(DELETE, "/admin/**").permitAll()
                     .anyRequest().authenticated()
             )
             //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
