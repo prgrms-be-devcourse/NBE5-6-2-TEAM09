@@ -58,12 +58,21 @@ public class UserController {
             // ✅ 세션 저장
             session.setAttribute("userId", user.getId());
 
+            // 역할에 따른 SimpleGrantedAuthority 생성 - 조건부 접두사 추가
+            SimpleGrantedAuthority authority;
+
+            if (user.getRole().startsWith("ROLE_")) {
+                authority = new SimpleGrantedAuthority(user.getRole());
+            } else {
+                authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+            }
+
             // ✅ SecurityContext 수동 인증 설정
             UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
                     user.getEmail(),
                     null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())) // 예: ROLE_USER
+                    List.of(authority) // 예: ROLE_USER
                 );
             // ✅ 핵심: SecurityContext를 세션에 직접 저장해야 유지됨
             SecurityContextImpl securityContext = new SecurityContextImpl(authentication);
@@ -72,12 +81,11 @@ public class UserController {
                 securityContext
             );
 
-
-            if (user.getRole().equals(Role.ROLE_ADMIN.name())) {
+            // 사용자 역할 체크 및 리다이렉트
+            if (user.getRole().equals("ROLE_ADMIN") ||
+                user.getRole().equals(Role.ROLE_ADMIN.name())) {
                 return "redirect:/admin/users";
             }
-
-            // ✅ 이후 인증 상태 유지됨 → 다른 요청에서도 인증됨
             return "redirect:/routines";
         } catch (CommonException e) {
             model.addAttribute("loginError", "이메일 또는 비밀번호가 일치하지 않습니다.");

@@ -12,8 +12,8 @@
     <div class="div-wrapper">
       <div class="div">
         <div class="group">
-          <a th:href="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/routines}">
-          <img class="vector" th:src="@{/img/codemap_white.png}" style="cursor: pointer;" />
+          <a th:href="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/routines}">
+            <img class="vector" th:src="@{/img/codemap_white.png}" style="cursor: pointer;" />
           </a>
         </div>
         <div class="auto-layout">

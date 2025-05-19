@@ -71,13 +71,17 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
                     .requestMatchers(POST, "/chatbot/**", "/chatbot/message/**").permitAll()
-                        .requestMatchers(PATCH, "/admin/**").permitAll()
-                        .requestMatchers(DELETE, "/admin/**").permitAll()
+
+                    // /admin/** 경로는 ROLE_ADMIN 역할을 가진 사용자만 접근 가능
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                    // /routines/** 경로는 ROLE_USER 역할을 가진 사용자만 접근 가능
+                    .requestMatchers("/routines/**").hasRole("USER")
                     .anyRequest().authenticated()
             )
             //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
             .logout(LogoutConfigurer::permitAll)
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**", "/admin/**", "todos/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**", "/admin/**", "/todos/**"))
             .sessionManagement(session -> session
                 .sessionFixation().none()
             );
