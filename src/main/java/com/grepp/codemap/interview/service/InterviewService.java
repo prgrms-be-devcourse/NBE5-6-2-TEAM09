@@ -25,10 +25,10 @@ public class InterviewService {
     }
 
     // ✅ 사용자용: 카테고리 기반 랜덤 질문 3개 추출
-    public List<InterviewQuestion> pickThreeByCategory(String category) {
+    public List<InterviewQuestion> pickFiveByCategory(String category) {
         List<InterviewQuestion> list = interviewRepository.findByCategory(category);
         Collections.shuffle(list);
-        return list.stream().limit(3).collect(Collectors.toList());
+        return list.stream().limit(5).collect(Collectors.toList());
     }
 
     // ✅ 사용자/관리자 공통: ID로 질문 찾기

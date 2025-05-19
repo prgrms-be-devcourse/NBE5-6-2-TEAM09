@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserAnswerRepository extends JpaRepository<UserAnswer, Long> {
-    Optional<UserAnswer> findByUserAndQuestion(User user, InterviewQuestion question);
+    Optional<UserAnswer> findTopByUserAndQuestionOrderByIdDesc(User user, InterviewQuestion question);
+
 
 }

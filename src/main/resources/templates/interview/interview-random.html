@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>면접 질문</title>
-<!--    <link rel="stylesheet" th:href="@{/css/header/global.css}">-->
-<!--    <link rel="stylesheet" th:href="@{/css/header/style.css}">-->
-<!--    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}">-->
-<!--    <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}">-->
-<!--    <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}">-->
-<!--    <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}">-->
+    <link rel="stylesheet" th:href="@{/css/header/global.css}">
+    <link rel="stylesheet" th:href="@{/css/header/style.css}">
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}">
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}">
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}">
     <style>
         main {
             margin-left: 260px;
@@ -44,29 +44,31 @@
     </style>
 </head>
 <body>
-<!--알림 -->
-<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
 
 <main>
-    <div class="question-view">
-        <h2 th:text="'[' + ${category} + '] 면접 질문 ' + (${page} + 1) + ' / ' + ${totalPages}"></h2>
+    <div class="question-container">
+        <div class="category-title">
+            [[${category}]] 질문 ([[${page + 1}]] / [[${totalPages}]])
+        </div>
 
-        <div class="question-box">
-            <p th:text="${question.questionText}">질문 내용</p>
+        <div class="question-item">
+            [[${question.questionText}]]
         </div>
 
         <form th:action="@{'/interview/' + ${question.id} + '/answer'}" method="post">
-            <textarea name="answer" rows="5" placeholder="답변을 입력하세요"></textarea>
+            <textarea name="answer" rows="5" placeholder="답변을 입력하세요" style="width: 100%; margin-bottom: 12px;"></textarea>
+            <input type="hidden" name="page" th:value="${page}" />
             <button type="submit">제출</button>
         </form>
 
-        <div class="navigation">
-            <a th:if="${page > 0}"
-               th:href="@{/interview/question(category=${category}, page=${page - 1})}">⬅ 이전</a>
-            <a th:if="${page + 1 < totalPages}"
-               th:href="@{/interview/question(category=${category}, page=${page + 1})}">다음 ➡</a>
+        <div class="navigation" style="margin-top: 16px;">
+            <a th:if="${page > 0}" th:href="@{/interview/question(category=${category}, page=${page - 1})}">⬅ 이전</a>
+            <a th:if="${page + 1 < totalPages}" th:href="@{/interview/question(category=${category}, page=${page + 1})}" style="margin-left: 16px;">다음 ➡</a>
         </div>
     </div>
+
 </main>
 </body>
 </html>
