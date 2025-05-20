@@ -1,38 +1,31 @@
--- 1. 사용자 데이터 생성 (3명)
-INSERT INTO users (email, password, nickname, role, is_active, notification_enabled, alert_stretch_enabled, created_at, updated_at)
-VALUES
-    ('frontend@example.com', '{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', '프론트엔드취준생', 'ROLE_USER', true, true, true, NOW(), NOW()),
-    ('backend@example.com', '{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', '백엔드취준생', 'ROLE_USER', true, true, false, NOW(), NOW()),
-    ('fullstack@example.com', '{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', '풀스택개발자', 'ROLE_USER', true, false, true, NOW(), NOW());
 
 -- 2. 데일리 루틴 데이터 생성
 -- 사용자 1: 프론트엔드 취준생 (2개 완료, 1개 진행중, 1개 쉬어가기)
-INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, started_at, completed_at, is_deleted, created_at, updated_at)
+INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, break_time, started_at, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (1, '알고리즘', 'JavaScript 알고리즘 문제 풀기', '프로그래머스 Level 2 문제 3개 풀기', 'COMPLETED', 60, NOW() - INTERVAL 2 HOUR, NOW() - INTERVAL 1 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (1, 'HTML/CSS', '반응형 웹 디자인 학습', 'Media Query 활용 실습', 'COMPLETED', 45, NOW() - INTERVAL 5 HOUR, NOW() - INTERVAL 4 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
-    (1, 'React', 'React Hooks 연습', 'useState, useEffect 활용한 미니 프로젝트', 'ACTIVE', 90, NULL, NULL, false, NOW(), NOW()),
-    (1, 'JavaScript', 'ES6+ 문법 학습', 'Arrow Function, Destructuring 학습', 'PASS', 60, NULL, NULL, false, NOW() - INTERVAL 3 DAY, NOW());
+    (1, '알고리즘', 'JavaScript 알고리즘 문제 풀기', '프로그래머스 Level 2 문제 3개 풀기', 'COMPLETED', 60, 10, NOW() - INTERVAL 2 HOUR, NOW() - INTERVAL 1 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
+    (1, 'HTML/CSS', '반응형 웹 디자인 학습', 'Media Query 활용 실습', 'COMPLETED', 45, 5, NOW() - INTERVAL 5 HOUR, NOW() - INTERVAL 4 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
+    (1, 'React', 'React Hooks 연습', 'useState, useEffect 활용한 미니 프로젝트', 'ACTIVE', 90, 15, NULL, NULL, false, NOW(), NOW()),
+    (1, 'JavaScript', 'ES6+ 문법 학습', 'Arrow Function, Destructuring 학습', 'PASS', 60, 10, NULL, NULL, false, NOW() - INTERVAL 3 DAY, NOW());
 
 -- 사용자 2: 백엔드 취준생 (3개 완료, 2개 진행중)
-INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, started_at, completed_at, is_deleted, created_at, updated_at)
+INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, break_time, started_at, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (2, 'Java', 'Java 스트림 API 학습', '람다와 스트림 실습', 'COMPLETED', 70, NOW() - INTERVAL 3 HOUR, NOW() - INTERVAL 2 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (2, 'Spring', 'Spring Security 구현', '인증/인가 기능 구현 연습', 'COMPLETED', 120, NOW() - INTERVAL 6 HOUR, NOW() - INTERVAL 4 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
-    (2, 'DB', 'MySQL 인덱스 최적화', '쿼리 성능 개선 실습', 'COMPLETED', 60, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 23 HOUR, false, NOW() - INTERVAL 3 DAY, NOW()),
-    (2, 'JPA', 'JPA 연관관계 매핑 학습', 'OneToMany, ManyToMany 실습', 'ACTIVE', 90, NOW() - INTERVAL 30 MINUTE, NULL, false, NOW(), NOW()),
-    (2, '알고리즘', '그래프 알고리즘 구현', 'DFS/BFS 구현 연습', 'ACTIVE', 120, NULL, NULL, false, NOW(), NOW());
+    (2, 'Java', 'Java 스트림 API 학습', '람다와 스트림 실습', 'COMPLETED', 70, 10, NOW() - INTERVAL 3 HOUR, NOW() - INTERVAL 2 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
+    (2, 'Spring', 'Spring Security 구현', '인증/인가 기능 구현 연습', 'COMPLETED', 120, 20, NOW() - INTERVAL 6 HOUR, NOW() - INTERVAL 4 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
+    (2, 'DB', 'MySQL 인덱스 최적화', '쿼리 성능 개선 실습', 'COMPLETED', 60, 5, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 23 HOUR, false, NOW() - INTERVAL 3 DAY, NOW()),
+    (2, 'JPA', 'JPA 연관관계 매핑 학습', 'OneToMany, ManyToMany 실습', 'ACTIVE', 90, 15, NOW() - INTERVAL 30 MINUTE, NULL, false, NOW(), NOW()),
+    (2, '알고리즘', '그래프 알고리즘 구현', 'DFS/BFS 구현 연습', 'ACTIVE', 120, 20, NULL, NULL, false, NOW(), NOW());
 
 -- 사용자 3: 풀스택 개발자 (4개 완료, 1개 진행중, 1개 쉬어가기)
-INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, started_at, completed_at, is_deleted, created_at, updated_at)
+INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, break_time, started_at, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (3, 'Node.js', 'Express 서버 구현', 'REST API 개발 실습', 'COMPLETED', 90, NOW() - INTERVAL 4 HOUR, NOW() - INTERVAL 2.5 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (3, 'React', '리액트 컴포넌트 설계', '재사용 가능한 컴포넌트 개발', 'COMPLETED', 75, NOW() - INTERVAL 7 HOUR, NOW() - INTERVAL 6 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
-    (3, 'TypeScript', 'TypeScript 타입 정의', '제네릭 활용 실습', 'COMPLETED', 60, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 23 HOUR, false, NOW() - INTERVAL 3 DAY, NOW()),
-    (3, 'Docker', '도커 컨테이너 배포', '멀티 컨테이너 애플리케이션 배포', 'COMPLETED', 120, NOW() - INTERVAL 2.5 DAY, NOW() - INTERVAL 2.3 DAY, false, NOW() - INTERVAL 4 DAY, NOW()),
-    (3, 'CS', '네트워크 기초 학습', 'TCP/IP 프로토콜 공부', 'ACTIVE', 90, NOW() - INTERVAL 1 HOUR, NULL, false, NOW(), NOW()),
-    (3, 'DB', 'NoSQL 학습', 'MongoDB 기본 CRUD 연습', 'PASS', 60, NULL, NULL, false, NOW() - INTERVAL 2 DAY, NOW());
-
+    (3, 'Node.js', 'Express 서버 구현', 'REST API 개발 실습', 'COMPLETED', 90, 15, NOW() - INTERVAL 4 HOUR, NOW() - INTERVAL 2.5 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
+    (3, 'React', '리액트 컴포넌트 설계', '재사용 가능한 컴포넌트 개발', 'COMPLETED', 75, 10, NOW() - INTERVAL 7 HOUR, NOW() - INTERVAL 6 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
+    (3, 'TypeScript', 'TypeScript 타입 정의', '제네릭 활용 실습', 'COMPLETED', 60, 5, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 23 HOUR, false, NOW() - INTERVAL 3 DAY, NOW()),
+    (3, 'Docker', '도커 컨테이너 배포', '멀티 컨테이너 애플리케이션 배포', 'COMPLETED', 120, 20, NOW() - INTERVAL 2.5 DAY, NOW() - INTERVAL 2.3 DAY, false, NOW() - INTERVAL 4 DAY, NOW()),
+    (3, 'CS', '네트워크 기초 학습', 'TCP/IP 프로토콜 공부', 'ACTIVE', 90, 15, NOW() - INTERVAL 1 HOUR, NULL, false, NOW(), NOW()),
+    (3, 'DB', 'NoSQL 학습', 'MongoDB 기본 CRUD 연습', 'PASS', 60, 10, NULL, NULL, false, NOW() - INTERVAL 2 DAY, NOW());
 -- 3. 포모도로 세션 데이터 생성
 -- 사용자 1의 포모도로 세션
 INSERT INTO pomodoro_sessions (routine_id, duration_minutes, started_at, ended_at)

@@ -70,6 +70,7 @@ public class DailyRoutineService {
             .title(routineDto.getTitle())
             .description(routineDto.getDescription())
             .focusTime(routineDto.getFocusTime())
+            .breakTime(routineDto.getBreakTime())
             .status("ACTIVE")
             .isDeleted(false)
             .build();
