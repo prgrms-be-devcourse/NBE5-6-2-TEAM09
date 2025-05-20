@@ -1,12 +1,17 @@
 package com.grepp.codemap.routine.controller;
 
+import com.grepp.codemap.routine.domain.DailyRoutine;
 import com.grepp.codemap.routine.dto.DailyRoutineDto;
 import com.grepp.codemap.routine.dto.PomodoroSessionDto;
+import com.grepp.codemap.routine.repository.DailyRoutineRepositoryCustom;
+import com.grepp.codemap.routine.repository.DailyRoutineRepositoryCustomImpl;
 import com.grepp.codemap.routine.service.DailyRoutineService;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,27 +35,38 @@ public class DailyRoutineController {
     //루틴 목록 조회 페이지
     @GetMapping
     public String getRoutineList(Model model,
-                                 @SessionAttribute(name = "userId", required = false) Long userId) {
+        @SessionAttribute(name = "userId", required = false) Long userId,
+        @RequestParam(name = "date", required = false) String dateStr) {
         if (userId == null) {
             // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
             return "redirect:/user/signin";
         }
 
-        // 활성 루틴 목록
-        List<DailyRoutineDto> activeRoutines = dailyRoutineService.getActiveRoutinesByUser(userId);
-        // 완료된 루틴 목록
-        List<DailyRoutineDto> completedRoutines = dailyRoutineService.getCompletedRoutinesByUser(userId);
-        // 쉬어가기 루틴 목록
-        List<DailyRoutineDto> passedRoutines = dailyRoutineService.getPassedRoutinesByUser(userId);
+        // 날짜가 없으면 오늘 날짜를 기본값으로 사용
+        LocalDate selectedDate = LocalDate.now();
+        if (dateStr != null && !dateStr.isEmpty()) {
+            try {
+                selectedDate = LocalDate.parse(dateStr);
+            } catch (Exception e) {
+                log.error("Invalid date format: " + dateStr, e);
+            }
+        }
+
+        // 서비스를 통해 해당 날짜의 루틴 데이터 가져오기
+        Map<String, List<DailyRoutineDto>> routinesByStatus =
+            dailyRoutineService.getRoutinesByDate(userId, selectedDate);
 
         User user = userService.getUserById(userId);
+
         model.addAttribute("user", user);
-        model.addAttribute("activeRoutines", activeRoutines);
-        model.addAttribute("completedRoutines", completedRoutines);
-        model.addAttribute("passedRoutines", passedRoutines);
-        model.addAttribute("newRoutine", new DailyRoutineDto()); // 모달 폼용
+        model.addAttribute("activeRoutines", routinesByStatus.get("active"));
+        model.addAttribute("completedRoutines", routinesByStatus.get("completed"));
+        model.addAttribute("passedRoutines", routinesByStatus.get("passed"));
+        model.addAttribute("newRoutine", new DailyRoutineDto());
+        model.addAttribute("selectedDate", selectedDate);
 
         return "routine/routine-list";
+
     }
 
 
