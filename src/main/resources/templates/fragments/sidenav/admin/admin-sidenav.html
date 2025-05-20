@@ -1,33 +1,51 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
   <link rel="stylesheet" th:href="@{/css/sidenav/admin/globals.css}" />
   <link rel="stylesheet" th:href="@{/css/sidenav/admin/style.css}" />
   <link rel="stylesheet" th:href="@{/css/sidenav/admin/styleguide.css}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.6/dist/web/static/pretendard.css" />
 </head>
 <body>
 <div th:fragment="sidebar">
   <div class="box">
-    <img class="user-circle" th:src="@{/img/user-circle.png}" />
-    <div class="text-wrapper">ADMIN</div>
-    <div class="side-navigation-bar">
-      <div class="frame">
-        <div class="nav-item" onclick="location.href='/admin/users'">
-          <div class="nav-icon-text">
-            <img class="img" th:src="@{/img/users.png}" />
-            <button class="nav-link-button">회원 관리</button>
-          </div>
-          <img class="chevron-right" th:src="@{/img/chevron.png}" />
-        </div>
+    <div class="group">
+      <div class="view">
+        <div class="overlap">
+          <div class="side-navigation-bar">
 
-        <div class="nav-item" onclick="location.href='/admin/contents'">
-          <div class="nav-icon-text">
-            <img class="img" th:src="@{/img/pencil-alt.png}" />
-            <button class="nav-link-button">컨텐츠 관리</button>
-          </div>
-          <img class="chevron-right" th:src="@{/img/chevron.png}" />
+
+            <!-- 닉네임 -->
+            <div class="div-wrapper">
+              <div class="text-wrapper">ADMIN</div>
+            </div>
+
+            <!-- 상단 네비게이션 메뉴 -->
+            <div class="group-2">
+              <img class="user-circle" th:src="@{/img/user-circle.png}" />
+
+              <div class="group-3">
+                <div class="overlap-group" onclick="location.href='/admin/users'">
+                  <div class="side-navigation-item">
+                    <img class="img-2" th:src="@{/img/users.png}" />
+                    <button class="home-2 nav-link-button">회원 관리</button>
+                    <img class="chevron-right" th:src="@{/img/chevron.png}" />
+                  </div>
+                </div>
+
+                <div class="overlap-2" onclick="location.href='/admin/contents'">
+                  <div class="side-navigation-item"> <!-- ✅ 통일 -->
+                    <img class="img-2" th:src="@{/img/pencil-alt.png}" />
+                    <button class="home-2 nav-link-button">컨텐츠 관리</button>
+                    <img class="chevron-right" th:src="@{/img/chevron.png}" />
+                  </div>
+                </div>
+              </div>
+            </div> <!-- group-2 end -->
+
+          </div> <!-- side-navigation-bar end -->
         </div>
       </div>
     </div>

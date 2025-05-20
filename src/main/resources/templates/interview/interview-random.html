@@ -11,66 +11,181 @@
     <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}">
     <style>
         main {
-            margin-left: 260px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 250px;
+            margin-top: -31vw;
             padding: 40px;
-            background-color: #f5f7fa;
-            min-height: 100vh;
         }
 
-        .question-container {
+        .category-container {
+            background-color: #d8e3ff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
             max-width: 800px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            position: relative; /* 기준점 설정 */
         }
 
-        .category-title {
-            font-size: 24px;
+        .question-header {
+            font-size: 20px;
             font-weight: bold;
-            color: #3f86ff;
-            margin-bottom: 30px;
+            color: #0019a5;
+            margin-bottom: 20px;
         }
 
-        .question-item {
-            font-size: 18px;
-            margin-bottom: 20px;
-            padding: 15px;
+        .question-text {
+            background: #f0f6ff;
             border: 2px solid #3f86ff;
             border-radius: 10px;
-            background-color: #f0f6ff;
+            padding: 20px;
+            font-size: 18px;
+            margin-bottom: 20px;
         }
+
+        textarea {
+            width: 100%;
+            border: 2px solid #3f86ff;
+            border-radius: 10px;
+            padding: 12px;
+            resize: vertical;
+            height: 120px;
+            font-size: 14px;
+            background-color: #eef4ff;
+        }
+
+        .submit-button {
+            background-color: #4e6df2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            width: fit-content;
+        }
+
+        .submit-button:hover {
+            background-color: #3b6fe0;
+        }
+
+        .pagination-dots {
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .pagination-dots span {
+            font-size: 18px;
+            color: #888;
+            margin: 0 4px;
+        }
+
+        .pagination-dots .active {
+            color: #0019a5;
+        }
+
+        /* ✅ 바깥에 위치한 다음 화살표 */
+        /* ✅ 바깥에 위치한 다음 화살표 - 가운데 정렬 기준 컨테이너 외부로 */
+        .next-arrow {
+            position: absolute;
+            top: 50%;
+            left: calc(50% + 430px); /* 400px은 .category-container의 절반 너비 + 여백 */
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #0019a5;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .next-arrow img {
+            width: 32px;
+            height: 32px;
+            background: #f4f6fc;
+            border-radius: 50%;
+            padding: 6px;
+        }
+
+        .prev-arrow {
+            position: absolute;
+            top: 50%;
+            left: calc(50% - 520px); /* 🔥 기존보다 20px 더 왼쪽으로 */
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px; /* 텍스트 ↔ 화살표 간격 유지 */
+            font-size: 14px;
+            color: #0019a5;
+        }
+
+
+        .prev-arrow a {
+            display: flex;
+            align-items: center;
+        }
+
+        .prev-arrow img {
+            width: 32px;
+            height: 32px;
+            background: #f4f6fc;
+            border-radius: 50%;
+            padding: 6px;
+        }
+
     </style>
 </head>
 <body>
 <header th:replace="~{fragments/header/header :: header}"></header>
 <aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
-<!--알림 -->
-<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
 
 <main>
-    <div class="question-container">
-        <!-- ✅ 카테고리 + 난이도 표시 -->
-        <div class="category-title">
-            [[${question.category}]] | 난이도: [[${question.difficulty}]] ([[${page + 1}]] / [[${totalPages}]])
+    <!-- ✅ 질문 박스 -->
+    <div class="category-container">
+        <div class="question-header">
+            [[${question.category}]] - 난이도 [[${question.difficulty}]]
         </div>
 
-        <div class="question-item">
+        <div class="question-text">
             [[${question.questionText}]]
         </div>
 
         <form th:action="@{'/interview/' + ${question.id} + '/answer'}" method="post">
-            <textarea name="answer" rows="5" placeholder="답변을 입력하세요" style="width: 100%; margin-bottom: 12px;"></textarea>
+            <textarea name="answer" rows="5" placeholder="답변을 입력하세요"></textarea>
             <input type="hidden" name="page" th:value="${page}" />
-            <button type="submit">제출</button>
+            <button type="submit" class="submit-button">제출</button>
         </form>
-
-        <div class="navigation" style="margin-top: 16px;">
-            <a th:if="${page > 0}" th:href="@{/interview/question(page=${page - 1})}">⬅ 이전</a>
-            <a th:if="${page + 1 < totalPages}" th:href="@{/interview/question(page=${page + 1})}" style="margin-left: 16px;">다음 ➡</a>
-        </div>
     </div>
+
+    <!-- ✅ 페이지네이션 -->
+    <div class="pagination-dots">
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+              th:classappend="${page} == ${i} ? 'active' : ''">●</span>
+    </div>
+
+    <!-- ✅ 이전 문제 -->
+    <div class="prev-arrow" th:if="${page > 0}">
+        <span>이전 문제</span>
+        <a th:href="@{/interview/question(page=${page - 1}, category=${category})}">
+            <img th:src="@{/img/arrow-left.png}" alt="이전 문제" />
+        </a>
+    </div>
+
+    <!-- ✅ 다음 문제 -->
+    <div class="next-arrow" th:if="${page + 1 < totalPages}">
+        <span>다음 문제</span>
+        <a th:href="@{/interview/question(page=${page + 1}, category=${category})}">
+            <img th:src="@{/img/arrow-right.png}" alt="다음 문제" />
+        </a>
+    </div>
+
 </main>
 </body>
 </html>
