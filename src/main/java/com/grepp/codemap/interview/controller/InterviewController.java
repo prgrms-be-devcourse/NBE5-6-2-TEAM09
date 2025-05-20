@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,12 +45,16 @@ public class  InterviewController {
     public String showRandomQuestion(
             @RequestParam("categoryList") List<String> categoryList,
             Model model,
-            HttpSession session) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
 
         List<InterviewQuestion> questions = interviewService.pickFiveRandomByCategories(categoryList);
 
         if (questions == null || questions.isEmpty()) {
-            return "redirect:/interview/select";
+            model.addAttribute("error", "선택한 카테고리에 해당하는 질문이 없습니다.");
+            model.addAttribute("categories", interviewService.getAllCategories());
+            return "interview/interview-select"; // 리다이렉트 ❌, 그대로 다시 보여줌
         }
 
         session.setAttribute("questions", questions);
