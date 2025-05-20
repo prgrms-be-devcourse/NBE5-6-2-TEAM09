@@ -41,11 +41,21 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     Todo findByIdAndUser_Id(Long id, Long userId);
 
-    List<Todo> findAllByUser_IdAndStartTimeBetweenAndIsCompletedFalse(Long userId, LocalDateTime now, LocalDateTime threshold);
+    List<Todo> findAllByUser_IdAndStartTimeBetweenAndIsCompletedFalse(Long userId,
+        LocalDateTime now, LocalDateTime threshold);
 
     @Modifying
     @Query("DELETE FROM Todo t WHERE t.user.id = :userId")
     void deleteByUserId(@Param("userId") Long userId);
 
-
+    @Query("""
+            SELECT t
+            FROM Todo t
+            WHERE t.user.id = :userId
+              AND DATE(t.startTime) = :today
+              AND t.isCompleted = false
+              AND t.isDeleted = false
+            ORDER BY t.startTime ASC
+        """)
+    List<Todo> findTodayTodos(@Param("today") LocalDate today, @Param("userId") Long userId);
 }
