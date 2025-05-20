@@ -8,7 +8,7 @@
 .box .group {
   position: fixed;
   top: 180px;
-  left: 0;
+  left: 60px;
   width: 287px;
   height: calc(100% - 180px);
   z-index: 999;
@@ -32,6 +32,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  border-radius: 20px;
 }
 
 .box .frame {
@@ -65,25 +66,15 @@
   background-color: #f3f4f6;
 }
 
-/* ✅ hover 상태와 같은 효과를 active 상태에서도 고정 적용 */
-.nav-link-button.active {
-  background-color: #f3f4f6;
-  font-weight: 600;
-  padding: 0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
 .box .home,
 .box .home-2,
 .box .home-3 {
   all: unset;
-  font-family: "Inter-Regular", Helvetica;
-  font-size: 16px;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
   color: #545f70;
-  line-height: 22px;
+  line-height: 24px;
   white-space: nowrap;
   cursor: pointer;
   flex-grow: 1;
@@ -92,21 +83,7 @@
   margin: 0;
 }
 
-/* ✅ 텍스트 강조 통일 */
-.nav-link-button.active span,
-.side-navigation-item-2.active-nav .home-3,
-.side-navigation-item.active-nav .home-2 {
-  font-weight: 600;
-  color: #545f70;
-}
 
-/* ✅ 전체 박스에도 hover 스타일 고정 */
-.side-navigation-item.active-nav,
-.side-navigation-item-2.active-nav,
-.div.active-nav {
-  background-color: #f3f4f6;
-  border-radius: 8px;
-}
 
 .box .img,
 .box .img-2 {
@@ -131,15 +108,15 @@
 
 .box .div-wrapper {
   display: flex;
-  width: auto;
+  width: 70px;
   min-width: 100px;
   height: 32px;
   align-items: center;
   justify-content: center;
   padding: 12px 16px;
   position: absolute;
-  top: 37px;
-  left: 107px;
+  top: 50px;
+  left: 137px;
   background-color: #eef0f4;
   border-radius: 12px;
   overflow: hidden;
@@ -151,13 +128,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 14px;
-  font-weight: 400;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 16px; /* ✅ 기존 14px → 16px */
+  font-weight: 600; /* ✅ 기존 400 → 600 */
   color: #545f70;
   text-align: center;
   padding: 0 8px;
   margin: 0;
 }
+
 
 .box .group-2 {
   position: absolute;
@@ -172,7 +151,7 @@
   width: 84px;
   height: 83px;
   top: 0;
-  left: 0;
+  left: 16px;
 }
 
 .box .group-3 {
@@ -220,20 +199,10 @@
   left: 40px;
 }
 
-/* ✅ 투두 전용 활성화 스타일 */
-.side-navigation-item-2.active-nav {
-  background-color: #f3f4f6;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-}
 
-.side-navigation-item-2.active-nav .home-3 {
-  font-weight: 600;
-  color: #545f70;
-  flex-grow: 1;
-  text-align: left;
-  padding-left: 15px;
-  margin-top: 1px;
-}
+
+
+
+
+
+
