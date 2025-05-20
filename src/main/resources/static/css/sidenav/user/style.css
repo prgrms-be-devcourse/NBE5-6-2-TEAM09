@@ -8,7 +8,7 @@
 .box .group {
   position: fixed;
   top: 180px;
-  left: 0;
+  left: 60px;
   width: 287px;
   height: calc(100% - 180px);
   z-index: 999;
@@ -65,17 +65,6 @@
   background-color: #f3f4f6;
 }
 
-/* ✅ hover 상태와 같은 효과를 active 상태에서도 고정 적용 */
-.nav-link-button.active {
-  background-color: #f3f4f6;
-  font-weight: 600;
-  padding: 0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
 .box .home,
 .box .home-2,
 .box .home-3 {
@@ -92,21 +81,7 @@
   margin: 0;
 }
 
-/* ✅ 텍스트 강조 통일 */
-.nav-link-button.active span,
-.side-navigation-item-2.active-nav .home-3,
-.side-navigation-item.active-nav .home-2 {
-  font-weight: 600;
-  color: #545f70;
-}
 
-/* ✅ 전체 박스에도 hover 스타일 고정 */
-.side-navigation-item.active-nav,
-.side-navigation-item-2.active-nav,
-.div.active-nav {
-  background-color: #f3f4f6;
-  border-radius: 8px;
-}
 
 .box .img,
 .box .img-2 {
@@ -220,20 +195,6 @@
   left: 40px;
 }
 
-/* ✅ 투두 전용 활성화 스타일 */
-.side-navigation-item-2.active-nav {
-  background-color: #f3f4f6;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-}
 
-.side-navigation-item-2.active-nav .home-3 {
-  font-weight: 600;
-  color: #545f70;
-  flex-grow: 1;
-  text-align: left;
-  padding-left: 15px;
-  margin-top: 1px;
-}
+
+
