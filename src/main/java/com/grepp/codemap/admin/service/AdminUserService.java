@@ -41,8 +41,16 @@ public class AdminUserService {
         user.setNickname(dto.getNickname());
         user.setEmail(dto.getEmail());
 
+        // ⚠️ 입력값이 비어있지 않을 때만 업데이트
+        if (dto.getNickname() != null && !dto.getNickname().isBlank()) {
+            user.setNickname(dto.getNickname());
+        }
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            user.setEmail(dto.getEmail());
+        }
         if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+            String encoded = passwordEncoder.encode(dto.getNewPassword());
+            user.setPassword(encoded);
         }
 
         userRepository.save(user); // 변경 감지 방식이라면 생략 가능
