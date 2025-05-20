@@ -268,7 +268,7 @@
 
     <div class="date-filter">
       <form id="dateFilterForm" action="/routines" method="get">
-        <label for="dateFilter">Selected date:</label>
+        <label for="dateFilter">날짜 선택 : </label>
         <input type="date" id="dateFilter" name="date"
                th:value="${#temporals.format(selectedDate, 'yyyy-MM-dd')}"
                onchange="this.form.submit()">
