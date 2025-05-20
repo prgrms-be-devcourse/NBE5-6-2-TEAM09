@@ -11,7 +11,7 @@
   left: 60px;
   width: 287px;
   height: calc(100% - 180px);
-  z-index: 999;
+  z-index: 10; /* ✅ 헤더보다 아래로 */
 }
 
 .box .view {

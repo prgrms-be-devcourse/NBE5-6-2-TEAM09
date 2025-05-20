@@ -125,6 +125,55 @@
     .login-card .buttons button:hover {
       background-color: #2563eb;
     }
+
+
+    .input-group {
+      position: relative;
+      width: 100%;
+    }
+
+    /* 눈 아이콘 오른쪽 배치 및 스타일 */
+    #togglePassword {
+      position: absolute;
+      right: 16px;            /* 오른쪽에 배치 */
+      top: 50%;               /* 세로 중앙 */
+      transform: translateY(-50%); /* 세로 중앙 정렬 */
+      margin-top: 0;          /* 원래 있던 마진 제거 */
+      padding: 0;             /* 패딩 제거 */
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      object-fit: contain;
+      opacity: 0.9;
+      z-index: 10;            /* 아이콘이 상단에 표시되도록 z-index 추가 */
+      stroke-width: 2px;      /* SVG 선 두께 증가 - SVG인 경우 적용 */
+      font-weight: bold;      /* 이미지가 텍스트/아이콘 폰트인 경우 */
+      filter: contrast(1.2);  /* 더 선명하게 */
+    }
+
+    /* 기존 .login-card .input-group img 스타일 재정의 (이게 transform을 override 했을 수 있음) */
+    .login-card .input-group img {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%); /* -70%에서 -50%로 수정 */
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+    }
+
+    /* 비밀번호 필드 패딩 조정 */
+    #passwordField {
+      padding-right: 50px;    /* 오른쪽 아이콘을 위한 여백 */
+      text-align: left;       /* 텍스트는 왼쪽 정렬 유지 */
+    }
+
+    /* 클릭 시 강조 효과 */
+    #togglePassword.active {
+      color: #0019a5;         /* 지정된 색상 적용 */
+      filter: invert(8%) sepia(88%) saturate(6980%) hue-rotate(233deg) brightness(94%) contrast(131%); /* #0019a5 색상으로 필터 적용 */
+      transform: translateY(-50%) scale(1.1);  /* 세로 중앙 유지하면서 살짝 커지게 */
+    }
   </style>
 </head>
 <body>
@@ -142,12 +191,15 @@
   <!-- 오른쪽 -->
   <div class="login-card">
     <h2>로그인</h2>
+    <div th:if="${loginError}" style="color: #dc2626; font-size: 14px; font-weight: 500; margin-bottom: 12px;">
+      <span th:text="${loginError}">이메일 또는 비밀번호가 일치하지 않습니다.</span>
+    </div>
     <form method="post" action="/user/signin">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       <input type="email" name="email" placeholder="이메일" required />
       <div class="input-group">
-        <input type="password" name="password" placeholder="비밀번호" required />
-        <img src="/img/eye.png" alt="비밀번호 보기"/>
+        <input type="password" name="password" placeholder="비밀번호" required id="passwordField" />
+        <img src="/img/eye.png" alt="비밀번호 보기" id="togglePassword" />
       </div>
       <div class="buttons">
         <button type="button" onclick="location.href='/user/signup'">회원가입</button>
@@ -156,5 +208,24 @@
     </form>
   </div>
 </main>
+<script>
+  const toggleIcon = document.getElementById("togglePassword");
+  const passwordField = document.getElementById("passwordField");
+
+  toggleIcon.addEventListener("click", function () {
+    const isHidden = passwordField.type === "password";
+    passwordField.type = isHidden ? "text" : "password";
+
+    // 클래스 토글과 별개로 색상 변경 스타일 적용
+    if (isHidden) {
+      toggleIcon.classList.add("active");
+      toggleIcon.style.filter = "invert(8%) sepia(88%) saturate(6980%) hue-rotate(233deg) brightness(94%) contrast(131%)";
+    } else {
+      toggleIcon.classList.remove("active");
+      toggleIcon.style.filter = "contrast(1.2)";  // 기본 상태는 선명하게 유지
+    }
+  });
+</script>
+
 </body>
 </html>
