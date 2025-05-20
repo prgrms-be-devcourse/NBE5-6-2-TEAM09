@@ -20,6 +20,7 @@ public class DailyRoutineDto {
     private String description;
     private String status;
     private Integer focusTime;
+    private Integer breakTime;
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
     private Boolean isDeleted;
@@ -35,6 +36,7 @@ public class DailyRoutineDto {
             .description(entity.getDescription())
             .status(entity.getStatus())
             .focusTime(entity.getFocusTime())
+            .breakTime(entity.getBreakTime())
             .startedAt(entity.getStartedAt())
             .completedAt(entity.getCompletedAt())
             .isDeleted(entity.getIsDeleted())
