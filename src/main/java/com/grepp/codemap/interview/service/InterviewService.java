@@ -2,6 +2,7 @@ package com.grepp.codemap.interview.service;
 
 import com.grepp.codemap.interview.domain.InterviewQuestion;
 import com.grepp.codemap.interview.repository.InterviewRepository;
+import com.grepp.codemap.interview.repository.UserAnswerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class InterviewService {
 
     private final InterviewRepository interviewRepository;
+    private final UserAnswerRepository userAnswerRepository;
 
     // ✅ 사용자용: 전체 카테고리 목록 조회
     public List<String> getAllCategories() {
@@ -59,7 +61,11 @@ public class InterviewService {
 
     // ✅ 관리자용: 질문 삭제
     public void deleteById(Long id) {
-        interviewRepository.deleteById(id);
+        InterviewQuestion question = findById(id);
+        if (question != null) {
+            userAnswerRepository.deleteByQuestion(question); // 🔥 관련 답변 먼저 삭제
+            interviewRepository.deleteById(id);              // 🔥 그 후 질문 삭제
+        }
     }
 }
 

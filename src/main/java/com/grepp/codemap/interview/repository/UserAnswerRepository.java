@@ -12,4 +12,6 @@ public interface UserAnswerRepository extends JpaRepository<UserAnswer, Long> {
     Optional<UserAnswer> findTopByUserAndQuestionOrderByIdDesc(User user, InterviewQuestion question);
 
 
+    void deleteByQuestion(InterviewQuestion question);
+
 }

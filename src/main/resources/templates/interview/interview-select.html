@@ -105,6 +105,10 @@
 <main>
     <div class="category-container">
         <h2>카테고리 선택</h2>
+
+        <div th:if="${error}" style="color: red; text-align: center; margin-bottom: 20px;">
+            <p th:text="${error}">에러 메시지</p>
+        </div>
         <form th:action="@{/interview/select}" method="post">
             <label class="category-option">
                 <input type="checkbox" name="categoryList" value="알고리즘">
