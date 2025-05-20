@@ -115,6 +115,9 @@ public class UserController {
             return "user/signup";
         }
 
+        log.info("회원가입 요청: email={}, password={}, passwordConfirm={}",
+            form.getEmail(), form.getPassword(), form.getPasswordConfirm());
+
         userService.signup(form.toDto(), Role.ROLE_USER);
         return "redirect:/";
     }

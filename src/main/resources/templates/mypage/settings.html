@@ -1,47 +1,82 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>환경 설정</title>
-  <link rel="stylesheet" th:href="@{/css/settings.css}">
-</head>
-<body>
-<!--알림 -->
-<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
 
-<div class="container">
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+</head>
+
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<main>
   <h1>⚙️ 환경 설정</h1>
 
-  <!-- 닉네임 수정 -->
-  <section>
-    <h2>닉네임 수정</h2>
+  <div class="settings-container">
+
+    <!-- 닉네임 수정 -->
     <form th:action="@{/api/settings/nickname}" method="post" th:object="${nicknameDto}">
-      <input type="text" name="nickname" placeholder="새 닉네임 입력" required />
+      <h2>닉네임 수정</h2>
+      <label for="nickname">수정할 닉네임</label>
+      <input type="text" th:field="*{nickname}" id="nickname" placeholder="새 닉네임 입력" required />
       <button type="submit">변경</button>
     </form>
-  </section>
 
-  <!-- 비밀번호 수정 -->
-  <section>
-    <h2>비밀번호 수정</h2>
-    <form th:action="@{/api/settings/password}" method="post" th:object="${passwordDto}">
-      <input type="password" name="currentPassword" placeholder="현재 비밀번호" required />
-      <input type="password" name="newPassword" placeholder="새 비밀번호" required />
+    <!-- 비밀번호 수정 -->
+    <form th:action="@{/api/settings/password}" method="post">
+      <h2>비밀번호 변경</h2>
+      <label for="currentPassword">현재 비밀번호 확인</label>
+      <input type="password" name="currentPassword" id="currentPassword" placeholder="현재 비밀번호" required />
+
+      <label for="newPassword">비밀번호 변경</label>
+      <input type="password" name="newPassword" id="newPassword" placeholder="변경할 비밀번호" required />
       <button type="submit">변경</button>
     </form>
-  </section>
 
-  <!-- 전체 알림 On/Off -->
-  <section>
-    <h2>전체 알림 설정</h2>
+    <!-- 전체 알림 설정 -->
     <form th:action="@{/api/mypage/settings/notification}" method="post">
+      <h2>전체 알림 설정</h2>
       <label>
-        <input type="checkbox" name="notificationEnabled" th:checked="${user.notificationEnabled}" />
-        알림 받기
+        <input type="hidden" name="notificationEnabled" value="false"/>
+        <input type="checkbox" name="notificationEnabled" value="true" th:checked="${user.notificationEnabled}" />
+        데일리 루틴 & 투두 알림
       </label>
       <button type="submit">저장</button>
     </form>
-  </section>
+
+  </div>
+</main>
+
+<!-- 챗봇 버튼 -->
+<div id="chatbot-button" onclick="toggleChatbot()" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: white;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  line-height: 56px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+  🤖
 </div>
+
+<script>
+  function toggleChatbot() {
+    alert("챗봇 모달 열기");
+  }
+</script>
 </body>
 </html>
