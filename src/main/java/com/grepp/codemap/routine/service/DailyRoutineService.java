@@ -8,6 +8,9 @@ import com.grepp.codemap.routine.repository.DailyRoutineRepository;
 import com.grepp.codemap.routine.repository.PomodoroSessionRepository;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,6 +76,38 @@ public class DailyRoutineService {
 
         DailyRoutine savedRoutine = dailyRoutineRepository.save(routine);
         return DailyRoutineDto.fromEntity(savedRoutine);
+    }
+
+
+    public Map<String, List<DailyRoutineDto>> getRoutinesByDate(Long userId, LocalDate date) {
+        User user = userService.getUserById(userId);
+
+        // 해당 날짜의 모든 루틴 가져오기
+        List<DailyRoutine> dateRoutines = dailyRoutineRepository.findRoutinesByUserAndDate(user, date);
+
+        // 상태별로 분류
+        Map<String, List<DailyRoutineDto>> result = new HashMap<>();
+
+        List<DailyRoutineDto> activeRoutines = dateRoutines.stream()
+            .filter(r -> "ACTIVE".equals(r.getStatus()))
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
+
+        List<DailyRoutineDto> completedRoutines = dateRoutines.stream()
+            .filter(r -> "COMPLETED".equals(r.getStatus()))
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
+
+        List<DailyRoutineDto> passedRoutines = dateRoutines.stream()
+            .filter(r -> "PASS".equals(r.getStatus()))
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
+
+        result.put("active", activeRoutines);
+        result.put("completed", completedRoutines);
+        result.put("passed", passedRoutines);
+
+        return result;
     }
 
     // 루틴 수정
