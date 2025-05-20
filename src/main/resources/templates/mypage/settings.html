@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>환경 설정</title>
+  <link rel="stylesheet" th:href="@{/css/settings.css}">
+</head>
+<body>
+<div class="container">
+  <h1>⚙️ 환경 설정</h1>
+
+  <!-- 닉네임 수정 -->
+  <section>
+    <h2>닉네임 수정</h2>
+    <form th:action="@{/api/settings/nickname}" method="post" th:object="${nicknameDto}">
+      <input type="text" name="nickname" placeholder="새 닉네임 입력" required />
+      <button type="submit">변경</button>
+    </form>
+  </section>
+
+  <!-- 비밀번호 수정 -->
+  <section>
+    <h2>비밀번호 수정</h2>
+    <form th:action="@{/api/settings/password}" method="post" th:object="${passwordDto}">
+      <input type="password" name="currentPassword" placeholder="현재 비밀번호" required />
+      <input type="password" name="newPassword" placeholder="새 비밀번호" required />
+      <button type="submit">변경</button>
+    </form>
+  </section>
+
+  <!-- 전체 알림 On/Off -->
+  <section>
+    <h2>전체 알림 설정</h2>
+    <form th:action="@{/api/mypage/settings/notification}" method="post">
+      <label>
+        <input type="checkbox" name="notificationEnabled" th:checked="${user.notificationEnabled}" />
+        알림 받기
+      </label>
+      <button type="submit">저장</button>
+    </form>
+  </section>
+</div>
+</body>
+</html>

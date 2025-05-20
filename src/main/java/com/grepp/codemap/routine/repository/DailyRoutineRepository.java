@@ -48,4 +48,14 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
     @Modifying
     @Query("DELETE FROM DailyRoutine dr WHERE dr.user.id = :userId")
     void deleteByUserId(@Param("userId") Long userId);
+
+    @Query(value = """
+            SELECT DAYOFWEEK(r.created_at) AS weekday, SUM(r.focus_time)
+            FROM daily_routines r
+            WHERE r.user_id = :userId AND r.status = 'COMPLETED' AND r.is_deleted = false
+            GROUP BY DAYOFWEEK(r.created_at)
+        """, nativeQuery = true)
+    List<Object[]> sumFocusTimeGroupedByWeekday(@Param("userId") Long userId);
+
+
 }

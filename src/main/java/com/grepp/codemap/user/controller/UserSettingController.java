@@ -7,7 +7,8 @@ import com.grepp.codemap.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,17 +20,17 @@ public class UserSettingController {
 
     private final UserService userService;
 
-    @PatchMapping("/nickname")
+    @PostMapping("/nickname")
     public ResponseEntity<String> updateNickname(
         @AuthenticationPrincipal
         User user,
-        @RequestBody
+        @ModelAttribute
         NicknameUpdateDto dto) {
         userService.updateNickname(user.getId(), dto.getNickname());
         return ResponseEntity.ok("닉네임이 변경되었습니다.");
     }
 
-    @PatchMapping("/password")
+    @PostMapping("/password")
     public ResponseEntity<String> updatePassword(
         @AuthenticationPrincipal
         User user,
