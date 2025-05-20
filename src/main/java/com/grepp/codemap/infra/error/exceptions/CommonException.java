@@ -10,6 +10,7 @@ public class CommonException extends RuntimeException {
     private final ResponseCode code;
     
     public CommonException(ResponseCode code) {
+        super(code.message());
         this.code = code;
     }
     
