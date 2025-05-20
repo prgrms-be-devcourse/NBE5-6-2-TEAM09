@@ -11,58 +11,144 @@
     <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
     <style>
         main {
-            margin-left: 260px;
+            position: relative;
+            margin-left: 250px;
+            margin-top: -31vw;
             padding: 40px;
-            background-color: #f5f7fa;
-            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-container {
+            background-color: #d8e3ff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0019a5;
+            margin-bottom: 20px;
         }
 
         .question-box, .answer-box {
-            background-color: #e8f0ff;
+            background-color: #f0f6ff;
             border: 2px solid #3f86ff;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
+            border-radius: 10px;
+            padding: 20px;
             font-size: 18px;
+            margin-bottom: 20px;
         }
 
         .btn-view-result {
-            display: block;
-            margin: 0 auto;
-            background-color: #3f86ff;
+            background-color: #4e6df2;
             color: white;
-            padding: 12px 36px;
-            font-size: 16px;
             border: none;
-            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
             cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            width: fit-content;
             text-align: center;
             text-decoration: none;
         }
 
         .btn-view-result:hover {
-            background-color: #2c6ed5;
+            background-color: #3b6fe0;
+        }
+
+        .pagination-dots {
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .pagination-dots span {
+            font-size: 18px;
+            color: #888;
+            margin: 0 4px;
+        }
+
+        .pagination-dots .active {
+            color: #0019a5;
+        }
+
+        .prev-arrow, .next-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #0019a5;
+        }
+
+        .prev-arrow {
+            left: calc(50% - 520px);
+        }
+
+        .next-arrow {
+            left: calc(50% + 440px);
+        }
+
+        .prev-arrow img,
+        .next-arrow img {
+            width: 32px;
+            height: 32px;
+            background: #f4f6fc;
+            border-radius: 50%;
+            padding: 6px;
         }
     </style>
 </head>
 <body>
 <header th:replace="~{fragments/header/header :: header}"></header>
 <aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
-<!--알림 -->
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
 
 <main>
-    <h2 th:text="${category}">카테고리명</h2>
+    <div class="category-container">
+        <div class="question-header">
+            [[${question.category}]] - 난이도 [[${question.difficulty}]]
+        </div>
 
-    <div class="question-box" th:text="${question.questionText}">질문 텍스트</div>
+        <div class="question-box" th:text="${question.questionText}">질문 텍스트</div>
 
-    <div class="answer-box" th:if="${userAnswer != null}" th:text="${userAnswer.answerText}">제출한 답변</div>
+        <div class="answer-box" th:if="${userAnswer != null}" th:text="${userAnswer.answerText}">제출한 답변</div>
 
-    <div class="answer-box" th:unless="${userAnswer != null}">
-        ⚠ 답변이 저장되지 않았거나 전달되지 않았습니다.
+        <div class="answer-box" th:unless="${userAnswer != null}">
+            ⚠ 답변이 저장되지 않았거나 전달되지 않았습니다.
+        </div>
+
+        <a th:href="@{'/interview/' + ${question.id} + '/result'(page=${page})}" class="btn-view-result">답안 보기</a>
     </div>
 
-    <a th:href="@{'/interview/' + ${question.id} + '/result'(page=${page})}" class="btn-view-result">답안 보기</a>
+    <div class="pagination-dots">
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+              th:classappend="${page} == ${i} ? 'active' : ''">●</span>
+    </div>
+
+    <div class="prev-arrow" th:if="${page > 0}">
+        <span>이전 문제</span>
+        <a th:href="@{/interview/question(page=${page - 1}, category=${category})}">
+            <img th:src="@{/img/arrow-left.png}" alt="이전 문제" />
+        </a>
+    </div>
+
+    <div class="next-arrow" th:if="${page + 1 < totalPages}">
+        <span>다음 문제</span>
+        <a th:href="@{/interview/question(page=${page + 1}, category=${category})}">
+            <img th:src="@{/img/arrow-right.png}" alt="다음 문제" />
+        </a>
+    </div>
 </main>
 </body>
 </html>

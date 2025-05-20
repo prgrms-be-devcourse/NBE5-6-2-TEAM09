@@ -17,29 +17,41 @@
             background-color: #f4f6fc;
         }
         main {
-            padding: 40px 80px;
+            margin-left: 250px;
+            padding: 80px 0 40px;
             display: flex;
             flex-direction: column;
             gap: 24px;
+            align-items: center; /* 중앙 정렬 */
         }
         .header-row {
+            width: 100%;
+            max-width: 800px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* 왼쪽: 카테고리 / 오른쪽: 버튼 */
             align-items: center;
+            margin-bottom: 16px;
         }
+
         .category-title {
             font-size: 24px;
             font-weight: 700;
             color: #0019a5;
         }
         .add-button {
-            padding: 10px 20px;
-            font-size: 14px;
+            padding: 10px 20px;              /* 🔼 패딩 키움 */
+            font-size: 15px;                 /* 🔼 글씨 키움 */
             border: none;
             border-radius: 999px;
             background-color: #3b82f6;
             color: white;
             cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);  /* 👁 시각 강조 */
+            transition: background-color 0.2s ease;
+        }
+        .add-button:hover {
+            background-color: #2563eb;
         }
         .question-list {
             background: #e8f0ff;
@@ -48,7 +60,11 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            width: 100%;
+            max-width: 800px;  /* ✅ 너비 제한 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
+
         .question-item {
             background-color: white;
             border-radius: 12px;
@@ -58,32 +74,85 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid #ddd;
         }
+        /* 케밥 메뉴 (⋮ 버튼) */
         .kebab-menu {
-            position: relative;
+            background-color: #e9f11f;
+            color: #0019a5;
+            font-weight: bold;
+            font-size: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-size: 20px;
+            position: relative;
         }
+
+        /* 드롭다운 박스 */
         .dropdown {
             position: absolute;
             right: 0;
-            top: 28px;
-            background-color: white;
+            top: 36px;
+            background-color: #ffffff;
             border: 1px solid #ccc;
             border-radius: 8px;
             display: none;
             flex-direction: column;
             z-index: 10;
+            min-width: 100px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
         }
-        .dropdown a {
-            padding: 8px 16px;
-            text-decoration: none;
+
+        /* 공통 항목 */
+        .dropdown a.dropdown-item,
+        .dropdown button.dropdown-item {
+            padding: 12px 16px;
+            font-size: 15px;
             color: #333;
-            white-space: nowrap;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Pretendard', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            text-decoration: none;
         }
-        .dropdown a:hover {
-            background-color: #f0f0f0;
+
+        /* 링크 상태 리셋 */
+        .dropdown a.dropdown-item:link,
+        .dropdown a.dropdown-item:visited,
+        .dropdown a.dropdown-item:active {
+            color: #333;
+            text-decoration: none;
         }
+
+        /* Hover 효과 (기본 항목) */
+        .dropdown a.dropdown-item:hover,
+        .dropdown button.dropdown-item:hover {
+            background-color: #f5f5f5;
+            color: #0019a5;
+        }
+
+        /* 삭제 항목 */
+        .dropdown .dropdown-item.delete {
+            color: #dc2626;
+        }
+
+        /* 삭제 항목 hover 시 배경만 회색, 글자색 유지 */
+        .dropdown .dropdown-item.delete:hover {
+            background-color: #f5f5f5;
+            color: #dc2626;
+        }
+
+
+
+
     </style>
 </head>
 <body>
@@ -110,19 +179,25 @@
             <div class="kebab-menu" onclick="toggleDropdown(this)">
                 ⋮
                 <div class="dropdown">
-                    <!-- 삭제 모달 트리거 -->
-                    <a href="javascript:void(0)"
+                    <!-- ✅ 수정: class 추가 -->
+                    <a class="dropdown-item"
+                       th:href="@{'/admin/contents/questions/' + ${question.id} + '/edit'(category=${category})}">
+                        수정
+                    </a>
+
+                    <!-- ✅ 삭제: 그대로 유지 -->
+                    <a class="dropdown-item delete"
+                       href="javascript:void(0)"
                        th:attr="data-id=${question.id}"
                        th:attrappend="data-category=${#strings.replace(#strings.trim(category), ',', '')}"
                        onclick="showDeleteModalFromAttr(this)">
                         삭제
                     </a>
-
-                    <!-- 수정 링크에 category 파라미터 포함 -->
-                    <a th:href="@{'/admin/contents/questions/' + ${question.id} + '/edit'(category=${category})}">
-                        수정
-                    </a>
                 </div>
+
+
+
+            </div>
             </div>
         </div>
     </div>

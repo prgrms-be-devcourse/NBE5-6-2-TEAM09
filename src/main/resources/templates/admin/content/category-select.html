@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeMap - 문제 카테고리 선택</title>
+    <title>CodeMap 관리자 - 문항 카테고리 선택</title>
     <link rel="stylesheet" th:href="@{/css/header/global.css}" />
     <link rel="stylesheet" th:href="@{/css/header/style.css}" />
     <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
@@ -11,116 +11,142 @@
     <link rel="stylesheet" th:href="@{/css/sidenav/admin/style.css}" />
     <link rel="stylesheet" th:href="@{/css/sidenav/admin/styleguide.css}" />
     <style>
-        body {
-            margin: 0;
-            font-family: 'Pretendard', sans-serif;
-            background-color: #f4f6fc;
-        }
-
         main {
-            padding: 40px 80px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            flex-direction: column;
+            justify-content: center;
+            margin-left: 250px;
+            padding: 80px 40px 40px;
         }
 
-        h1 {
-            font-size: 28px;
-            color: #0019a5;
-            margin-bottom: 32px;
+        .category-container {
+            background-color: #d8e3ff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
         }
 
-        .category-box {
-            background: #e8f0ff;
-            padding: 32px;
-            border-radius: 16px;
-            width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .category-container h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .category-option {
-            border: 2px solid #ccc;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: 500;
-            color: #0019a5;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            background-color: #D9D9D9;
-        }
-
-        .category-option input[type="checkbox"] {
-            margin-right: 12px;
-            transform: scale(1.2);
-        }
-
-        .category-option.checked {
-            background-color: #DCF343;
-        }
-
-        .confirm-button {
-            margin-top: 32px;
-            padding: 12px 24px;
-            border: none;
-            background-color: #3b82f6;
-            color: white;
-            border-radius: 999px;
-            font-size: 16px;
+            justify-content: space-between;
+            background-color: #ffffff;
+            border: 2px solid #dcdcdc;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 18px;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        .confirm-button:hover {
-            background-color: #2563eb;
+        .category-option:hover {
+            background-color: #dce9ff;
+        }
+
+        /* 라디오버튼을 체크박스처럼 보이게 */
+        .category-option input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #999;
+            border-radius: 4px;
+            margin-right: 12px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .category-option input[type="radio"]:checked {
+            background-color: #e6ff00;
+            border-color: #e6ff00;
+        }
+
+        /* 체크 표시 스타일 (선택 사항) */
+        .category-option input[type="radio"]::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            width: 4px;
+            height: 9px;
+            border: solid #000;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+
+        .category-option input[type="radio"]:checked::after {
+            opacity: 1;
+        }
+
+        .submit-button {
+            background-color: #4e6df2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            width: fit-content;
+        }
+
+        .submit-button:hover {
+            background-color: #3b6fe0;
         }
     </style>
-    <script>
-        function toggleCheck(checkbox) {
-            const option = checkbox.closest('.category-option');
-            option.classList.toggle('checked', checkbox.checked);
-        }
-    </script>
+
 </head>
 <body>
 <header th:replace="~{fragments/header/header :: header}"></header>
 <aside th:replace="~{fragments/sidenav/admin/admin-sidenav :: sidebar}"></aside>
 
 <main>
-    <h1>카테고리</h1>
+    <div class="category-container">
+        <h2>문항 카테고리 선택</h2>
 
-    <form th:action="@{/admin/contents/question-list}" method="get">
-        <div class="category-box">
+        <form th:action="@{/admin/contents/question-list}" method="get">
             <label class="category-option">
-                <input type="checkbox" name="category" value="알고리즘" class="category-input" />
-                알고리즘
+                <input type="radio" name="category" value="알고리즘">
+                <span>알고리즘</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="자료구조" class="category-input" />
-                자료구조
+                <input type="radio" name="category" value="자료구조">
+                <span>자료구조</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="데이터베이스" class="category-input" />
-                데이터베이스
+                <input type="radio" name="category" value="데이터베이스">
+                <span>데이터베이스</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="운영체제" class="category-input" />
-                운영체제
+                <input type="radio" name="category" value="운영체제">
+                <span>운영체제</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="네트워크" class="category-input" />
-                네트워크
+                <input type="radio" name="category" value="네트워크">
+                <span>네트워크</span>
             </label>
             <label class="category-option">
-                <input type="checkbox" name="category" value="컴퓨터구조" class="category-input" />
-                컴퓨터구조
+                <input type="radio" name="category" value="컴퓨터구조">
+                <span>컴퓨터구조</span>
             </label>
-        </div>
-        <button type="submit" class="confirm-button">확인</button>
-    </form>
+
+            <button type="submit" class="submit-button">문항 조회</button>
+        </form>
+
+    </div>
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -135,7 +161,6 @@
                         }
                     });
 
-                    // 현재 클릭된 요소만 강조
                     if (cb.checked) {
                         cb.closest('.category-option').classList.add('checked');
                     } else {
