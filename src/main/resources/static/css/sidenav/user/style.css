@@ -69,10 +69,11 @@
 .box .home-2,
 .box .home-3 {
   all: unset;
-  font-family: "Inter-Regular", Helvetica;
-  font-size: 16px;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
   color: #545f70;
-  line-height: 22px;
+  line-height: 24px;
   white-space: nowrap;
   cursor: pointer;
   flex-grow: 1;
@@ -126,13 +127,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 14px;
-  font-weight: 400;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 16px; /* ✅ 기존 14px → 16px */
+  font-weight: 600; /* ✅ 기존 400 → 600 */
   color: #545f70;
   text-align: center;
   padding: 0 8px;
   margin: 0;
 }
+
 
 .box .group-2 {
   position: absolute;
@@ -194,6 +197,10 @@
   top: 632px;
   left: 40px;
 }
+
+
+
+
 
 
 
