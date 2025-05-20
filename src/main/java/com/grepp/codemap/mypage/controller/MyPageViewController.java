@@ -5,6 +5,7 @@ import com.grepp.codemap.mypage.dto.RoutineCompletionDto;
 import com.grepp.codemap.mypage.dto.UserStatDto;
 import com.grepp.codemap.mypage.service.MyPageService;
 import com.grepp.codemap.mypage.service.UserStatService;
+import com.grepp.codemap.todo.domain.Todo;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.dto.NicknameUpdateDto;
 import com.grepp.codemap.user.dto.PasswordUpdateDto;
@@ -35,16 +36,24 @@ public class MyPageViewController {
             .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         UserStatDto statDto = userStatService.getStatForUser(user.getId());
+        System.out.println("totalFocusMinutes = " + statDto.getTotalFocusMinutes());
         RoutineCompletionDto completionDto = myPageService.getRoutineCompletionStats(user.getId());
         List<RoutineCategoryCompletionDto> categoryStats = myPageService.getRoutineCompletionStatsByCategory(user.getId());
 
-        Map<String, Integer> focusTimes = myPageService.getFocusTimePerDay(user.getId());
+        Map<String, Integer> rawFocusMap = myPageService.getFocusTimePerDay(user.getId());
+        Map<String, Integer> orderedFocusMap = new LinkedHashMap<>();
+        for (String day : WEEKDAYS) {
+            orderedFocusMap.put(day, rawFocusMap.getOrDefault(day, 0));
+        }
+
+        List<Todo> todayTodos = myPageService.getTodayTodos(user.getId());
 
         model.addAttribute("user", user);
         model.addAttribute("userStat", statDto);
         model.addAttribute("completion", completionDto);
         model.addAttribute("categoryStats", categoryStats);
-        model.addAttribute("focusTimes", focusTimes);
+        model.addAttribute("focusTimes", orderedFocusMap);
+        model.addAttribute("todayTodos", todayTodos);
 
         return "mypage/stats";
     }

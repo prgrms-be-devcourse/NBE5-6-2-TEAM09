@@ -3,6 +3,9 @@ package com.grepp.codemap.mypage.service;
 import com.grepp.codemap.mypage.dto.RoutineCategoryCompletionDto;
 import com.grepp.codemap.mypage.dto.RoutineCompletionDto;
 import com.grepp.codemap.routine.repository.DailyRoutineRepository;
+import com.grepp.codemap.todo.domain.Todo;
+import com.grepp.codemap.todo.repository.TodoRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class MyPageService {
 
     private final DailyRoutineRepository dailyRoutineRepository;
+    private final TodoRepository todoRepository;
 
     private static final Map<Integer, String> WEEKDAY_MAP = Map.of(
         2, "월", 3, "화", 4, "수", 5, "목", 6, "금", 7, "토", 1, "일"
@@ -54,5 +58,9 @@ public class MyPageService {
         }
 
         return focusMap;
+    }
+
+    public List<Todo> getTodayTodos(Long userId) {
+        return todoRepository.findTodayTodos(LocalDate.now(), userId);
     }
 }

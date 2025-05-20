@@ -61,6 +61,17 @@
       background: #fffaf0;
     }
 
+    .summary-box table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .summary-box th, .summary-box td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
     #chatbot-button {
       position: fixed;
       bottom: 30px;
@@ -92,7 +103,7 @@
       <canvas id="focusChart" width="400" height="300"></canvas>
     </div>
 
-    <!-- 오른쪽: 요약 카드 -->
+    <!-- 오른쪽: 요약 카드 + 카테고리별 통계 -->
     <div class="right-section">
       <div class="card">
         <h3>오늘의 학습 요약</h3>
@@ -104,19 +115,56 @@
       </div>
 
       <div class="card">
-        <h3>다가오는 일정</h3>
+        <h3>오늘의 일정</h3>
         <div class="summary-box">
-          <p>⏰ 15:00 - 기술면접 복습 예정</p> <!-- 추후 동적 처리 가능 -->
+          <div th:if="${todayTodos.size() == 0}">
+            <p>📭 오늘 등록된 일정이 없습니다.</p>
+          </div>
+          <ul th:if="${todayTodos.size() > 0}">
+            <li th:each="todo : ${todayTodos}">
+              🗓 <span th:text="${#temporals.format(todo.startTime, 'HH:mm')}">시간</span> -
+              <span th:text="${todo.title}">할 일 제목</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ✅ 추가된 카테고리별 완료 통계 -->
+      <div class="card">
+        <h3>📚 카테고리별 완료 통계</h3>
+        <div class="summary-box">
+          <table>
+            <thead>
+            <tr>
+              <th>카테고리</th>
+              <th>완료</th>
+              <th>전체</th>
+              <th>완료율 (%)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stat : ${categoryStats}">
+              <td th:text="${stat.category}">카테고리</td>
+              <td th:text="${stat.completedCount}">0</td>
+              <td th:text="${stat.totalCount}">0</td>
+              <td th:text="${#numbers.formatDecimal(stat.completionRate, 1, 1)}">0.0</td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
 </main>
 
-<!-- 챗봇 버튼 (모달 연동 가능) -->
+<!-- 챗봇 버튼 -->
 <div id="chatbot-button" onclick="toggleChatbot()">🤖</div>
 
 <script th:inline="javascript">
+  function toggleChatbot() {
+    alert("챗봇 모달 열기");
+  }
+
   const labels = /*[[${focusTimes.keySet()}]]*/ [];
   const values = /*[[${focusTimes.values()}]]*/ [];
 
@@ -133,14 +181,10 @@
     },
     options: {
       scales: {
-        y: {
-          beginAtZero: true
-        }
+        y: { beginAtZero: true }
       }
     }
   });
 </script>
-
-
 </body>
 </html>
