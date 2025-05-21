@@ -131,6 +131,7 @@ public class DailyRoutineService {
             .title(routineDto.getTitle())
             .description(routineDto.getDescription())
             .focusTime(routineDto.getFocusTime())
+            .breakTime(routineDto.getBreakTime())
             .status(routine.getStatus())
             .startedAt(routine.getStartedAt())
             .completedAt(routine.getCompletedAt())
@@ -191,6 +192,7 @@ public class DailyRoutineService {
             .title(routine.getTitle())
             .description(routine.getDescription())
             .focusTime(routine.getFocusTime())
+            .breakTime(routine.getBreakTime())
             .status("COMPLETED") // 완료 상태로 변경
             .startedAt(routine.getStartedAt())
             .completedAt(LocalDateTime.now()) // 완료 시간 설정
@@ -221,6 +223,7 @@ public class DailyRoutineService {
             .title(routine.getTitle())
             .description(routine.getDescription())
             .focusTime(routine.getFocusTime())
+            .breakTime(routine.getBreakTime())
             .status("PASS") // PASS 상태로 변경
             .startedAt(routine.getStartedAt())
             .completedAt(routine.getCompletedAt())
@@ -251,6 +254,7 @@ public class DailyRoutineService {
             .title(routine.getTitle())
             .description(routine.getDescription())
             .focusTime(routine.getFocusTime())
+            .breakTime(routine.getBreakTime())
             .status("ACTIVE") // 활성 상태로 되돌림
             .startedAt(routine.getStartedAt())
             .completedAt(null) // 완료 시간 제거
@@ -283,6 +287,7 @@ public class DailyRoutineService {
                 .title(routine.getTitle())
                 .description(routine.getDescription())
                 .focusTime(routine.getFocusTime())
+                .breakTime(routine.getBreakTime())
                 .status(routine.getStatus())
                 .startedAt(LocalDateTime.now()) // 시작 시간 설정
                 .completedAt(routine.getCompletedAt())
