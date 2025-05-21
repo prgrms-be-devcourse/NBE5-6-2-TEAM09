@@ -161,13 +161,9 @@
 </main>
 
 <!-- 챗봇 버튼 -->
-<div id="chatbot-button" onclick="toggleChatbot()">🤖</div>
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 
 <script th:inline="javascript">
-  function toggleChatbot() {
-    alert("챗봇 모달 열기");
-  }
-
   const labels = /*[[${focusTimes.keySet()}]]*/ [];
   const values = /*[[${focusTimes.values()}]]*/ [];
 

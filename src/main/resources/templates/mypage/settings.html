@@ -137,29 +137,8 @@
   </div>
 </main>
 
-<!-- 챗봇 버튼 -->
-<div id="chatbot-button" onclick="toggleChatbot()" style="
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background-color: white;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-  text-align: center;
-  line-height: 56px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
-  🤖
-</div>
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 
-<script>
-  function toggleChatbot() {
-    alert("챗봇 모달 열기");
-  }
-</script>
 <script th:if="${message != null}">
   alert("[[${message}]]");
 </script>
