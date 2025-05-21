@@ -5,6 +5,7 @@ import com.grepp.codemap.routine.dto.PomodoroSessionDto;
 import com.grepp.codemap.routine.service.DailyRoutineService;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -30,27 +31,38 @@ public class DailyRoutineController {
     //루틴 목록 조회 페이지
     @GetMapping
     public String getRoutineList(Model model,
-                                 @SessionAttribute(name = "userId", required = false) Long userId) {
+        @SessionAttribute(name = "userId", required = false) Long userId,
+        @RequestParam(name = "date", required = false) String dateStr) {
         if (userId == null) {
             // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
             return "redirect:/user/signin";
         }
 
-        // 활성 루틴 목록
-        List<DailyRoutineDto> activeRoutines = dailyRoutineService.getActiveRoutinesByUser(userId);
-        // 완료된 루틴 목록
-        List<DailyRoutineDto> completedRoutines = dailyRoutineService.getCompletedRoutinesByUser(userId);
-        // 쉬어가기 루틴 목록
-        List<DailyRoutineDto> passedRoutines = dailyRoutineService.getPassedRoutinesByUser(userId);
+        // 날짜가 없으면 오늘 날짜를 기본값으로 사용
+        LocalDate selectedDate = LocalDate.now();
+        if (dateStr != null && !dateStr.isEmpty()) {
+            try {
+                selectedDate = LocalDate.parse(dateStr);
+            } catch (Exception e) {
+                log.error("Invalid date format: " + dateStr, e);
+            }
+        }
+
+        // 서비스를 통해 해당 날짜의 루틴 데이터 가져오기
+        Map<String, List<DailyRoutineDto>> routinesByStatus =
+            dailyRoutineService.getRoutinesByDate(userId, selectedDate);
 
         User user = userService.getUserById(userId);
+
         model.addAttribute("user", user);
-        model.addAttribute("activeRoutines", activeRoutines);
-        model.addAttribute("completedRoutines", completedRoutines);
-        model.addAttribute("passedRoutines", passedRoutines);
-        model.addAttribute("newRoutine", new DailyRoutineDto()); // 모달 폼용
+        model.addAttribute("activeRoutines", routinesByStatus.get("active"));
+        model.addAttribute("completedRoutines", routinesByStatus.get("completed"));
+        model.addAttribute("passedRoutines", routinesByStatus.get("passed"));
+        model.addAttribute("newRoutine", new DailyRoutineDto());
+        model.addAttribute("selectedDate", selectedDate);
 
         return "routine/routine-list";
+
     }
 
 
@@ -64,8 +76,8 @@ public class DailyRoutineController {
     //루틴 추가 처리
     @PostMapping
     public String addRoutine(@ModelAttribute("routine") DailyRoutineDto routineDto,
-                             @SessionAttribute("userId") Long userId,
-                             RedirectAttributes redirectAttributes) {
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto savedRoutine = dailyRoutineService.createRoutine(routineDto, userId);
@@ -82,7 +94,7 @@ public class DailyRoutineController {
     @GetMapping("/{id}/edit")
     @ResponseBody
     public ResponseEntity<?> showEditForm(@PathVariable Long id,
-                                          @SessionAttribute("userId") Long userId) {
+        @SessionAttribute("userId") Long userId) {
         try {
             // 서비스 계층의 메서드를 사용하여 루틴 조회
             DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
@@ -99,9 +111,9 @@ public class DailyRoutineController {
     //루틴 수정 처리
     @PatchMapping("/{id}")
     public String updateRoutine(@PathVariable Long id,
-                                @ModelAttribute("routine") DailyRoutineDto routineDto,
-                                @SessionAttribute("userId") Long userId,
-                                RedirectAttributes redirectAttributes) {
+        @ModelAttribute("routine") DailyRoutineDto routineDto,
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto updatedRoutine = dailyRoutineService.updateRoutine(id, routineDto, userId);
@@ -120,7 +132,7 @@ public class DailyRoutineController {
     @ResponseBody
     public ResponseEntity<?> deleteRoutine(@PathVariable Long id,
         @SessionAttribute("userId") Long userId) {
-      
+
         try {
             dailyRoutineService.deleteRoutine(id, userId);
             Map<String, Object> response = new HashMap<>();
@@ -140,8 +152,8 @@ public class DailyRoutineController {
     //루틴 완료 처리
     @PatchMapping("/{id}/complete")
     public String completeRoutine(@PathVariable Long id,
-                                  @SessionAttribute("userId") Long userId,
-                                  RedirectAttributes redirectAttributes) {
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto completedRoutine = dailyRoutineService.completeRoutine(id, userId);
@@ -158,8 +170,8 @@ public class DailyRoutineController {
     //루틴 완료 취소 처리
     @PatchMapping("/{id}/cancel")
     public String cancelRoutineCompletion(@PathVariable Long id,
-                                          @SessionAttribute("userId") Long userId,
-                                          RedirectAttributes redirectAttributes) {
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto canceledRoutine = dailyRoutineService.cancelCompletion(id, userId);
@@ -176,8 +188,8 @@ public class DailyRoutineController {
     //루틴 쉬어가기(Skip) 처리
     @PatchMapping("/{id}/skip")
     public String skipRoutine(@PathVariable Long id,
-                              @SessionAttribute("userId") Long userId,
-                              RedirectAttributes redirectAttributes) {
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
 
         try {
             DailyRoutineDto passedRoutine = dailyRoutineService.passRoutine(id, userId);
@@ -194,7 +206,7 @@ public class DailyRoutineController {
     //타이머 페이지 로드 및 포모도로 세션 시작
     @GetMapping("/{id}/timer")
     public String startTimer(@PathVariable Long id, Model model,
-                             @SessionAttribute("userId") Long userId) {
+        @SessionAttribute("userId") Long userId) {
 
         User user = userService.getUserById(userId);
 
@@ -234,10 +246,10 @@ public class DailyRoutineController {
     //타이머 완료 처리
     @PatchMapping("/timer/complete")
     public String completeTimer(@RequestParam Long sessionId,
-                                @RequestParam Long routineId,
-                                @RequestParam(required = false) Long nextRoutineId,
-                                @SessionAttribute("userId") Long userId,
-                                RedirectAttributes redirectAttributes) {
+        @RequestParam Long routineId,
+        @RequestParam(required = false) Long nextRoutineId,
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
 
         try {
             // 포모도로 세션 종료
