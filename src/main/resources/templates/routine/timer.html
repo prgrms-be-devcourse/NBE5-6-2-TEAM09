@@ -412,7 +412,7 @@
   const routineId = [[${routine.id}]];
   const pomodoroSessionId  = [[${pomodoroSession.id}]];
   const focusTimeMinutes = [[${routine.focusTime}]];
-  const breakTimeMinutes = [[${routine.breakTime}]];
+  const breakTimeMinutes = [[${routine.breakTime != null ? routine.breakTime : 5}]];
   const nextRoutineId = [[${nextRoutine != null ? nextRoutine.id : null}]];
 
   // 타이머 관련 변수
