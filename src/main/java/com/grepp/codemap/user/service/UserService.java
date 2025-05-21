@@ -86,4 +86,13 @@ public class UserService {
         user.updatePassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
+    @Transactional
+    public void updateNotificationSetting(Long userId, Boolean enabled) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        user.setNotificationEnabled(enabled);
+        userRepository.save(user);
+    }
+
 }
