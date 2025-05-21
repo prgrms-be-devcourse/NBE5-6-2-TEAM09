@@ -247,6 +247,14 @@
       <button onclick="openModal()">추가</button>
     </div>
 
+    <div class="date-filter">
+      <form id="dateFilterForm" action="/routines" method="get">
+        <label for="dateFilter">날짜 선택 : </label>
+        <input type="date" id="dateFilter" name="date"
+               th:value="${#temporals.format(selectedDate, 'yyyy-MM-dd')}"
+               onchange="this.form.submit()">
+      </form>
+    </div>
     <div class="active-routibes-section">
     <!-- 활성 루틴 목록 -->
     <div th:if="${activeRoutines != null and !activeRoutines.isEmpty()}">
