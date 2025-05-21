@@ -160,5 +160,8 @@
     alert("챗봇 모달 열기");
   }
 </script>
+<script th:if="${message != null}">
+  alert("[[${message}]]");
+</script>
 </body>
 </html>
