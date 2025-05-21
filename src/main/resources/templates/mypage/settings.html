@@ -11,14 +11,96 @@
   <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
   <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
   <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+
+  <!-- 📌추가: 환경설정용 스타일 -->
+  <style>
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+      margin-top: -33vw;
+      font-family: 'Pretendard', sans-serif;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      color: #0011a8;
+    }
+
+    .settings-container {
+      background-color: #e0ebff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .settings-container form {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .settings-container h2 {
+      font-size: 18px;
+      color: #0011a8;
+      margin-bottom: 16px;
+    }
+
+    .settings-container label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .settings-container input[type="text"],
+    .settings-container input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .settings-container input[type="checkbox"] {
+      margin-right: 8px;
+      transform: scale(1.2);
+    }
+
+    .settings-container button {
+      margin-top: 16px;
+      padding: 10px 20px;
+      background-color: #3164f4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .settings-container button:hover {
+      background-color: #254bdc;
+    }
+  </style>
 </head>
 
 <body>
 <header th:replace="fragments/header/header :: header"></header>
 <aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
 
 <main>
-  <h1>⚙️ 환경 설정</h1>
+  <h1>환경 설정</h1>
 
   <div class="settings-container">
 
