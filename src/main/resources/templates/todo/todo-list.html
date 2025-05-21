@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>투두 리스트 조회 페이지</title>
 
   <!-- ✅ 공통 스타일 -->
-  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/global.css}"/>
+  <link rel="stylesheet" th:href="@{/css/header/style.css}"/>
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}"/>
 
   <style>
     body {
@@ -20,6 +20,7 @@
       background-color: #f8f9fa;
       font-family: "Pretendard", sans-serif;
     }
+
     header {
       position: fixed;
       top: 0;
@@ -27,6 +28,7 @@
       right: 0;
       z-index: 1000;
     }
+
     aside {
       position: fixed;
       top: 116px;
@@ -35,11 +37,13 @@
       height: calc(100% - 116px);
       z-index: 900;
     }
+
     main {
       margin-left: 250px;
       margin-top: -31vw;
       padding: 40px;
     }
+
     .todo-wrapper {
       background-color: #d8e3ff;
       padding: 40px;
@@ -47,17 +51,20 @@
       max-width: 800px;
       margin: 0 auto;
     }
+
     .todo-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
     }
+
     .todo-header h2 {
       font-size: 28px;
       font-weight: 700;
       color: #1b2c50;
     }
+
     .todo-header button {
       background-color: #4e6df2;
       color: white;
@@ -67,6 +74,7 @@
       border-radius: 20px;
       cursor: pointer;
     }
+
     .todo-item {
       display: flex;
       justify-content: space-between;
@@ -78,22 +86,27 @@
       margin-bottom: 16px;
       position: relative;
     }
+
     .todo-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
     .todo-left input[type="checkbox"] {
       width: 18px;
       height: 18px;
     }
+
     .todo-left span {
       font-size: 16px;
     }
+
     .todo-complete span {
       text-decoration: line-through;
       color: gray;
     }
+
     .menu-button {
       background-color: #e6ff00;
       border: none;
@@ -103,6 +116,7 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     .menu-box {
       position: absolute;
       right: 0;
@@ -111,15 +125,17 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       padding: 6px 0;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       z-index: 100;
       display: none;
     }
+
     .menu-box div {
       padding: 6px 16px;
       font-size: 14px;
       cursor: pointer;
     }
+
     .menu-box div:hover {
       background-color: #f0f0f0;
     }
@@ -133,7 +149,7 @@
       background: white;
       padding: 30px;
       border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       z-index: 2000;
     }
   </style>
@@ -154,12 +170,13 @@
     </div>
 
     <!-- 투두 목록 반복 -->
-    <div th:each="todo : ${todos}" class="todo-item" th:classappend="${todo.completed} ? 'todo-complete'">
+    <div th:each="todo : ${todos}" class="todo-item"
+         th:classappend="${todo.completed} ? 'todo-complete'">
       <div class="todo-left">
         <input type="checkbox"
                class="complete-checkbox"
                th:attr="data-id=${todo.id}, data-date=${selectedDate}"
-               th:checked="${todo.completed}" />
+               th:checked="${todo.completed}"/>
 
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <span th:text="${todo.title}" style="font-weight: bold;">투두 제목</span>
@@ -184,6 +201,7 @@
         </div>
       </div>
     </div>
+  </div>
 </main>
 
 <script>
@@ -248,8 +266,6 @@
       });
     };
 
-
-
     // ✅ 모달 닫기
     window.closeModal = function () {
       const container = document.getElementById('modalContainer');
@@ -276,7 +292,7 @@
       });
     });
 
-      // 삭제 버튼 클릭 처리
+    // 삭제 버튼 클릭 처리
     document.querySelectorAll('.delete-button').forEach(btn => {
       btn.addEventListener('click', function () {
         const id = this.getAttribute('data-id');
@@ -293,7 +309,7 @@
         openEditModal(id, date);
       });
 
-  });
+    });
   });
 
   // ✅ 완료 체크 토글 처리
@@ -309,5 +325,6 @@
     });
   });
 </script>
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>
 </html>
