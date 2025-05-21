@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>면접 피드백</title>
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        main {
+            position: relative;
+            margin-left: 250px;
+            margin-top: -31vw;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-container {
+            background-color: #d8e3ff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0019a5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .question-box, .answer-box {
+            background-color: #f0f6ff;
+            border: 2px solid #3f86ff;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .box-title {
+            font-weight: bold;
+            color: #3f86ff;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .pagination-dots {
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .pagination-dots span {
+            font-size: 18px;
+            color: #888;
+            margin: 0 4px;
+        }
+
+        .pagination-dots .active {
+            color: #0019a5;
+        }
+
+        .prev-arrow, .next-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #0019a5;
+        }
+
+        .prev-arrow {
+            left: calc(50% - 520px);
+        }
+
+        .next-arrow {
+            left: calc(50% + 440px);
+        }
+
+        .prev-arrow img,
+        .next-arrow img {
+            width: 32px;
+            height: 32px;
+            background: #f4f6fc;
+            border-radius: 50%;
+            padding: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<main>
+    <div class="category-container">
+        <div class="question-header" th:text="${category} + ' - 난이도 ' + ${question.difficulty}">카테고리명 - 난이도</div>
+
+        <div class="question-box">
+            <div class="box-title">질문</div>
+            <p th:text="${question.questionText}">질문 내용</p>
+        </div>
+
+        <div class="answer-box" th:if="${userAnswer != null}">
+            <div class="box-title">내 답변</div>
+            <p th:text="${userAnswer.answerText}">제출한 답변</p>
+        </div>
+
+        <div class="answer-box" th:unless="${userAnswer != null}">
+            <div class="box-title">내 답변</div>
+            <p style="color: red;">⚠ 답변이 저장되지 않았거나 조회에 실패했습니다.</p>
+        </div>
+
+        <div class="answer-box">
+            <div class="box-title">모범 답안</div>
+            <p th:text="${question.answerText}">모범 답안</p>
+        </div>
+    </div>
+
+    <div class="pagination-dots">
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+              th:classappend="${page} == ${i} ? 'active' : ''">●</span>
+    </div>
+
+    <div class="prev-arrow" th:if="${page > 0}">
+        <span>이전 문제</span>
+        <a th:href="@{/interview/question(page=${page - 1}, category=${category})}">
+            <img th:src="@{/img/arrow-left.png}" alt="이전 문제" />
+        </a>
+    </div>
+
+    <div class="next-arrow" th:if="${page + 1 < totalPages}">
+        <span>다음 문제</span>
+        <a th:href="@{/interview/question(page=${page + 1}, category=${category})}">
+            <img th:src="@{/img/arrow-right.png}" alt="다음 문제" />
+        </a>
+    </div>
+</main>
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  </head>
+  <body>
+  <div th:fragment="header">
+    <div class="div-wrapper">
+      <div class="div">
+        <div class="group">
+          <a th:href="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/routines}">
+            <img class="vector" th:src="@{/img/codemap_white.png}" style="cursor: pointer;" />
+          </a>
+        </div>
+        <div class="auto-layout">
+          <div class="style-filled">
+            <form th:action="@{/user/logout}" method="post">
+              <button type="submit" class="logout-button">로그아웃</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

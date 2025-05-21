@@ -3,7 +3,6 @@ package com.grepp.codemap.infra.config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +19,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -32,63 +30,68 @@ public class SecurityConfig {
 //    private String rememberMeKey;
 
 
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .build();
-    }
-
-
-    @Bean
-    public AuthenticationSuccessHandler successHandler(){
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request,
-                                                HttpServletResponse response, Authentication authentication)
-                    throws IOException, ServletException {
-
-                boolean isAdmin = authentication.getAuthorities()
-                        .stream()
-                        .anyMatch(authority ->
-                                authority.getAuthority().equals("ROLE_ADMIN"));
-
-                if(isAdmin){
-                    response.sendRedirect("/admin/manage-members");
-                    return;
-                }
-
-                response.sendRedirect("/routines");
-            }
-        };
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+//        return http.getSharedObject(AuthenticationManagerBuilder.class)
+//            .build();
+//    }
+//
+//
+//    @Bean
+//    public AuthenticationSuccessHandler successHandler() {
+//        return new AuthenticationSuccessHandler() {
+//            @Override
+//            public void onAuthenticationSuccess(HttpServletRequest request,
+//                HttpServletResponse response, Authentication authentication)
+//                throws IOException, ServletException {
+//
+//                boolean isAdmin = authentication.getAuthorities()
+//                    .stream()
+//                    .anyMatch(authority ->
+//                        authority.getAuthority().equals("ROLE_ADMIN"));
+//
+//                if (isAdmin) {
+//                    response.sendRedirect("/admin/manage-members");
+//                    return;
+//                }
+//
+//                response.sendRedirect("/routines");
+//            }
+//        };
+//    }
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .authorizeHttpRequests(
-                        (requests) -> requests
-                                .requestMatchers(GET, "/user/signup","/user/signup/*", "/user/signin").permitAll()
-                                .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .formLogin((form) -> form
-                        .loginPage("/user/signin")
-                        .usernameParameter("email")
-                        .loginProcessingUrl("/user/signin")
-                        .defaultSuccessUrl("/")
-                        .successHandler(successHandler())
-                        .permitAll()
-                )
-                //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
-                .logout(LogoutConfigurer::permitAll);
+            .authorizeHttpRequests(
+                (requests) -> requests
+                    .requestMatchers(GET,"/", "/user/signup", "/user/signup/*", "/user/signin","/css/**", "/js/**", "/img/**")
+                    .permitAll()
+                    .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
+                    .requestMatchers(POST, "/chatbot/**", "/chatbot/message/**").permitAll()
+
+                    // /admin/** 경로는 ROLE_ADMIN 역할을 가진 사용자만 접근 가능
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                    // /routines/** 경로는 ROLE_USER 역할을 가진 사용자만 접근 가능
+                    .requestMatchers("/routines/**").hasRole("USER")
+                    .anyRequest().authenticated()
+            )
+            //.rememberMe(rememberMe -> rememberMe.key(rememberMeKey))
+            .logout(LogoutConfigurer::permitAll)
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/chatbot/**", "/chatbot/message/**", "/admin/**", "/todos/**"))
+            .sessionManagement(session -> session
+                .sessionFixation().none()
+            );
+
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

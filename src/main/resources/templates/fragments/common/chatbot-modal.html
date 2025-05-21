@@ -1,0 +1,104 @@
+<div th:fragment="chatbot">
+
+  <!-- 챗봇 버튼 -->
+  <div id="chatbot-button" onclick="toggleChatbot()" style="
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    text-align: center;
+    line-height: 56px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 1001;">
+    🤖
+  </div>
+
+  <!-- 챗봇 모달 -->
+  <div id="chatbot-modal" style="
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 400px;
+    height: 500px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 20px;
+    font-family: 'Pretendard', sans-serif;
+    display: flex;
+    flex-direction: column;
+  ">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <strong style="font-size: 18px;">플래너 챗봇</strong>
+      <button onclick="toggleChatbot()" style="border: none; background: none; font-size: 20px; cursor: pointer;">✖</button>
+    </div>
+    <hr>
+
+    <!-- 키워드 선택 -->
+    <p style="margin-bottom: 10px;">👇 상황 키워드를 선택해주세요</p>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+      <button onclick="sendKeyword('집중이 안돼요')" style="padding: 6px 12px; background-color: #f0f4ff; border: 1px solid #b0c4ff; border-radius: 12px; cursor: pointer;">집중이 안돼요</button>
+      <button onclick="sendKeyword('슬럼프예요')" style="padding: 6px 12px; background-color: #f0f4ff; border: 1px solid #b0c4ff; border-radius: 12px; cursor: pointer;">슬럼프예요</button>
+      <button onclick="sendKeyword('시간이 부족해요')" style="padding: 6px 12px; background-color: #f0f4ff; border: 1px solid #b0c4ff; border-radius: 12px; cursor: pointer;">시간이 부족해요</button>
+    </div>
+
+    <!-- 챗봇 응답 -->
+    <div id="chatbot-response" style="
+      flex-grow: 1;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    ">
+      여기에 챗봇의 답변이 표시됩니다.
+    </div>
+  </div>
+
+  <!-- 챗봇 스크립트 -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    function toggleChatbot() {
+      const modal = document.getElementById("chatbot-modal");
+      modal.style.display = modal.style.display === "none" ? "block" : "none";
+    }
+
+    function sendKeyword(keyword) {
+      const responseBox = document.getElementById("chatbot-response");
+      responseBox.innerHTML = "답변을 생성 중입니다...";
+
+      fetch('/chatbot/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ keyword })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("응답 실패");
+        return response.json();
+      })
+      .then(data => {
+        const html = marked.parse(data.response);  // 마크다운 → HTML 변환
+        responseBox.innerHTML = html;
+      })
+      .catch(error => {
+        responseBox.innerHTML = "챗봇 응답 중 오류가 발생했어요.";
+        console.error(error);
+      });
+    }
+  </script>
+</div>

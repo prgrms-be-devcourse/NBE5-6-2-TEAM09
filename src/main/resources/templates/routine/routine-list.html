@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+  <title>데일리 루틴</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      font-family: "Pretendard", sans-serif;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+    aside {
+      position: fixed;
+      top: 116px; left: 0;
+      width: 250px;
+      height: calc(100% - 116px);
+      z-index: 900;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-left: 250px;
+      margin-top: -31vw;
+      padding: 40px;
+    }
+
+    .routine-wrapper {
+      background-color: #d8e3ff;
+      padding: 40px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+    .routine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .routine-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1b2c50;
+    }
+    .routine-header button {
+      background-color: #4e6df2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .routine-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f9f9f9;
+      border: 2px solid #1b2c50;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .routine-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .routine-left span {
+      font-size: 16px;
+    }
+    .routine-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .routine-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .routine-category {
+      font-size: 14px;
+      color: #666;
+    }
+    .routine-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .start-timer {
+      background-color: #4e6df2;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .menu-button {
+      background-color: transparent;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .menu-box {
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 6px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      z-index: 10;
+      display: none;
+    }
+    .menu-box div {
+      padding: 6px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .menu-box div:hover {
+      background-color: #f0f0f0;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+      color: #666;
+    }
+    .empty-state p {
+      margin-bottom: 20px;
+    }
+    .completed-routines {
+      margin-top: 40px;
+    }
+    .completed-routines h3 {
+      color: #1b2c50;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+    .passed-routines {
+      margin-top: 40px;
+    }
+
+    .passed-routines h3 {
+      color: #1b2c50;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+
+    .passed-routine {
+      background-color: #f9f9f9;
+      border-color: #aaa;
+    }
+
+    .passed-routine .routine-title {
+      color: #666;
+    }
+    .routine-complete {
+      background-color: #e9e9e9;
+      border-color: #999;
+    }
+    .routine-complete .routine-title {
+      text-decoration: line-through;
+      color: #777;
+    }
+    #routineModal {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      z-index: 2000;
+      width: 400px;
+    }
+    #routineModal h3 {
+      margin-bottom: 20px;
+      color: #1b2c50;
+    }
+    #routineModal input, #routineModal select, #routineModal textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    #routineModal textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    #routineModal .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    #routineModal .button-group button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #routineModal .button-group button.cancel {
+      background-color: #e0e0e0;
+    }
+    #routineModal .button-group button.submit {
+      background-color: #4e6df2;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<main>
+  <div class="routine-wrapper">
+    <div class="routine-header">
+      <h2>데일리 루틴</h2>
+      <button onclick="openModal()">추가</button>
+    </div>
+
+    <div class="date-filter">
+      <form id="dateFilterForm" action="/routines" method="get">
+        <label for="dateFilter">날짜 선택 : </label>
+        <input type="date" id="dateFilter" name="date"
+               th:value="${#temporals.format(selectedDate, 'yyyy-MM-dd')}"
+               onchange="this.form.submit()">
+      </form>
+    </div>
+    <div class="active-routibes-section">
+    <!-- 활성 루틴 목록 -->
+    <div th:if="${activeRoutines != null and !activeRoutines.isEmpty()}">
+      <div th:each="routine : ${activeRoutines}" class="routine-item">
+        <div class="routine-left">
+          <div class="routine-info">
+            <span class="routine-title" th:text="${routine.title}">데일리 루틴 1</span>
+            <span class="routine-category" th:text="${routine.category}">카테고리</span>
+          </div>
+        </div>
+        <div class="routine-right">
+          <button class="start-timer" th:onclick="'location.href=\'/routines/' + ${routine.id} + '/timer\''">시작하기</button>
+          <button class="menu-button">⋯</button>
+          <div class="menu-box">
+            <div th:onclick="'editRoutine(' + ${routine.id} + ')'">수정</div>
+            <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+            <div th:onclick="'skipRoutine(' + ${routine.id} + ')'">쉬어가기</div>
+          </div>
+       </div>
+    </div>
+    </div>
+      <!-- 쉬어가기 루틴 목록 -->
+      <div th:if="${passedRoutines != null and !passedRoutines.isEmpty()}" class="passed-routines">
+        <h3>쉬어가는 루틴</h3>
+        <div th:each="routine : ${passedRoutines}" class="routine-item passed-routine">
+          <div class="routine-left">
+            <div class="routine-info">
+        <span class="routine-title">
+          <span style="color: #888;">(PASS)</span> <span th:text="${routine.title}">쉬어가기 루틴</span>
+        </span>
+              <span class="routine-category" th:text="${routine.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <!-- 비활성화된 시작 버튼 -->
+            <button class="start-timer" disabled style="background-color: #ccc; cursor: not-allowed;">시작하기</button>
+            <button class="menu-button">⋯</button>
+            <div class="menu-box">
+              <div th:onclick="'cancelPass(' + ${routine.id} + ')'">쉬어가기 취소</div>
+              <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- 루틴이 없을 때 보여줄 빈 상태 -->
+    <div id="emptyRoutineMessage" th:if="${activeRoutines.isEmpty() and (passedRoutines == null or passedRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty())}" class="empty-state">
+      <p>등록된 데일리 루틴이 없습니다.</p>
+      <p>오늘의 루틴을 추가해 보세요!</p>
+    </div>
+
+
+    <!-- 완료된 루틴 목록 -->
+    <div th:if="${completedRoutines != null and !completedRoutines.isEmpty()}" class="completed-routines">
+      <h3>완료된 루틴</h3>
+      <div th:each="routine : ${completedRoutines}" class="routine-item routine-complete">
+        <div class="routine-left">
+          <div class="routine-info">
+            <span class="routine-title" th:text="${routine.title}">완료된 루틴 1</span>
+            <span class="routine-category" th:text="${routine.category}">카테고리</span>
+          </div>
+        </div>
+        <div class="routine-right">
+          <button class="menu-button">⋯</button>
+          <div class="menu-box">
+            <div th:onclick="'cancelComplete(' + ${routine.id} + ')'">완료 취소</div>
+            <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</main>
+
+<!-- 루틴 추가/수정 모달 -->
+<div id="routineModal">
+  <h3>루틴 추가</h3>
+  <form id="routineForm" th:action="@{/routines}" method="post">
+    <input type="hidden" id="routineId" name="id" />
+
+    <input type="text" name="category" placeholder="카테고리 입력" required />
+
+    <input type="text" name="title" placeholder="루틴 제목" required />
+    <textarea name="description" placeholder="상세 설명"></textarea>
+    <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180" required />
+    <input type="number" name="breakTime" placeholder="휴식 시간(분)" min="1" max="60" value="5" required />
+    <div class="button-group">
+      <button type="button" class="cancel" onclick="closeModal()">취소</button>
+      <button type="submit" class="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 빈 상태 메시지가 여러 개 있으면 첫 번째만 남기고 나머지 제거
+    const emptyMessages = document.querySelectorAll('.empty-state');
+    if (emptyMessages.length > 1) {
+      for (let i = 1; i < emptyMessages.length; i++) {
+        emptyMessages[i].remove();
+      }
+    }
+
+    // 페이지 로드 시 초기 상태 확인
+    checkEmptySections();
+
+    // 투두 리스트 버튼 찾기 및 링크 설정
+    const todoButton = Array.from(document.querySelectorAll('.nav-link-button'))
+    .find(el => el.textContent.includes('투두 리스트'));
+
+    // 투두 리스트 경로 설정
+    if(todoButton) {
+      todoButton.onclick = function() {
+        location.href = '/todos/calender';
+      };
+    }
+
+    // 사이드바 루틴 메뉴 활성화
+    const routineButton = Array.from(document.querySelectorAll('.nav-link-button'))
+    .find(el => el.textContent.includes('데일리 루틴'));
+    if (routineButton) {
+      routineButton.classList.add('active');
+    }
+
+    // 메뉴 버튼 이벤트 설정
+    const menuButtons = document.querySelectorAll('.menu-button');
+    menuButtons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const menuBox = this.nextElementSibling;
+
+        // 다른 열린 메뉴 닫기
+        document.querySelectorAll('.menu-box').forEach(box => {
+          if (box !== menuBox) {
+            box.style.display = 'none';
+          }
+        });
+
+        // 현재 메뉴 토글
+        menuBox.style.display = menuBox.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+
+    // 문서 클릭 시 열린 메뉴 닫기
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.menu-box').forEach(box => {
+        box.style.display = 'none';
+      });
+    });
+  });
+
+  function openModal() {
+    // 폼 초기화
+    document.getElementById('routineForm').reset();
+    document.getElementById('routineId').value = '';
+    document.getElementById('routineModal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('routineModal').style.display = 'none';
+  }
+
+  function editRoutine(routineId) {
+    fetch(`/routines/${routineId}/edit`)
+    .then(response => response.json())
+    .then(data => {
+      // 모달 제목 변경
+      document.querySelector('#routineModal h3').textContent = '루틴 수정';
+
+      // 폼 데이터 채우기
+      document.getElementById('routineId').value = data.id;
+      document.querySelector('input[name="category"]').value = data.category || '';
+      document.querySelector('input[name="title"]').value = data.title || '';
+      document.querySelector('textarea[name="description"]').value = data.description || '';
+      document.querySelector('input[name="focusTime"]').value = data.focusTime || '';
+      document.querySelector('input[name="breakTime"]').value = data.breakTime || 5;
+
+      // 폼 액션 및 메서드 변경
+      const form = document.getElementById('routineForm');
+      form.action = `/routines/${routineId}`;
+
+      // CSRF 토큰 추가
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      let csrfInput = form.querySelector('input[name="_csrf"]');
+      if (!csrfInput) {
+        csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+      } else {
+        csrfInput.value = csrfToken;
+      }
+
+      // hidden input 추가
+      let methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      methodInput.value = 'PATCH';
+      form.appendChild(methodInput);
+
+      // 모달 표시
+      document.getElementById('routineModal').style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('루틴 정보를 불러오는 데 실패했습니다.');
+    });
+  }
+  function deleteRoutine(routineId) {
+    if (confirm('정말 이 루틴을 삭제하시겠습니까?')) {
+      // CSRF 토큰 가져오기
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+      fetch(`/routines/${routineId}`, {
+        method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // 성공 시 해당 요소만 DOM에서 제거
+          const routineElement = document.querySelector(`.routine-item:has([onclick*="deleteRoutine(${routineId})"])`);
+          if (routineElement) {
+            routineElement.remove();
+            // 성공 메시지 표시
+            showNotification(data.message);
+
+            // 해당 섹션이 비어있게 되면 섹션 숨기기
+            checkEmptySections();
+          } else {
+            // 요소를 찾지 못하면 페이지 새로고침
+            window.location.reload();
+          }
+        } else {
+          alert(data.message || '루틴 삭제에 실패했습니다.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('루틴 삭제 중 오류가 발생했습니다.');
+      });
+    }
+  }
+
+  function skipRoutine(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/skip`;
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+
+    form.appendChild(methodInput);
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+  function cancelPass(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/cancel`; // 완료 취소와 동일한 엔드포인트 사용
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+
+    form.appendChild(methodInput);
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  function cancelComplete(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/cancel`;
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+
+    form.appendChild(methodInput);
+
+    // CSRF 토큰 추가
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+  function showNotification(message) {
+    // 이미 알림 요소가 있으면 제거
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+      existingNotification.remove();
+    }
+
+    // 알림 요소 생성
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '10px 20px';
+    notification.style.backgroundColor = '#4e6df2';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '5px';
+    notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+    notification.style.zIndex = '9999';
+
+    document.body.appendChild(notification);
+
+    // 3초 후 자동으로 제거
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.5s';
+      setTimeout(() => notification.remove(), 500);
+    }, 3000);
+  }
+
+  // 섹션이 비어있는지 확인하고 처리하는 함수
+  function checkEmptySections() {
+    // 활성 루틴 섹션
+    const activeRoutines = document.querySelectorAll('.routine-item:not(.routine-complete):not(.passed-routine)');
+    const existingEmptyState = document.querySelector('.empty-state');
+
+    if (activeRoutines.length === 0) {
+      // 이미 빈 상태 메시지가 있는지 확인
+      if (!existingEmptyState) {
+        // 빈 상태 메시지 표시
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        emptyState.innerHTML = '<p>등록된 데일리 루틴이 없습니다.</p><p>오늘의 루틴을 추가해 보세요!</p>';
+
+        const routineWrapper = document.querySelector('.routine-wrapper');
+        const header = document.querySelector('.routine-header');
+
+        // 헤더 다음에 빈 상태 메시지 삽입
+        if (header && routineWrapper) {
+          routineWrapper.insertBefore(emptyState, header.nextSibling);
+        }
+      }
+    } else {
+      // 활성 루틴이 있는데 빈 상태 메시지가 있으면 제거
+      if (existingEmptyState) {
+        existingEmptyState.remove();
+      }
+    }
+  }
+</script>
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

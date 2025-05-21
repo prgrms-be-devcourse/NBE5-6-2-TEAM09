@@ -1,0 +1,208 @@
+/* ✅ 전체 사이드바 아이템 수평 정렬 적용 */
+
+.box {
+  width: 287px;
+  height: 682px;
+}
+
+.box .group {
+  position: fixed;
+  top: 180px;
+  left: 60px;
+  width: 287px;
+  height: calc(100% - 180px);
+  z-index: 999;
+}
+
+.box .view {
+  height: 682px;
+}
+
+.box .overlap {
+  position: relative;
+  width: 287px;
+  height: 682px;
+}
+
+.box .side-navigation-bar {
+  width: 287px;
+  height: 682px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 20px #00000040;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 20px;
+}
+
+.box .frame {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px 0px 0px;
+  position: relative;
+  top: 546px;
+  left: 16px;
+  border-top: 1px solid #eef0f4;
+}
+
+.box .div,
+.box .side-navigation-item,
+.box .side-navigation-item-2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 234px;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.box .div:hover,
+.box .side-navigation-item:hover,
+.box .side-navigation-item-2:hover {
+  background-color: #f3f4f6;
+}
+
+.box .home,
+.box .home-2,
+.box .home-3 {
+  all: unset;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #545f70;
+  line-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-grow: 1;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+
+
+
+.box .img,
+.box .img-2 {
+  width: 24px;
+  height: 24px;
+}
+
+.box .chevron-right,
+.box .icon-2 {
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+}
+
+.box .icon {
+  width: 20px;
+  height: 18px;
+  position: absolute;
+  top: 583px;
+  left: 40px;
+}
+
+.box .div-wrapper {
+  display: flex;
+  width: 70px;
+  min-width: 100px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  position: absolute;
+  top: 50px;
+  left: 137px;
+  background-color: #eef0f4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.box .text-wrapper {
+  width: auto;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 16px; /* ✅ 기존 14px → 16px */
+  font-weight: 600; /* ✅ 기존 400 → 600 */
+  color: #545f70;
+  text-align: center;
+  padding: 0 8px;
+  margin: 0;
+}
+
+
+.box .group-2 {
+  position: absolute;
+  width: 243px;
+  height: 322px;
+  top: 21px;
+  left: 17px;
+}
+
+.box .user-circle {
+  position: absolute;
+  width: 84px;
+  height: 83px;
+  top: 0;
+  left: 16px;
+}
+
+.box .group-3 {
+  position: absolute;
+  width: 234px;
+  height: 70px;
+  top: 112px;
+}
+
+.box .overlap-group,
+.box .overlap-2,
+.box .overlap-3 {
+  position: absolute;
+  width: 234px;
+  height: 70px;
+  left: 9px;
+  border-radius: 8px;
+}
+
+.box .overlap-group {
+  top: 0;
+}
+
+.box .overlap-2 {
+  top: 252px;
+}
+
+.box .overlap-3 {
+  top: 182px;
+}
+
+.box .icon-3 {
+  position: absolute;
+  width: 12px;
+  height: 6px;
+  top: 268px;
+  left: 4300px;
+}
+
+.box .icon-4 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 632px;
+  left: 40px;
+}
+
+
+
+
+
+
+
+

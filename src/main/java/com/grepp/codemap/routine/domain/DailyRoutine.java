@@ -46,6 +46,9 @@ public class DailyRoutine {
 
     private Integer focusTime;
 
+    @Builder.Default
+    private Integer breakTime = 5;
+
     private LocalDateTime startedAt;
 
     private LocalDateTime completedAt;
