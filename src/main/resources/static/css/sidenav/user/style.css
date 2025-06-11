@@ -1,208 +1,320 @@
-/* ✅ 전체 사이드바 아이템 수평 정렬 적용 */
+/* ✅ 개선된 사이드바 스타일 - CSS 변수 활용 및 일관성 개선 */
 
 .box {
-  width: 287px;
-  height: 682px;
+  width: var(--sidebar-width, 280px);
+  height: calc(100vh - var(--header-height, 70px));
 }
 
 .box .group {
   position: fixed;
-  top: 180px;
-  left: 60px;
-  width: 287px;
-  height: calc(100% - 180px);
-  z-index: 999;
+  top: var(--header-height, 70px);
+  left: 0;
+  width: var(--sidebar-width, 280px);
+  height: calc(100vh - var(--header-height, 70px));
+  z-index: var(--z-sidebar, 900);
+  background-color: var(--background-white);
+  border-right: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .box .view {
-  height: 682px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .box .overlap {
   position: relative;
-  width: 287px;
-  height: 682px;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
 }
 
 .box .side-navigation-bar {
-  width: 287px;
-  height: 682px;
-  background-color: #ffffff;
-  box-shadow: 0px 4px 20px #00000040;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 20px;
-}
-
-.box .frame {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 16px 0px 0px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-white);
   position: relative;
-  top: 546px;
-  left: 16px;
-  border-top: 1px solid #eef0f4;
+  padding: var(--spacing-lg) 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.box .div,
+/* ✅ 사용자 프로필 및 불필요한 요소들 숨김 */
+.box .div-wrapper,
+.box .user-circle,
+.box .group-2 {
+  display: none;
+}
+
+/* ✅ 네비게이션 컨테이너 */
+.box .group-3 {
+  position: static;
+  width: 100%;
+  height: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* ✅ 각 네비게이션 섹션 */
+.box .overlap-group,
+.box .overlap-2,
+.box .overlap-3 {
+  position: static;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* ✅ 네비게이션 아이템 기본 스타일 */
 .box .side-navigation-item,
-.box .side-navigation-item-2 {
+.box .side-navigation-item-2,
+.box .div {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 234px;
-  height: 52px;
-  padding: 0 16px;
-  border-radius: 8px;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: 0;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: var(--transition);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border: none;
+  background: none;
+  position: relative;
 }
 
-.box .div:hover,
+/* ✅ 호버 효과 */
 .box .side-navigation-item:hover,
-.box .side-navigation-item-2:hover {
-  background-color: #f3f4f6;
+.box .side-navigation-item-2:hover,
+.box .div:hover {
+  background-color: var(--background);
+  color: var(--text-primary);
+  transform: translateX(2px);
 }
 
+/* ✅ 활성 상태 - 기본 크기 유지 */
+.box .side-navigation-item.active,
+.box .side-navigation-item-2.active,
+.box .div.active {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.box .side-navigation-item.active::before,
+.box .side-navigation-item-2.active::before,
+.box .div.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background-color: var(--primary);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ✅ 활성 상태일 때는 기본 크기 유지 */
+.box .side-navigation-item.active .nav-icon,
+.box .side-navigation-item-2.active .nav-icon,
+.box .div.active .nav-icon {
+  transform: translateY(0) scale(1) !important;
+  box-shadow: none !important;
+}
+
+.box .side-navigation-item.active .nav-link-button,
+.box .side-navigation-item-2.active .nav-link-button,
+.box .div.active .nav-link-button {
+  transform: translateX(0) !important;
+}
+
+/* ✅ 네비게이션 아이콘 - 기본 상태 명확히 정의 */
+.box .nav-icon,
+.box .img,
+.box .img-2 {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  transition: var(--transition);
+  transform: translateY(0) scale(1); /* 기본 상태 명시 */
+  box-shadow: none; /* 기본 그림자 없음 */
+}
+
+/* ✅ 아이콘 호버 효과 - 더 부드럽고 안정적으로 */
+.box .side-navigation-item:hover .nav-icon,
+.box .side-navigation-item-2:hover .nav-icon,
+.box .div:hover .nav-icon {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ✅ 호버 종료 시 원복 */
+.box .side-navigation-item:not(:hover) .nav-icon,
+.box .side-navigation-item-2:not(:hover) .nav-icon,
+.box .div:not(:hover) .nav-icon {
+  transform: translateY(0) scale(1);
+  box-shadow: none;
+}
+
+/* ✅ 네비게이션 텍스트 - 기본 상태 명확히 정의 */
 .box .home,
 .box .home-2,
-.box .home-3 {
+.box .home-3,
+.box .nav-link-button {
   all: unset;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-  font-size: 17px;
-  font-weight: 600;
-  color: #545f70;
-  line-height: 24px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: inherit;
+  line-height: 1.5;
   white-space: nowrap;
   cursor: pointer;
   flex-grow: 1;
   text-align: left;
   padding: 0;
   margin: 0;
+  transition: var(--transition);
+  transform: translateX(0); /* 기본 상태 명시 */
 }
 
-
-
-.box .img,
-.box .img-2 {
-  width: 24px;
-  height: 24px;
-}
-
+/* ✅ 불필요한 요소들 숨김 */
 .box .chevron-right,
-.box .icon-2 {
-  width: 20px;
-  height: 20px;
-  margin-left: auto;
+.box .icon-2,
+.box .icon,
+.box .icon-3,
+.box .icon-4,
+.box .frame {
+  display: none;
 }
 
-.box .icon {
-  width: 20px;
-  height: 18px;
-  position: absolute;
-  top: 583px;
-  left: 40px;
+/* ✅ 스크롤바 스타일링 */
+.box .view::-webkit-scrollbar {
+  width: 4px;
 }
 
-.box .div-wrapper {
-  display: flex;
-  width: 70px;
-  min-width: 100px;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 16px;
-  position: absolute;
-  top: 50px;
-  left: 137px;
-  background-color: #eef0f4;
-  border-radius: 12px;
+.box .view::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.box .view::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 2px;
+}
+
+.box .view::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
+  .box {
+    width: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .box.open {
+    transform: translateX(0);
+  }
+
+  .box .group {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* ✅ 포커스 상태 접근성 */
+.box .side-navigation-item:focus,
+.box .side-navigation-item-2:focus,
+.box .div:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ✅ 로딩 상태 (선택사항) */
+.box .loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ✅ 텍스트 선택 방지 */
+.box .nav-link-button {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* ✅ 텍스트 호버 효과 - 더 안정적으로 */
+.box .side-navigation-item:hover .nav-link-button,
+.box .side-navigation-item-2:hover .nav-link-button,
+.box .div:hover .nav-link-button {
+  transform: translateX(1px);
+}
+
+/* ✅ 호버 종료 시 원복 */
+.box .side-navigation-item:not(:hover) .nav-link-button,
+.box .side-navigation-item-2:not(:hover) .nav-link-button,
+.box .div:not(:hover) .nav-link-button {
+  transform: translateX(0);
+}
+
+/* ✅ 다크모드 대응 (추후 확장용) */
+@media (prefers-color-scheme: dark) {
+  .box .group {
+    background-color: #1a1a1a;
+    border-right: 1px solid #333;
+  }
+
+  .box .side-navigation-bar {
+    background-color: #1a1a1a;
+  }
+}
+
+/* ✅ 애니메이션 효과 개선 - 더 안정적으로 */
+.box .side-navigation-item,
+.box .side-navigation-item-2,
+.box .div {
+  position: relative;
   overflow: hidden;
 }
 
-.box .text-wrapper {
-  width: auto;
-  max-width: 180px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-  font-size: 16px; /* ✅ 기존 14px → 16px */
-  font-weight: 600; /* ✅ 기존 400 → 600 */
-  color: #545f70;
-  text-align: center;
-  padding: 0 8px;
-  margin: 0;
-}
-
-
-.box .group-2 {
+/* ✅ 깜빡임 효과 제거 - 더 부드러운 효과로 */
+.box .side-navigation-item::after,
+.box .side-navigation-item-2::after,
+.box .div::after {
+  content: '';
   position: absolute;
-  width: 243px;
-  height: 322px;
-  top: 21px;
-  left: 17px;
-}
-
-.box .user-circle {
-  position: absolute;
-  width: 84px;
-  height: 83px;
   top: 0;
-  left: 16px;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  transition: left 0.8s ease;
+  pointer-events: none;
 }
 
-.box .group-3 {
-  position: absolute;
-  width: 234px;
-  height: 70px;
-  top: 112px;
+.box .side-navigation-item:hover::after,
+.box .side-navigation-item-2:hover::after,
+.box .div:hover::after {
+  left: 100%;
 }
 
-.box .overlap-group,
-.box .overlap-2,
-.box .overlap-3 {
-  position: absolute;
-  width: 234px;
-  height: 70px;
-  left: 9px;
-  border-radius: 8px;
+/* ✅ 활성 상태일 때는 애니메이션 비활성화 */
+.box .side-navigation-item.active::after,
+.box .side-navigation-item-2.active::after,
+.box .div.active::after {
+  display: none;
 }
-
-.box .overlap-group {
-  top: 0;
-}
-
-.box .overlap-2 {
-  top: 252px;
-}
-
-.box .overlap-3 {
-  top: 182px;
-}
-
-.box .icon-3 {
-  position: absolute;
-  width: 12px;
-  height: 6px;
-  top: 268px;
-  left: 4300px;
-}
-
-.box .icon-4 {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  top: 632px;
-  left: 40px;
-}
-
-
-
-
-
-
-
-

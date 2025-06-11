@@ -1,84 +1,226 @@
+/* ✅ 헤더 메인 컨테이너 */
+.div-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background-color: var(--neutral-0, #ffffff);
+  border-bottom: 1px solid var(--neutral-2, #dee2e6);
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+}
+
+.div-wrapper .div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  padding: 0 1.5rem;
+  max-width: 100%;
+}
+
+/* ✅ 좌측 로고 영역 */
+.group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 200px;
+}
+
+.group a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  gap: 0.5rem;
+}
+
+.vector {
+  width: 32px;
+  height: 32px;
+  background: var(--primary, #0066cc);
+  color: var(--neutral-0, #ffffff);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.vector:hover {
+  background: var(--button, #0052a3);
+  transform: scale(1.05);
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary, #0066cc);
+  font-family: var(---font-family, "Inter", Helvetica);
+}
+
+/* ✅ 중앙 페이지 제목 */
+.page-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary, #333);
+  margin: 0;
+  font-family: var(---font-family, "Inter", Helvetica);
+}
+
+/* ✅ 우측 사용자 정보 영역 */
+.auto-layout {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 200px;
+  justify-content: flex-end;
+}
+
+/* ✅ 알림 아이콘 */
+.notification {
+  width: 24px;
+  height: 24px;
+  background: #ff4757;
+  border-radius: 50%;
+  position: relative;
+  animation: pulse 2s infinite;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification::before {
+  content: '🔔';
+  font-size: 12px;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* ✅ 사용자 아바타 */
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--secondary, #667eea);
+  color: var(--neutral-0, #ffffff);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 2px solid var(--background, #f8f9fa);
+}
+
+/* ✅ 사용자 닉네임 */
+.auto-layout > span {
+  font-size: var(--body-small-font-size, 0.875rem);
+  font-weight: 500;
+  color: var(--primary, #333);
+  font-family: var(--body-small-font-family, "DM Sans", Helvetica);
+  white-space: nowrap;
+}
+
+/* ✅ 로그아웃 버튼 영역 */
+.style-filled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background-color: var(--secondary, #aac4ff);
+  border-radius: 50px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.style-filled:hover {
+  background-color: var(--button, #8bb3ff);
+  transform: translateY(-1px);
+}
+
+.style-filled form {
+  margin: 0;
+  padding: 0;
+}
 
 .logout-button {
   background: none;
   border: none;
-  color: #00008d; /* 💡 텍스트 컬러 수정: 진한 파란색 또는 --primary 변수 사용 */
-  font-size: 16px;
-  font-weight: 600;
+  color: var(--neutral-0, #ffffff);
+  font-size: var(--body-small-font-size, 0.875rem);
+  font-weight: var(--body-small-font-weight, 500);
+  font-family: var(--body-small-font-family, "DM Sans", Helvetica);
   cursor: pointer;
   padding: 0;
-
-}
-
-.div-wrapper {
-  background-color: #00008d;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
-}
-
-.div-wrapper .div {
-  background-color: #00008d;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-color: var(--neutral-2);
-  width: 1920px;
-  height: 116px;
-  position: relative;
-}
-
-.div-wrapper .group {
-  position: absolute;
-  width: 147px;
-  height: 38px;
-  top: 38px;
-  left: 34px;
-}
-
-.div-wrapper .vector {
-  position: absolute;
-  width: 100px;
-  height: 85px;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-}
-
-
-
-.div-wrapper .auto-layout {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 16px;
-  position: absolute;
-  top: 34px;
-  right: 40px;
-}
-
-.div-wrapper .style-filled {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px 20px;
-  position: relative;
-  flex: 0 0 auto;
-  background-color: var(--secondary);
-  border-radius: 50px;
-  overflow: hidden;
-}
-
-.div-wrapper .do-something {
-  position: relative;
-  width: fit-content;
-  margin-top: -1.00px;
-  font-family: var(--body-small-font-family);
-  font-weight: var(--body-small-font-weight);
-  color: var(--neutral-0);
-  font-size: var(--body-small-font-size);
-  letter-spacing: var(--body-small-letter-spacing);
-  line-height: var(--body-small-line-height);
   white-space: nowrap;
-  font-style: var(--body-small-font-style);
+  transition: opacity 0.2s ease;
+}
+
+.logout-button:hover {
+  opacity: 0.9;
+}
+
+.logout-button:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ✅ 반응형 대응 */
+@media (max-width: 768px) {
+  .page-title {
+    display: none;
+  }
+
+  .logo-text {
+    font-size: 1.25rem;
+  }
+
+  .auto-layout {
+    gap: 0.5rem;
+    min-width: auto;
+  }
+
+  .auto-layout > span {
+    display: none;
+  }
+
+  .group {
+    min-width: auto;
+  }
+
+  .div-wrapper .div {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .style-filled {
+    padding: 6px 12px;
+  }
+
+  .logout-button {
+    font-size: 0.75rem;
+  }
+
+  .vector {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
 }
