@@ -71,7 +71,7 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(POST, "/user/signin", "/user/signup").permitAll()
                     .requestMatchers(POST, "/chatbot/**", "/chatbot/message/**").permitAll()
-
+                    .requestMatchers("/user/main").hasRole("USER")
                     // /admin/** 경로는 ROLE_ADMIN 역할을 가진 사용자만 접근 가능
                     .requestMatchers("/admin/**").hasRole("ADMIN")
 

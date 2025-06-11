@@ -6,9 +6,7 @@
   <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
   <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
   <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.6/dist/web/static/pretendard.css" />
-
 </head>
 <body>
 <div th:fragment="sidebar">
@@ -18,57 +16,70 @@
         <div class="overlap">
           <div class="side-navigation-bar">
 
-            <!-- 하단 설정 메뉴 -->
-            <div class="frame">
-              <div class="div" onclick="location.href='/mypage/stats'">
-                <img class="img" th:src="@{/img/my.png}" />
-                <button class="home nav-link-button">My 통계</button>
-                <img class="chevron-right" th:src="@{/img/chevron.png}" />
-              </div>
-              <div class="div" onclick="location.href='/settings'">
-                <img class="img" th:src="@{/img/setting.png}" />
-                <button class="home nav-link-button">환경설정</button>
-                <img class="chevron-right" th:src="@{/img/chevron.png}" />
-              </div>
-            </div>
+            <!-- ✅ 네비게이션 메뉴 -->
+            <div class="group-3">
 
-            <!-- 닉네임 -->
-            <div class="div-wrapper">
-              <div class="text-wrapper" th:text="${user != null ? user.nickname : '사용자'}">사용자</div>
-            </div>
-
-            <!-- 상단 네비게이션 메뉴 -->
-            <div class="group-2">
-              <img class="user-circle" th:src="@{/img/user-circle.png}" />
-
-              <div class="group-3">
-                <div class="overlap-group" onclick="location.href='/routines'">
-                  <div class="side-navigation-item">
-                    <!-- ✅ 순서 고침: img → button → img -->
-                    <img class="img-2" th:src="@{/img/routine.png}" />
-                    <button class="home-2 nav-link-button">데일리 루틴</button>
-                    <img class="chevron-right" th:src="@{/img/chevron.png}" />
+              <!-- 메인화면 -->
+              <div class="overlap-group">
+                <a th:href="@{/user/main}" class="side-navigation-item nav-item" data-nav="main">
+                  <div class="nav-icon" style="background: #e3f2fd; color: #1976d2;">
+                    🏠
                   </div>
-                </div>
+                  <span class="nav-link-button">메인화면</span>
+                </a>
               </div>
 
-              <div class="overlap-2" onclick="location.href='/interview/select'">
-                <div class="side-navigation-item">
-                  <img class="img-2" th:src="@{/img/interview.png}" />
-                  <button class="home-2 nav-link-button">기술 면접 질문</button>
-                  <img class="chevron-right" th:src="@{/img/chevron.png}" />
-                </div>
+              <!-- 투두 리스트 -->
+              <div class="overlap-2">
+                <a th:href="@{/todos/calender}" class="side-navigation-item nav-item" data-nav="todos">
+                  <div class="nav-icon" style="background: #e8f5e8; color: #388e3c;">
+                    ✅
+                  </div>
+                  <span class="nav-link-button">투두 리스트</span>
+                </a>
               </div>
 
-              <div class="overlap-3" onclick="location.href='/todos/calender'">
-                <div class="side-navigation-item-2">
-                  <img class="img-2" th:src="@{/img/todo.png}" />
-                  <button class="home-3 nav-link-button">투두 리스트</button>
-                  <img class="chevron-right" th:src="@{/img/chevron.png}" />
-                </div>
+              <!-- 데일리 루틴 -->
+              <div class="overlap-3">
+                <a th:href="@{/routines}" class="side-navigation-item nav-item" data-nav="routines">
+                  <div class="nav-icon" style="background: #fce4ec; color: #e91e63;">
+                    🎯
+                  </div>
+                  <span class="nav-link-button">데일리 루틴</span>
+                </a>
               </div>
 
-            </div> <!-- group-2 end -->
+              <!-- 면접 질문 -->
+              <div class="overlap-group">
+                <a th:href="@{/interview/select}" class="side-navigation-item nav-item" data-nav="interview">
+                  <div class="nav-icon" style="background: #f3e5f5; color: #9c27b0;">
+                    💬
+                  </div>
+                  <span class="nav-link-button">면접 질문</span>
+                </a>
+              </div>
+
+              <!-- My 통계 -->
+              <div class="overlap-2">
+                <a th:href="@{/mypage/stats}" class="side-navigation-item nav-item" data-nav="stats">
+                  <div class="nav-icon" style="background: #fff8e1; color: #f57c00;">
+                    📊
+                  </div>
+                  <span class="nav-link-button">My 통계</span>
+                </a>
+              </div>
+
+              <!-- 환경설정 -->
+              <div class="overlap-3">
+                <a th:href="@{/settings}" class="side-navigation-item nav-item" data-nav="settings">
+                  <div class="nav-icon" style="background: #ede7f6; color: #673ab7;">
+                    ⚙️
+                  </div>
+                  <span class="nav-link-button">환경설정</span>
+                </a>
+              </div>
+
+            </div> <!-- group-3 end -->
 
           </div> <!-- side-navigation-bar end -->
         </div>
@@ -76,5 +87,230 @@
     </div>
   </div>
 </div>
+
+<script>
+  // ✅ 현재 페이지에 따른 active 클래스 설정 개선
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const navItems = document.querySelectorAll('.nav-item');
+
+    // 초기화: 모든 nav-item에서 active 클래스 제거 및 스타일 리셋
+    navItems.forEach(item => {
+      item.classList.remove('active');
+      // 강제로 스타일 리셋
+      const icon = item.querySelector('.nav-icon');
+      const text = item.querySelector('.nav-link-button');
+      if (icon) {
+        icon.style.transform = 'translateY(0) scale(1)';
+        icon.style.boxShadow = 'none';
+      }
+      if (text) {
+        text.style.transform = 'translateX(0)';
+      }
+    });
+
+    // 경로 매핑 객체
+    const pathMapping = {
+      '/user/main': 'main',
+      '/todos': 'todos',
+      '/todos/calender': 'todos',
+      '/routines': 'routines',
+      '/interview': 'interview',
+      '/interview/select': 'interview',
+      '/mypage/stats': 'stats',
+      '/settings': 'settings'
+    };
+
+    // 정확한 경로 매칭
+    let activeNav = pathMapping[currentPath];
+
+    // 정확한 매칭이 없으면 부분 매칭 시도
+    if (!activeNav) {
+      for (const [path, nav] of Object.entries(pathMapping)) {
+        if (currentPath.startsWith(path) && path !== '/') {
+          activeNav = nav;
+          break;
+        }
+      }
+    }
+
+    // 해당하는 네비게이션 아이템에 active 클래스 추가
+    if (activeNav) {
+      const activeItem = document.querySelector(`[data-nav="${activeNav}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+    }
+
+    // 네비게이션 아이템 클릭 이벤트
+    navItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        // 클릭 시 모든 항목 리셋
+        navItems.forEach(nav => {
+          nav.classList.remove('active');
+          const icon = nav.querySelector('.nav-icon');
+          const text = nav.querySelector('.nav-link-button');
+          if (icon) {
+            icon.style.transform = 'translateY(0) scale(1)';
+            icon.style.boxShadow = 'none';
+          }
+          if (text) {
+            text.style.transform = 'translateX(0)';
+          }
+        });
+
+        // 클릭된 항목에 active 추가
+        this.classList.add('active');
+      });
+
+      // 마우스 이벤트 리스너 추가 (상태 관리)
+      item.addEventListener('mouseleave', function() {
+        if (!this.classList.contains('active')) {
+          const icon = this.querySelector('.nav-icon');
+          const text = this.querySelector('.nav-link-button');
+          if (icon) {
+            icon.style.transform = 'translateY(0) scale(1)';
+            icon.style.boxShadow = 'none';
+          }
+          if (text) {
+            text.style.transform = 'translateX(0)';
+          }
+        }
+      });
+    });
+  });
+
+  // ✅ 사이드바 토글 기능 (모바일용)
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.box');
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
+
+  // ✅ 외부 클릭시 사이드바 닫기 (모바일용)
+  document.addEventListener('click', function(event) {
+    const sidebar = document.querySelector('.box');
+    const toggleButton = document.querySelector('.sidebar-toggle');
+
+    if (window.innerWidth <= 768 &&
+        sidebar &&
+        sidebar.classList.contains('open') &&
+        !sidebar.contains(event.target) &&
+        !toggleButton?.contains(event.target)) {
+      sidebar.classList.remove('open');
+    }
+  });
+
+  // ✅ 키보드 네비게이션 지원
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      const sidebar = document.querySelector('.box');
+      if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+      }
+    }
+  });
+
+  // ✅ 리사이즈 이벤트 처리
+  window.addEventListener('resize', function() {
+    const sidebar = document.querySelector('.box');
+    if (window.innerWidth > 768 && sidebar) {
+      sidebar.classList.remove('open');
+    }
+  });
+</script>
+
+<style>
+  /* ✅ 사이드바 전용 추가 스타일 */
+  .nav-item {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ✅ 클릭 효과 - 더 부드럽게 */
+  .nav-item:active {
+    transform: scale(0.99);
+  }
+
+  /* ✅ 로딩 인디케이터 (선택사항) */
+  .nav-item.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* ✅ 아이콘 애니메이션 개선 - 더 안정적으로 */
+  .nav-icon {
+    transition: all 0.2s ease;
+    transform: translateY(0) scale(1); /* 기본 상태 명시 */
+  }
+
+  .nav-item:hover .nav-icon {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .nav-item.active .nav-icon {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* ✅ 클릭 후 상태 리셋 */
+  .nav-item:not(:hover):not(.active) .nav-icon {
+    transform: translateY(0) scale(1);
+    box-shadow: none;
+  }
+
+  /* ✅ 텍스트 애니메이션 - 더 안정적으로 */
+  .nav-link-button {
+    transition: all 0.2s ease;
+    transform: translateX(0); /* 기본 상태 명시 */
+  }
+
+  .nav-item:hover .nav-link-button {
+    transform: translateX(1px);
+  }
+
+  /* ✅ 클릭 후 상태 리셋 */
+  .nav-item:not(:hover) .nav-link-button {
+    transform: translateX(0);
+  }
+
+  /* ✅ 모바일 햄버거 메뉴 스타일 (필요시) */
+  .sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+</style>
 </body>
 </html>
