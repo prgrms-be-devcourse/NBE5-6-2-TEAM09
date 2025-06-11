@@ -1,30 +1,80 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="utf-8" />
-    <link rel="stylesheet" th:href="@{/css/header/global.css}" />
-    <link rel="stylesheet" th:href="@{/css/header/style.css}" />
-    <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
-  </head>
-  <body>
-  <div th:fragment="header">
-    <div class="div-wrapper">
-      <div class="div">
-        <div class="group">
-          <a th:href="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/routines}">
-            <img class="vector" th:src="@{/img/codemap_white.png}" style="cursor: pointer;" />
-          </a>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+</head>
+<body>
+<div th:fragment="header">
+  <div class="div-wrapper">
+    <div class="div">
+
+      <!-- ✅ 좌측 로고 영역 - main.html과 동일 구조 -->
+      <div class="group">
+        <a th:href="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/user/main}">
+          <div class="vector">📊</div>
+        </a>
+        <span class="logo-text">CodeMap</span>
+      </div>
+
+      <!-- ✅ 중앙 페이지 제목 영역 -->
+      <h1 class="page-title"></h1>
+
+      <!-- ✅ 우측 사용자 정보 영역 - main.html과 동일 구조 -->
+      <div class="auto-layout">
+
+        <!-- 알림 아이콘 (알림이 있을 때만 표시) -->
+        <div class="notification" th:if="${alertTodos != null and !alertTodos.isEmpty()}"></div>
+
+        <!-- 사용자 아바타 -->
+        <div class="user-avatar" th:text="${user != null ? #strings.substring(user.nickname, 0, 1) : ''}">김</div>
+
+        <!-- 사용자 닉네임 -->
+        <span th:text="${user != null ? user.nickname : ''}">사용자</span>
+
+        <!-- 로그아웃 버튼 -->
+        <div class="style-filled">
+          <form th:action="@{/user/logout}" method="post" style="margin-left: 1rem;">
+            <button type="submit" class="logout-button">로그아웃</button>
+          </form>
         </div>
-        <div class="auto-layout">
-          <div class="style-filled">
-            <form th:action="@{/user/logout}" method="post">
-              <button type="submit" class="logout-button">로그아웃</button>
-            </form>
-          </div>
-        </div>
+
       </div>
     </div>
   </div>
-  </body>
+</div>
+
+<script>
+  // ✅ 페이지별 제목 설정
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const pageTitle = document.querySelector('.page-title');
+
+    if (pageTitle) {
+      let title = '';
+
+      if (currentPath.includes('/user/main')) {
+        title = '대시보드';
+      } else if (currentPath.includes('/todos')) {
+        title = '투두 리스트';
+      } else if (currentPath.includes('/routines')) {
+        title = '데일리 루틴';
+      } else if (currentPath.includes('/interview')) {
+        title = '면접 질문';
+      } else if (currentPath.includes('/mypage/stats')) {
+        title = 'My 통계';
+      } else if (currentPath.includes('/settings')) {
+        title = '환경설정';
+      } else if (currentPath.includes('/admin')) {
+        title = '관리자';
+      }
+
+      pageTitle.textContent = title;
+    }
+  });
+</script>
+</body>
 </html>
