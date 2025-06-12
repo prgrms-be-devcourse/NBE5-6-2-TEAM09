@@ -94,6 +94,54 @@
         .submit-button:hover {
             background-color: #3b6fe0; /* 호버 효과 */
         }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-box {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.3s ease-out;
+            max-width: 400px;
+        }
+
+        .modal-message {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0019a5;
+            margin-bottom: 20px;
+        }
+
+        .modal-confirm-button {
+            padding: 10px 24px;
+            font-size: 14px;
+            border: none;
+            border-radius: 24px;
+            background-color: #4e6df2;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .modal-confirm-button:hover {
+            background-color: #3b6fe0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -137,6 +185,25 @@
             <button type="submit" class="submit-button">확인</button>
         </form>
     </div>
+    <!-- 완료 모달 -->
+    <div id="completeModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <p class="modal-message">🎉 모든 질문을 완료했습니다!</p>
+            <button class="modal-confirm-button" onclick="closeModal()">확인</button>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const message = [[${message}]];
+        if (message) {
+            document.getElementById('completeModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('completeModal').style.display = 'none';
+        }
+    </script>
+
 </main>
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>

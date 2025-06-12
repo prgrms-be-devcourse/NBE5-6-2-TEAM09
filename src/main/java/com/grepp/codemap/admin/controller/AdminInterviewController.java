@@ -1,6 +1,6 @@
 package com.grepp.codemap.admin.controller;
 
-import com.grepp.codemap.admin.dto.InterviewQuestionFormDto;
+import com.grepp.codemap.admin.dto.AdminInterviewQuestionDto;
 import com.grepp.codemap.interview.domain.InterviewQuestion;
 import com.grepp.codemap.interview.service.InterviewService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/admin/contents")
 @RequiredArgsConstructor
 @Slf4j
-public class AdminQuestionController {
+public class AdminInterviewController {
 
     private final InterviewService interviewService;
 
@@ -60,7 +60,7 @@ public class AdminQuestionController {
     // 4️⃣ 질문 등록 폼
     @GetMapping("/questions/new")
     public String showCreateForm(@RequestParam("category") String category, Model model) {
-        InterviewQuestionFormDto form = new InterviewQuestionFormDto();
+        AdminInterviewQuestionDto form = new AdminInterviewQuestionDto();
         form.setCategory(category);
         model.addAttribute("form", form);
         model.addAttribute("isEdit", false);
@@ -70,7 +70,7 @@ public class AdminQuestionController {
 
     // 5️⃣ 질문 등록 처리
     @PostMapping("/questions")
-    public String registerQuestion(@ModelAttribute("form") InterviewQuestionFormDto formDto,
+    public String registerQuestion(@ModelAttribute("form") AdminInterviewQuestionDto formDto,
                                    RedirectAttributes redirectAttributes) {
 
         log.info("💬 등록 요청 들어옴: {}", formDto);
@@ -91,7 +91,7 @@ public class AdminQuestionController {
     @GetMapping("/questions/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         InterviewQuestion question = interviewService.findById(id);
-        InterviewQuestionFormDto formDto = InterviewQuestionFormDto.from(question);
+        AdminInterviewQuestionDto formDto = AdminInterviewQuestionDto.from(question);
         model.addAttribute("form", formDto);
         model.addAttribute("isEdit", true);
         model.addAttribute("formAction", "/admin/contents/questions/" + id + "/edit");
@@ -101,7 +101,7 @@ public class AdminQuestionController {
     // 7️⃣ 질문 수정 처리
     @PatchMapping("/questions/{id}/edit")
     public String updateQuestion(@PathVariable Long id,
-                                 @ModelAttribute("form") InterviewQuestionFormDto formDto,
+                                 @ModelAttribute("form") AdminInterviewQuestionDto formDto,
                                  RedirectAttributes redirectAttributes) {
         interviewService.update(id, formDto.toEntity());
         redirectAttributes.addAttribute("category", formDto.getCategory());
