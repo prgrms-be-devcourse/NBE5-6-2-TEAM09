@@ -4,27 +4,67 @@
       0%   { background-color: #ffffff; }
       100% { background-color: #ffeaa7; }
     }
+
+    @keyframes blink-animation {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .blink {
+      animation: blink-animation 1s infinite;
+    }
   </style>
+
   <script th:inline="javascript">
     /*<![CDATA[*/
     const alertTodos = /*[[${alertTodos}]]*/ [];
-    console.log("🚨 alertTodos =", alertTodos);
+    console.log("🔔 alertTodos:", alertTodos);
 
-    function playAlertSound() {
-      const audio = new Audio('/sounds/alert.mp3');
-      audio.play().catch(e => console.warn("🔇 자동 재생 차단:", e));
-    }
+    window.addEventListener('load', () => {
+      const now = new Date();
+      const icon = document.getElementById('notification-icon');
+      const popup = document.getElementById('notification-popup');
 
-    if (alertTodos.length > 0) {
-      // ✅ 화면 점멸
-      document.body.style.animation = "flash 0.3s alternate 6";
+      let shouldBlink = false;
 
-      // ✅ 첫 클릭 이벤트가 발생하면 그때 알림음 실행 (자동재생 정책 회피용)
-      document.addEventListener('click', function handler() {
-        playAlertSound();
-        document.removeEventListener('click', handler);
+      (alertTodos || []).forEach(todo => {
+        if (!todo.startTime) return;
+        const start = new Date(todo.startTime);
+        const diffMin = (start.getTime() - now.getTime()) / 60000;
+
+        console.log(`⏱️ ${todo.title}까지 ${diffMin.toFixed(2)}분`);
+
+        if (diffMin >= 0 && diffMin <= 10) {
+          shouldBlink = true;
+        }
       });
-    }
+
+      // 화면 점멸 + 아이콘 깜빡임
+      if (shouldBlink) {
+        document.body.style.animation = "flash 0.3s alternate 6";
+
+        if (icon) {
+          icon.classList.add('blink');
+          console.log("🟠 아이콘 깜빡임 적용됨");
+        }
+
+        // 음성 알림 (첫 클릭 시 재생)
+        document.addEventListener('click', function handler() {
+          const audio = new Audio('/sounds/alert.mp3');
+          audio.play().catch(e => console.warn("🔇 자동 재생 차단:", e));
+          document.removeEventListener('click', handler);
+        });
+
+        // 아이콘 클릭 시 팝업 열기
+        if (icon && popup) {
+          icon.addEventListener('click', () => {
+            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+            console.log("🟡 팝업 토글됨");
+          });
+        }
+      }
+    });
     /*]]>*/
   </script>
 </th:block>
