@@ -42,7 +42,7 @@
       align-items: center;
       justify-content: center;
       margin-left: 250px;
-      margin-top: -31vw;
+      margin-top: -40vw;
       padding: 40px;
     }
 
@@ -712,14 +712,23 @@
 
     breakProgressBar.style.width = '0%';
 
-
-
     window.removeEventListener('beforeunload', beforeUnloadHandler);
+
+    // 코딩테스트 루틴인지 확인
+    const routineCategory = /*[[${routine.category}]]*/ '';
+    const isCodingTest = routineCategory && routineCategory.startsWith('코딩테스트 준비');
 
     // 폼 생성
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/routines/timer/complete';
+
+    if (isCodingTest) {
+      // 코딩테스트 루틴이면 코딩 완료 엔드포인트로
+      form.action = '/routines/timer/complete-coding';
+    } else {
+      // 일반 루틴이면 기존 엔드포인트로
+      form.action = '/routines/timer/complete';
+    }
 
     // 세션 ID 추가
     const sessionIdInput = document.createElement('input');
@@ -749,7 +758,7 @@
     methodInput.value = 'PATCH';
     form.appendChild(methodInput);
 
-    if (goToNext && nextRoutineId) {
+    if (goToNext && nextRoutineId && !isCodingTest) {
       const nextInput = document.createElement('input');
       nextInput.type = 'hidden';
       nextInput.name = 'nextRoutineId';

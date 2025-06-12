@@ -1,9 +1,12 @@
 package com.grepp.codemap.routine.service;
 
+import com.grepp.codemap.routine.domain.CodingTestReview;
 import com.grepp.codemap.routine.domain.DailyRoutine;
 import com.grepp.codemap.routine.domain.PomodoroSession;
+import com.grepp.codemap.routine.dto.CodingTestReviewDto;
 import com.grepp.codemap.routine.dto.DailyRoutineDto;
 import com.grepp.codemap.routine.dto.PomodoroSessionDto;
+import com.grepp.codemap.routine.repository.CodingTestReviewRepository;
 import com.grepp.codemap.routine.repository.DailyRoutineRepository;
 import com.grepp.codemap.routine.repository.PomodoroSessionRepository;
 import com.grepp.codemap.user.domain.User;
@@ -26,6 +29,7 @@ public class DailyRoutineService {
 
     private final DailyRoutineRepository dailyRoutineRepository;
     private final PomodoroSessionRepository pomodoroSessionRepository;
+    private final CodingTestReviewRepository codingTestReviewRepository;
     private final UserService userService;
 
     // 사용자의 모든 활성 루틴 조회
@@ -352,5 +356,70 @@ public class DailyRoutineService {
             .min((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()))
             .map(DailyRoutineDto::fromEntity)
             .orElse(null);
+    }
+
+    // 코딩테스트 회고 저장
+    @Transactional
+    public List<CodingTestReviewDto> saveCodingTestReviews(Long routineId, Long userId, List<CodingTestReviewDto> reviewDtos) {
+        User user = userService.getUserById(userId);
+        DailyRoutine routine = dailyRoutineRepository.findById(routineId)
+            .orElseThrow(() -> new IllegalArgumentException("Routine not found with id: " + routineId));
+
+        // 권한 검증
+        if (!routine.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("You don't have permission to add reviews to this routine");
+        }
+
+        List<CodingTestReview> reviews = reviewDtos.stream()
+            .map(dto -> CodingTestReview.builder()
+                .routine(routine)
+                .problemTitle(dto.getProblemTitle())
+                .problemDescription(dto.getProblemDescription())
+                .mySolution(dto.getMySolution())
+                .correctSolution(dto.getCorrectSolution())
+                .problemType(dto.getProblemType())
+                .isDeleted(false)
+                .build())
+            .collect(Collectors.toList());
+
+        List<CodingTestReview> savedReviews = codingTestReviewRepository.saveAll(reviews);
+
+        return savedReviews.stream()
+            .map(CodingTestReviewDto::fromEntity)
+            .collect(Collectors.toList());
+    }
+
+    // 코딩테스트 회고 조회
+    @Transactional(readOnly = true)
+    public List<CodingTestReviewDto> getCodingTestReviews(Long routineId, Long userId) {
+        User user = userService.getUserById(userId);
+        DailyRoutine routine = dailyRoutineRepository.findById(routineId)
+            .orElseThrow(() -> new IllegalArgumentException("Routine not found with id: " + routineId));
+
+        // 권한 검증
+        if (!routine.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("You don't have permission to view reviews for this routine");
+        }
+
+        List<CodingTestReview> reviews = codingTestReviewRepository.findByRoutineAndIsDeletedFalse(routine);
+
+        return reviews.stream()
+            .map(CodingTestReviewDto::fromEntity)
+            .collect(Collectors.toList());
+    }
+
+    // 코딩테스트 루틴인지 확인
+    public boolean isCodingTestRoutine(DailyRoutineDto routine) {
+        return routine.getCategory() != null && routine.getCategory().startsWith("코딩테스트 준비");
+    }
+
+    // 코딩테스트 회고와 함께 루틴 완료 처리
+    @Transactional
+    public DailyRoutineDto completeCodingTestRoutine(Long routineId, Long userId, List<CodingTestReviewDto> reviewDtos) {
+        // 회고 저장
+        saveCodingTestReviews(routineId, userId, reviewDtos);
+
+        // 루틴 완료 처리
+        return completeRoutine(routineId, userId);
     }
 }

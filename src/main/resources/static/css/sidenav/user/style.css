@@ -272,7 +272,7 @@
 }
 
 /* ✅ 다크모드 대응 (추후 확장용) */
-@media (prefers-color-scheme: dark) {
+/*@media (prefers-color-scheme: dark) {
   .box .group {
     background-color: #1a1a1a;
     border-right: 1px solid #333;
@@ -281,7 +281,7 @@
   .box .side-navigation-bar {
     background-color: #1a1a1a;
   }
-}
+}*/
 
 /* ✅ 애니메이션 효과 개선 - 더 안정적으로 */
 .box .side-navigation-item,
