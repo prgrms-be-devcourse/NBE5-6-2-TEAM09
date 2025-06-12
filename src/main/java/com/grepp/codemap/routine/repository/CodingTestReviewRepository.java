@@ -1,0 +1,22 @@
+package com.grepp.codemap.routine.repository;
+
+import com.grepp.codemap.routine.domain.CodingTestReview;
+import com.grepp.codemap.routine.domain.DailyRoutine;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface CodingTestReviewRepository extends JpaRepository<CodingTestReview, Long> {
+
+    List<CodingTestReview> findByRoutineAndIsDeletedFalse(DailyRoutine routine);
+
+    @Query("SELECT c FROM CodingTestReview c WHERE c.routine.id = :routineId AND c.isDeleted = false")
+    List<CodingTestReview> findByRoutineIdAndIsDeletedFalse(@Param("routineId") Long routineId);
+
+    @Modifying
+    @Query("DELETE FROM CodingTestReview c WHERE c.routine.id IN (SELECT r.id FROM DailyRoutine r WHERE r.user.id = :userId)")
+    void deleteByUserId(@Param("userId") Long userId);
+}
