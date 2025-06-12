@@ -40,7 +40,7 @@
 
     main {
       margin-left: 250px;
-      margin-top: -31vw;
+      margin-top: -34vw;
       padding: 40px;
     }
 
@@ -173,11 +173,6 @@
     <div th:each="todo : ${todos}" class="todo-item"
          th:classappend="${todo.completed} ? 'todo-complete'">
       <div class="todo-left">
-        <input type="checkbox"
-               class="complete-checkbox"
-               th:attr="data-id=${todo.id}, data-date=${selectedDate}"
-               th:checked="${todo.completed}"/>
-
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <span th:text="${todo.title}" style="font-weight: bold;">투두 제목</span>
           <span th:text="${todo.description}" style="font-size: 14px; color: #555;">내용</span>
@@ -312,18 +307,6 @@
     });
   });
 
-  // ✅ 완료 체크 토글 처리
-  document.querySelectorAll('.complete-checkbox').forEach(box => {
-    box.addEventListener('change', function () {
-      const id = this.getAttribute('data-id');
-      const date = this.getAttribute('data-date');
-      fetch(`/todos/${id}/complete?date=${date}`, {
-        method: "PATCH"
-      }).then(() => {
-        window.location.href = `/todos?date=${date}`;
-      });
-    });
-  });
 </script>
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>

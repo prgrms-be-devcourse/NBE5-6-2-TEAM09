@@ -175,23 +175,16 @@ public class TodoController {
         return "todo/todo-delete"; // HTML 모달 템플릿 파일
     }
 
-    /** ✅ 8. 완료 상태 토글 (체크박스 클릭) */
-    @PatchMapping("/{id}/complete")
-    public String toggleComplete(@PathVariable Long id,
+    /** ✅ 완료 상태 토글 (main.html AJAX 요청 대응용) */
+    @PostMapping("/{id}/complete")
+    @ResponseBody
+    public ResponseEntity<Void> toggleComplete(@PathVariable Long id,
         HttpSession session,
         @RequestParam("date") String date) {
         Long userId = (Long) session.getAttribute("userId");
         todoService.toggleComplete(id, userId);
-        return "redirect:/todos?date=" + date;
+        return ResponseEntity.ok().build(); // 새로고침 없이 응답만 돌려줌
     }
 
-    /** ✅ 9. 완료 취소 */
-    @PatchMapping("/{id}/cancel")
-    public String cancelComplete(@PathVariable Long id,
-        HttpSession session,
-        @RequestParam("date") String date) {
-        Long userId = (Long) session.getAttribute("userId");
-        todoService.toggleComplete(id, userId); // 같은 toggle 메서드 사용
-        return "redirect:/todos?date=" + date;
-    }
+
 }

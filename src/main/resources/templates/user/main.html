@@ -470,14 +470,18 @@
       <!-- 투두가 있는 경우 -->
       <div th:if="${todayTodos != null and !todayTodos.isEmpty()}">
         <div th:each="todo : ${todayTodos}" class="todo-item" th:classappend="${todo.completed} ? 'todo-completed'">
-          <div class="todo-checkbox" th:classappend="${todo.completed} ? 'checked'" th:attr="data-todo-id=${todo.id}">
+          <div class="todo-checkbox"
+               th:classappend="${todo.completed} ? 'checked'"
+               th:attr="data-todo-id=${todo.id}, data-todo-completed=${todo.completed}">
             <span th:if="${todo.completed}">✓</span>
           </div>
           <div class="todo-info">
             <div class="todo-title" th:text="${todo.title}">할 일 제목</div>
             <div class="todo-time">
-              <span th:text="${#temporals.format(todo.startTime, 'HH:mm')}">09:00</span> ~
-              <span th:text="${#temporals.format(todo.completedAt, 'HH:mm')}">10:00</span>
+          <span style="font-size:12px; color: #888;"
+                th:text="'시작: ' + ${#temporals.format(todo.startTime, 'HH:mm')} + ' | 마감: ' + ${#temporals.format(todo.completedAt, 'yyyy-MM-dd')}">
+            시작 / 마감
+          </span>
             </div>
           </div>
         </div>
@@ -584,39 +588,34 @@
     }, 100);
   });
 
-  // 투두 체크박스 기능
   const checkboxes = document.querySelectorAll('.todo-checkbox');
   checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('click', function() {
+    checkbox.addEventListener('click', function () {
       const todoId = this.getAttribute('data-todo-id');
-      const isChecked = this.classList.contains('checked');
+      const today = new Date().toISOString().split('T')[0];
 
-      if (todoId) {
-        // 서버에 완료 상태 업데이트 요청
-        fetch(`/todos/${todoId}/complete?date=${new Date().toISOString().split('T')[0]}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }).then(response => {
-          if (response.ok) {
-            // UI 업데이트
-            this.classList.toggle('checked');
-            const todoItem = this.closest('.todo-item');
-            todoItem.classList.toggle('todo-completed');
-
-            if (this.classList.contains('checked')) {
-              this.innerHTML = '<span>✓</span>';
-            } else {
-              this.innerHTML = '';
-            }
-          }
-        }).catch(error => {
-          console.error('Error:', error);
-        });
-      }
+      fetch(`/todos/${todoId}/complete?date=${today}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          this.classList.toggle('checked');
+          const todoItem = this.closest('.todo-item');
+          todoItem.classList.toggle('todo-completed');
+          this.innerHTML = this.classList.contains('checked') ? '<span>✓</span>' : '';
+        } else {
+          alert('서버에서 완료 상태 업데이트 실패');
+        }
+      })
+      .catch(error => {
+        console.error('에러 발생:', error);
+      });
     });
   });
+
 
   // 사이드바 메인화면 active 처리
   document.addEventListener('DOMContentLoaded', function() {

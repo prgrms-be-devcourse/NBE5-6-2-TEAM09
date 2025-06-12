@@ -30,6 +30,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
         LocalDateTime start,
         LocalDateTime end
     );
+    List<Todo> findAllByUser_Id(Long userId); // 캘린더용 전체 조회
 
     /**
      * 단건 조회 시, 사용자 권한 검증을 위해 ID와 user_id를 함께 조회
