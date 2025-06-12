@@ -3,6 +3,7 @@ package com.grepp.codemap.interview.controller;
 
 import com.grepp.codemap.interview.domain.InterviewQuestion;
 import com.grepp.codemap.interview.domain.UserAnswer;
+import com.grepp.codemap.interview.service.KeywordCompareService;
 import com.grepp.codemap.interview.service.InterviewService;
 import com.grepp.codemap.interview.service.UserAnswerService;
 import com.grepp.codemap.user.domain.User;
@@ -13,12 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -29,6 +29,7 @@ public class  InterviewController {
     private final InterviewService interviewService;
     private final UserService userService;
     private final UserAnswerService userAnswerService;
+    private final KeywordCompareService keywordCompareService;
 
 
     @GetMapping("/select")
@@ -133,21 +134,36 @@ public class  InterviewController {
             @RequestParam("page") int page,
             Authentication authentication,
             HttpSession session,
-            Model model){
+            Model model) {
 
         String email = authentication.getName();
         User user = userService.findByEmail(email);
         InterviewQuestion question = interviewService.findById(questionId);
         UserAnswer userAnswer = userAnswerService.findLatestAnswer(user, question);
 
-        log.info("🔍 [showResult] userAnswer 객체 = {}", userAnswer);
-        log.info("🔍 [showResult] userAnswer.answerText = {}", userAnswer.getAnswerText());
+        String modelAnswer = question.getAnswerText();
+        String userAnswerText = userAnswer.getAnswerText();
 
+        // 키워드 추출 및 상세 분석
+        List<String> keywordList = keywordCompareService.extractKeywords(modelAnswer);
+        Map<String, Object> analysis = keywordCompareService.generateDetailedAnalysis(userAnswerText, keywordList);
 
+        // 하이라이트된 모범 답안 생성
+        List<String> matchedKeywords = (List<String>) analysis.get("matchedKeywords");
+        List<String> missingKeywords = (List<String>) analysis.get("missingKeywords");
+        String highlightedModelAnswer = keywordCompareService.generateHighlightedAnswer(
+                modelAnswer, matchedKeywords, missingKeywords);
+
+        // 모델에 데이터 추가
         model.addAttribute("question", question);
         model.addAttribute("userAnswer", userAnswer);
         model.addAttribute("category", question.getCategory());
         model.addAttribute("page", page);
+
+        // 분석 결과 추가
+        model.addAttribute("analysis", analysis);
+        model.addAttribute("highlightedModelAnswer", highlightedModelAnswer);
+        model.addAttribute("keywordList", keywordList); // 전체 키워드 목록
 
         int totalPages = ((List<InterviewQuestion>) session.getAttribute("questions")).size();
         model.addAttribute("totalPages", totalPages);
@@ -178,6 +194,15 @@ public class  InterviewController {
 
         return "interview/interview-random";
     }
+
+    @PostMapping("/complete")
+    public String completeInterview(RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("message", "모든 질문을 완료했습니다!");
+        return "redirect:/interview/select";
+    }
+
+
 
 
 

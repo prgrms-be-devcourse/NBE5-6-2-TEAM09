@@ -59,6 +59,167 @@
             font-size: 18px;
         }
 
+        /* 점수 표시 스타일 */
+        .score-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .score-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .grade-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-info h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .score-info p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .accuracy-percent {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* 키워드 분석 스타일 */
+        .keyword-analysis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .keyword-section {
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .matched-keywords {
+            background-color: #e8f5e8;
+            border-left-color: #4caf50;
+        }
+
+        .missing-keywords {
+            background-color: #ffe6e6;
+            border-left-color: #f44336;
+        }
+
+        .keyword-section h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .matched-keywords h4 {
+            color: #2e7d32;
+        }
+
+        .missing-keywords h4 {
+            color: #d32f2f;
+        }
+
+        .keyword-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .keyword-list li {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .matched-keywords .keyword-list li {
+            background-color: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        .missing-keywords .keyword-list li {
+            background-color: #ffcdd2;
+            color: #b71c1c;
+        }
+
+        /* 평가 코멘트 스타일 */
+        .evaluation-comment {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            color: #8b4513;
+        }
+
+        /* 하이라이트 스타일 개선 */
+        .answer-box mark {
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .highlight-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .legend-matched {
+            background-color: #d8f5d0;
+        }
+
+        .legend-missing {
+            background-color: #ffe6e6;
+        }
+
         .pagination-dots {
             margin-top: 32px;
             text-align: center;
@@ -118,40 +279,111 @@
             <p th:text="${question.questionText}">질문 내용</p>
         </div>
 
+        <!-- 내 답변 -->
         <div class="answer-box" th:if="${userAnswer != null}">
             <div class="box-title">내 답변</div>
             <p th:text="${userAnswer.answerText}">제출한 답변</p>
         </div>
 
-        <div class="answer-box" th:unless="${userAnswer != null}">
-            <div class="box-title">내 답변</div>
-            <p style="color: red;">⚠ 답변이 저장되지 않았거나 조회에 실패했습니다.</p>
+        <!-- 점수 및 평가 결과 -->
+        <div class="answer-box" th:if="${analysis != null}">
+            <div class="box-title">답변 분석 결과</div>
+
+            <!-- 점수 표시 -->
+            <div class="score-container">
+                <div class="score-left">
+                    <div class="grade-circle" th:text="${analysis.grade}">A+</div>
+                    <div class="score-info">
+                        <h3>키워드 매칭률</h3>
+                        <p th:text="${analysis.matchedCount} + '개 / ' + ${analysis.totalKeywords} + '개 포함'">5개 / 8개 포함</p>
+                    </div>
+                </div>
+                <div class="accuracy-percent" th:text="${#numbers.formatDecimal(analysis.accuracy, 1, 1)} + '%'">87.5%</div>
+            </div>
+
+            <!-- 평가 코멘트 -->
+            <div class="evaluation-comment" th:text="${analysis.comment}">
+                좋은 답변입니다! 대부분의 핵심 내용을 포함했습니다.
+            </div>
+
+            <!-- 키워드 분석 -->
+            <div class="keyword-analysis">
+                <!-- 포함된 키워드 -->
+                <div class="keyword-section matched-keywords">
+                    <h4>✅ 포함된 키워드 (<span th:text="${analysis.matchedCount}">5</span>개)</h4>
+                    <ul class="keyword-list" th:if="${analysis.matchedKeywords != null && !analysis.matchedKeywords.isEmpty()}">
+                        <li th:each="word : ${analysis.matchedKeywords}" th:text="${word}">키워드</li>
+                    </ul>
+                    <p th:if="${analysis.matchedKeywords == null || analysis.matchedKeywords.isEmpty()}" style="color: #666; font-style: italic;">
+                        포함된 키워드가 없습니다.
+                    </p>
+                </div>
+
+                <!-- 누락된 키워드 -->
+                <div class="keyword-section missing-keywords">
+                    <h4>⚠️ 누락된 키워드 (<span th:text="${analysis.missingCount}">3</span>개)</h4>
+                    <ul class="keyword-list" th:if="${analysis.missingKeywords != null && !analysis.missingKeywords.isEmpty()}">
+                        <li th:each="word : ${analysis.missingKeywords}" th:text="${word}">키워드</li>
+                    </ul>
+                    <p th:if="${analysis.missingKeywords == null || analysis.missingKeywords.isEmpty()}" style="color: #2e7d32; font-weight: bold;">
+                        🎉 모든 핵심 키워드를 포함했어요!
+                    </p>
+                </div>
+            </div>
         </div>
 
+        <!-- 모범 답안 (하이라이트 포함) -->
         <div class="answer-box">
             <div class="box-title">모범 답안</div>
-            <p th:text="${question.answerText}">모범 답안</p>
+            <div th:utext="${highlightedModelAnswer ?: question.answerText}">모범 답안</div>
+
+            <!-- 하이라이트 범례 -->
+            <div class="highlight-legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-matched"></div>
+                    <span>답변에 포함된 키워드</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-missing"></div>
+                    <span>답변에 누락된 키워드</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination-dots">
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                  th:classappend="${page} == ${i} ? 'active' : ''">●</span>
+        </div>
+
+        <div class="prev-arrow" th:if="${page > 0}">
+            <span>이전 문제</span>
+            <a th:href="@{/interview/question(page=${page - 1}, category=${category})}">
+                <img th:src="@{/img/arrow-left.png}" alt="이전 문제" />
+            </a>
+        </div>
+
+        <div class="next-arrow" th:if="${page + 1 < totalPages}">
+            <span>다음 문제</span>
+            <a th:href="@{/interview/question(page=${page + 1}, category=${category})}">
+                <img th:src="@{/img/arrow-right.png}" alt="다음 문제" />
+            </a>
+        </div>
+
+        <!-- 마지막 문제일 경우에만 완료 버튼 노출 -->
+        <div th:if="${page + 1 == totalPages}" style="text-align: center; margin-top: 30px;">
+            <form th:action="@{/interview/complete}" method="post">
+                <button type="submit"
+                        style="padding: 12px 24px; font-size: 16px; background-color: #0019a5; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    모든 질문 완료하기
+                </button>
+            </form>
         </div>
     </div>
 
-    <div class="pagination-dots">
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-              th:classappend="${page} == ${i} ? 'active' : ''">●</span>
-    </div>
+    <script th:if="${message}" th:inline="javascript">
+        alert([[${message}]]);
+    </script>
 
-    <div class="prev-arrow" th:if="${page > 0}">
-        <span>이전 문제</span>
-        <a th:href="@{/interview/question(page=${page - 1}, category=${category})}">
-            <img th:src="@{/img/arrow-left.png}" alt="이전 문제" />
-        </a>
-    </div>
-
-    <div class="next-arrow" th:if="${page + 1 < totalPages}">
-        <span>다음 문제</span>
-        <a th:href="@{/interview/question(page=${page + 1}, category=${category})}">
-            <img th:src="@{/img/arrow-right.png}" alt="다음 문제" />
-        </a>
-    </div>
 </main>
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>
