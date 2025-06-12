@@ -6,17 +6,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InterviewQuestionFormDto {
+public class AdminInterviewQuestionDto {
     private Long id;
     private String category;
     private String difficulty;
     private String questionText;
     private String answerText;
 
-    public InterviewQuestionFormDto() {}
+    public AdminInterviewQuestionDto() {}
 
-    public static InterviewQuestionFormDto from(InterviewQuestion entity) {
-        InterviewQuestionFormDto dto = new InterviewQuestionFormDto();
+    public static AdminInterviewQuestionDto from(InterviewQuestion entity) {
+        AdminInterviewQuestionDto dto = new AdminInterviewQuestionDto();
         dto.setId(entity.getId());
         dto.setCategory(entity.getCategory());
         dto.setDifficulty(entity.getDifficulty());
