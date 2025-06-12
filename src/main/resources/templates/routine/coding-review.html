@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+  <title>코딩테스트 회고</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      font-family: "Pretendard", sans-serif;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+    aside {
+      position: fixed;
+      top: 116px; left: 0;
+      width: 250px;
+      height: calc(100% - 116px);
+      z-index: 900;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-left: 250px;
+      margin-top: -40vw;
+      padding: 40px;
+    }
+
+    .review-wrapper {
+      background-color: #d8e3ff;
+      padding: 40px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 900px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .review-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .review-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1b2c50;
+      margin-bottom: 10px;
+    }
+
+    .routine-info {
+      background-color: #f0f4ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 2px solid #3f86ff;
+    }
+
+    .routine-info h3 {
+      color: #1b2c50;
+      margin-bottom: 5px;
+    }
+
+    .routine-info p {
+      color: #666;
+      margin: 0;
+    }
+
+    .problem-section {
+      background-color: white;
+      border: 2px solid #1b2c50;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .problem-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .problem-header h4 {
+      color: #1b2c50;
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .remove-problem {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .problem-section label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .problem-section input,
+    .problem-section select,
+    .problem-section textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: "Pretendard", sans-serif;
+      font-size: 14px;
+    }
+
+    .problem-section textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .add-problem-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .button-group button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .save-btn {
+      background-color: #4e6df2;
+      color: white;
+    }
+
+    .cancel-btn {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .view-mode .problem-section input,
+    .view-mode .problem-section select,
+    .view-mode .problem-section textarea {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      cursor: default;
+    }
+
+    .view-mode .add-problem-btn,
+    .view-mode .remove-problem,
+    .view-mode .save-btn {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<main>
+  <div class="review-wrapper" th:classappend="${isViewMode} ? 'view-mode' : ''">
+    <div class="review-header">
+      <h2 th:text="${isViewMode} ? '코딩테스트 회고 조회' : '코딩테스트 회고 작성'">코딩테스트 회고 작성</h2>
+    </div>
+
+    <div class="routine-info">
+      <h3 th:text="${routine.title}">루틴 제목</h3>
+      <p><strong>카테고리:</strong> <span th:text="${routine.category}">카테고리</span></p>
+      <p><strong>설명:</strong> <span th:text="${routine.description}">설명</span></p>
+      <p><strong>집중 시간:</strong> <span th:text="${routine.focusTime}">60</span>분</p>
+    </div>
+
+    <form th:if="${!isViewMode}" th:action="@{'/routines/' + ${routine.id} + '/coding-review'}" method="post" id="reviewForm">
+      <input type="hidden" name="sessionId" th:value="${sessionId}" />
+
+      <div id="problemsContainer">
+        <div class="problem-section">
+          <div class="problem-header">
+            <h4>문제 1</h4>
+            <button type="button" class="remove-problem" onclick="removeProblem(this)" style="display: none;">삭제</button>
+          </div>
+
+          <label>문제 종류</label>
+          <select name="problemTypes" required>
+            <option value="">선택하세요</option>
+            <option value="자료구조">자료구조</option>
+            <option value="BFS/DFS">BFS/DFS</option>
+            <option value="구현">구현</option>
+            <option value="다익스트라">다익스트라</option>
+            <option value="트리">트리</option>
+            <option value="다이나믹 프로그래밍">다이나믹 프로그래밍</option>
+            <option value="탐색">탐색</option>
+            <option value="그리디">그리디</option>
+            <option value="기타">기타</option>
+          </select>
+
+          <label>문제 제목</label>
+          <input type="text" name="problemTitles" placeholder="문제 제목을 입력하세요" required />
+
+          <label>문제 상세 정보</label>
+          <textarea name="problemDescriptions" placeholder="문제에 대한 상세 정보를 입력하세요" required></textarea>
+
+          <label>내 풀이</label>
+          <textarea name="mySolutions" placeholder="내가 작성한 풀이를 입력하세요" required></textarea>
+
+          <label>정답 풀이</label>
+          <textarea name="correctSolutions" placeholder="정답 풀이 또는 개선된 풀이를 입력하세요" required></textarea>
+        </div>
+      </div>
+
+      <button type="button" class="add-problem-btn" onclick="addProblem()">문항 추가</button>
+
+      <div class="button-group">
+        <button type="submit" class="save-btn">저장하기</button>
+        <button type="button" class="cancel-btn" onclick="location.href='/routines'">취소</button>
+      </div>
+    </form>
+
+    <!-- 조회 모드 -->
+    <div th:if="${isViewMode}">
+      <div th:each="review, iterStat : ${existingReviews}" class="problem-section">
+        <div class="problem-header">
+          <h4 th:text="'문제 ' + ${iterStat.count}">문제 1</h4>
+        </div>
+
+        <label>문제 종류</label>
+        <input type="text" th:value="${review.problemType}" readonly />
+
+        <label>문제 제목</label>
+        <input type="text" th:value="${review.problemTitle}" readonly />
+
+        <label>문제 상세 정보</label>
+        <textarea th:text="${review.problemDescription}" readonly></textarea>
+
+        <label>내 풀이</label>
+        <textarea th:text="${review.mySolution}" readonly></textarea>
+
+        <label>정답 풀이</label>
+        <textarea th:text="${review.correctSolution}" readonly></textarea>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="cancel-btn" onclick="location.href='/routines'">돌아가기</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  let problemCount = 1;
+
+  function addProblem() {
+    problemCount++;
+    const container = document.getElementById('problemsContainer');
+
+    const newProblem = document.createElement('div');
+    newProblem.className = 'problem-section';
+
+    newProblem.innerHTML = `
+      <div class="problem-header">
+        <h4>문제 ${problemCount}</h4>
+        <button type="button" class="remove-problem" onclick="removeProblem(this)">삭제</button>
+      </div>
+
+      <label>문제 종류</label>
+      <select name="problemTypes" required>
+        <option value="">선택하세요</option>
+        <option value="자료구조">자료구조</option>
+        <option value="BFS/DFS">BFS/DFS</option>
+        <option value="구현">구현</option>
+        <option value="다익스트라">다익스트라</option>
+        <option value="트리">트리</option>
+        <option value="다이나믹 프로그래밍">다이나믹 프로그래밍</option>
+        <option value="탐색">탐색</option>
+        <option value="그리디">그리디</option>
+        <option value="기타">기타</option>
+      </select>
+
+      <label>문제 제목</label>
+      <input type="text" name="problemTitles" placeholder="문제 제목을 입력하세요" required />
+
+      <label>문제 상세 정보</label>
+      <textarea name="problemDescriptions" placeholder="문제에 대한 상세 정보를 입력하세요" required></textarea>
+
+      <label>내 풀이</label>
+      <textarea name="mySolutions" placeholder="내가 작성한 풀이를 입력하세요" required></textarea>
+
+      <label>정답 풀이</label>
+      <textarea name="correctSolutions" placeholder="정답 풀이 또는 개선된 풀이를 입력하세요" required></textarea>
+    `;
+
+    container.appendChild(newProblem);
+    updateProblemNumbers();
+    updateRemoveButtons();
+  }
+
+  function removeProblem(button) {
+    const problemSection = button.closest('.problem-section');
+    problemSection.remove();
+    problemCount--;
+    updateProblemNumbers();
+    updateRemoveButtons();
+  }
+
+  function updateProblemNumbers() {
+    const problems = document.querySelectorAll('.problem-section');
+    problems.forEach((problem, index) => {
+      const header = problem.querySelector('h4');
+      header.textContent = `문제 ${index + 1}`;
+    });
+  }
+
+  function updateRemoveButtons() {
+    const removeButtons = document.querySelectorAll('.remove-problem');
+    removeButtons.forEach(button => {
+      button.style.display = removeButtons.length > 1 ? 'block' : 'none';
+    });
+  }
+
+  // 페이지 로드 시 초기 설정
+  document.addEventListener('DOMContentLoaded', function() {
+    updateRemoveButtons();
+
+    // 사이드바 루틴 메뉴 활성화
+    const routineButton = Array.from(document.querySelectorAll('.nav-link-button'))
+    .find(el => el.textContent.includes('데일리 루틴'));
+    if (routineButton) {
+      routineButton.classList.add('active');
+    }
+  });
+</script>
+
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

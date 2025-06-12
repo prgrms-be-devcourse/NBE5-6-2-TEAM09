@@ -1,11 +1,13 @@
 package com.grepp.codemap.routine.controller;
 
+import com.grepp.codemap.routine.dto.CodingTestReviewDto;
 import com.grepp.codemap.routine.dto.DailyRoutineDto;
 import com.grepp.codemap.routine.dto.PomodoroSessionDto;
 import com.grepp.codemap.routine.service.DailyRoutineService;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -270,5 +272,108 @@ public class DailyRoutineController {
         }
 
         return "redirect:/routines";
+    }
+
+    // 코딩테스트 회고 페이지 이동
+    @GetMapping("/{id}/coding-review")
+    public String showCodingReviewPage(@PathVariable Long id, Model model,
+        @SessionAttribute("userId") Long userId,
+        @RequestParam(required = false) Long sessionId) {
+
+        User user = userService.getUserById(userId);
+        model.addAttribute("user", user);
+
+        try {
+            DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
+
+            // 코딩테스트 루틴인지 확인
+            if (!dailyRoutineService.isCodingTestRoutine(routine)) {
+                return "redirect:/routines";
+            }
+
+            // 기존 회고가 있는지 확인
+            List<CodingTestReviewDto> existingReviews = dailyRoutineService.getCodingTestReviews(id, userId);
+
+            model.addAttribute("routine", routine);
+            model.addAttribute("existingReviews", existingReviews);
+            model.addAttribute("sessionId", sessionId);
+            model.addAttribute("isViewMode", !existingReviews.isEmpty());
+
+            return "routine/coding-review";
+        } catch (Exception e) {
+            log.error("코딩테스트 회고 페이지 로드 중 오류 발생", e);
+            return "redirect:/routines";
+        }
+    }
+
+    // 코딩테스트 회고 저장 및 루틴 완료
+    @PostMapping("/{id}/coding-review")
+    public String saveCodingReview(@PathVariable Long id,
+        @RequestParam("problemTitles") List<String> problemTitles,
+        @RequestParam("problemDescriptions") List<String> problemDescriptions,
+        @RequestParam("mySolutions") List<String> mySolutions,
+        @RequestParam("correctSolutions") List<String> correctSolutions,
+        @RequestParam("problemTypes") List<String> problemTypes,
+        @RequestParam(required = false) Long sessionId,
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
+
+        try {
+            // 회고 DTO 리스트 생성
+            List<CodingTestReviewDto> reviewDtos = new ArrayList<>();
+            for (int i = 0; i < problemTitles.size(); i++) {
+                if (i < problemDescriptions.size() && i < mySolutions.size() &&
+                    i < correctSolutions.size() && i < problemTypes.size()) {
+                    reviewDtos.add(CodingTestReviewDto.builder()
+                        .problemTitle(problemTitles.get(i))
+                        .problemDescription(problemDescriptions.get(i))
+                        .mySolution(mySolutions.get(i))
+                        .correctSolution(correctSolutions.get(i))
+                        .problemType(problemTypes.get(i))
+                        .build());
+                }
+            }
+
+            // 세션이 있으면 종료 처리
+            if (sessionId != null) {
+                dailyRoutineService.endPomodoroSession(sessionId, userId);
+            }
+
+            // 회고와 함께 루틴 완료
+            dailyRoutineService.completeCodingTestRoutine(id, userId, reviewDtos);
+
+            redirectAttributes.addFlashAttribute("successMessage", "코딩테스트 회고가 저장되고 루틴이 완료되었습니다!");
+
+        } catch (Exception e) {
+            log.error("코딩테스트 회고 저장 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "회고 저장에 실패했습니다: " + e.getMessage());
+        }
+
+        return "redirect:/routines";
+    }
+
+    // 코딩테스트 타이머 완료 처리 (회고 페이지로 이동)
+    @PatchMapping("/timer/complete-coding")
+    public String completeCodingTimer(@RequestParam Long sessionId,
+        @RequestParam Long routineId,
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
+
+        try {
+            // 코딩테스트 루틴인지 확인
+            DailyRoutineDto routine = dailyRoutineService.getRoutineById(routineId, userId);
+
+            if (dailyRoutineService.isCodingTestRoutine(routine)) {
+                // 코딩테스트 루틴이면 회고 페이지로 이동
+                return "redirect:/routines/" + routineId + "/coding-review?sessionId=" + sessionId;
+            } else {
+                // 일반 루틴이면 기존 로직
+                return completeTimer(sessionId, routineId, null, userId, redirectAttributes);
+            }
+        } catch (Exception e) {
+            log.error("타이머 완료 처리 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "타이머 완료 처리에 실패했습니다: " + e.getMessage());
+            return "redirect:/routines";
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.grepp.codemap.admin.service;
 
 
 import com.grepp.codemap.admin.dto.AdminUserUpdateDto;
+import com.grepp.codemap.routine.repository.CodingTestReviewRepository;
 import com.grepp.codemap.routine.repository.DailyRoutineRepository;
 import com.grepp.codemap.routine.repository.PomodoroSessionRepository;
 import com.grepp.codemap.todo.repository.TodoRepository;
@@ -25,6 +26,7 @@ public class AdminUserService {
     private final DailyRoutineRepository dailyRoutineRepository;
     private final TodoRepository todoRepository;
     private final PomodoroSessionRepository pomodoroSessionRepository;
+    private final CodingTestReviewRepository codingTestReviewRepository;
 
     public List<User> findAllUsers() {
         return userRepository.findAllByRole("ROLE_USER");
@@ -59,6 +61,7 @@ public class AdminUserService {
 
     public void deleteUser(Long id) {
         // 1. 연관 데이터 먼저 삭제
+        codingTestReviewRepository.deleteByUserId(id); // 코딩테스트 회고 삭제
         pomodoroSessionRepository.deleteByUserId(id);
         dailyRoutineRepository.deleteByUserId(id);
         todoRepository.deleteByUserId(id);
