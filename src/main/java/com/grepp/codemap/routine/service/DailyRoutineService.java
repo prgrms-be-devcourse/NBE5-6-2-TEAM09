@@ -331,8 +331,8 @@ public class DailyRoutineService {
         }
         LocalDateTime endTime = LocalDateTime.now();
 
-        long totalSeconds = Duration.between(session.getStartedAt(), endTime).getSeconds();
-        int actualMinutes = (int) (totalSeconds / 60);
+        long actualSeconds = Duration.between(session.getStartedAt(), endTime).getSeconds();
+        int actualMinutes = actualSeconds < 60 ? 0 : (int) Math.ceil(actualSeconds / 60.0);
 
         PomodoroSession endedSession = PomodoroSession.builder()
             .id(session.getId())

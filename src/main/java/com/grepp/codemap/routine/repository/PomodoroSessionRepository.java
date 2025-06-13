@@ -13,9 +13,25 @@ public interface PomodoroSessionRepository extends JpaRepository<PomodoroSession
     @Query("SELECT ps FROM PomodoroSession ps WHERE ps.routine.id = :routineId ORDER BY ps.startedAt DESC")
     List<PomodoroSession> findByRoutineIdOrderByStartedAtDesc(@Param("routineId") Long routineId);
 
-    @Query("SELECT COALESCE(FLOOR(SUM(TIMESTAMPDIFF(SECOND, ps.startedAt, COALESCE(ps.endedAt, CURRENT_TIMESTAMP))) / 60), 0) " +
+    @Query("SELECT COALESCE(SUM(COALESCE(ps.durationMinutes, 0)), 0) " +
         "FROM PomodoroSession ps WHERE ps.routine.id = :routineId")
-    Long getTotalSessionTimeByRoutineId(@Param("routineId") Long routineId);
+    Integer getTotalSessionMinutesByRoutineId(@Param("routineId") Long routineId);
+
+    // 실제 진행 시간을 초 단위로 계산하는 쿼리 (더 정확한 계산)
+    @Query(value = """
+        SELECT COALESCE(
+            SUM(
+                CASE 
+                    WHEN ps.ended_at IS NOT NULL 
+                    THEN TIMESTAMPDIFF(SECOND, ps.started_at, ps.ended_at)
+                    ELSE 0 
+                END
+            ), 0
+        ) as total_seconds
+        FROM pomodoro_sessions ps 
+        WHERE ps.routine_id = :routineId
+        """, nativeQuery = true)
+    Long getTotalActualSessionSeconds(@Param("routineId") Long routineId);
 
 
     @Modifying

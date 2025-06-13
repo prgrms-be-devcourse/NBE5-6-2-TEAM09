@@ -729,7 +729,11 @@
     confirmModal.style.display = 'none';
 
     // 실제 진행 시간 계산
-    const actualMinutes = getActualElapsedMinutes();
+    const actualSeconds = (totalSeconds - currentSeconds);
+    const actualMinutes = actualSeconds < 60 ? 0 : Math.ceil(actualSeconds / 60);
+
+    const form = document.createElement('form');
+    form.method = 'POST';
 
     // 휴식 시간 초기화
     breakSeconds = 0;
@@ -750,9 +754,6 @@
     const isCodingTest = routineCategory && routineCategory.startsWith('코딩테스트 준비');
     const isInterview = routineCategory && routineCategory.startsWith('면접준비');
 
-    // 폼 생성
-    const form = document.createElement('form');
-    form.method = 'POST';
 
     if (isCodingTest) {
       form.action = '/routines/timer/complete-coding';
