@@ -1,3 +1,4 @@
+<!-- 투두 추가 -->
 <div id="todoModal">
   <h2>투두 추가하기</h2>
   <form th:action="@{/todos}" method="post">
@@ -24,18 +25,19 @@
     top: 20%;
     left: 50%;
     transform: translateX(-50%);
-    background: #f4f4fb;
+    background: #ffffff;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     z-index: 2000;
     width: 400px;
   }
 
   #todoModal h2 {
     margin-bottom: 20px;
-    font-size: 20px;
-    color: #1b2c50;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2937;
   }
 
   #todoModal input,
@@ -44,29 +46,40 @@
     width: 100%;
     padding: 12px;
     margin-bottom: 14px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
     font-family: "Pretendard", sans-serif;
+    font-size: 15px;
   }
 
   .input-label {
     display: block;
     margin: 6px 0 4px 2px;
     font-size: 14px;
-    color: #333;
+    color: #374151;
   }
 
   .submit-button {
-    background-color: #4e6df2;
-    color: white;
+    background-color: #dbeafe;
+    color: #1e3a8a;
     border: none;
     font-size: 16px;
+    font-weight: 500;
+  }
+
+  .submit-button:hover {
+    background-color: #bfdbfe;
   }
 
   .cancel-button {
-    background-color: #d3d6db;
-    color: #333;
+    background-color: #f3f4f6;
+    color: #1f2937;
     border: none;
     font-size: 16px;
+    font-weight: 500;
+  }
+
+  .cancel-button:hover {
+    background-color: #e5e7eb;
   }
 </style>
