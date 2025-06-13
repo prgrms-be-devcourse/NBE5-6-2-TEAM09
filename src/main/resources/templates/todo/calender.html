@@ -47,7 +47,7 @@
       align-items: center;
       justify-content: center;
       margin-left: 250px;
-      margin-top: -36vw;
+      margin-top: -37vw;
       padding: 40px;
     }
     button {
@@ -70,16 +70,22 @@
       font-weight: 600;
     }
     .calendar-wrapper {
-      background-color: #d8e3ff;
+      background-color: #ffffff;
       padding: 40px;
       border-radius: 12px;
       margin-top: 40px;
       width: 100%;
       max-width: 900px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e5e7eb;
     }
+
     #calendar {
       width: 100%;
+    }
+
+    .fc-day-today {
+      background-color: #E9ECEF !important;
     }
   </style>
 </head>
@@ -89,7 +95,10 @@
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
 
 <main>
-  <h1 style="font-size: 24px;">📅 날짜를 선택하고 투두를 확인해보세요</h1>
+  <h1 style="font-size: 24px; margin-bottom: 8px;">
+    📅 날짜를 선택하고 투두를 확인해보세요
+  </h1>
+  <hr style="border: none; border-top: 1px solid #dee2e6; width: 100%; max-width: 900px; margin-bottom: 28px;" />
   <div class="calendar-wrapper">
     <div id="calendar"></div>
   </div>
@@ -110,7 +119,10 @@
           events.push({
             title: title,
             start: date,
-            allDay: true
+            allDay: true,
+            backgroundColor: '#FEE2E2',
+            textColor: '#991B1B',
+            borderColor: '#FCA5A5'
           });
         });
       });
