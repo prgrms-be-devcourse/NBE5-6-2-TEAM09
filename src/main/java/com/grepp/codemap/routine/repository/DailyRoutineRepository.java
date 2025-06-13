@@ -20,7 +20,11 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
     List<DailyRoutine> findByUserAndStatusAndNotDeleted(@Param("user") User user,
         @Param("status") String status);
 
-    @Query("SELECT COALESCE(FLOOR(SUM(ps.durationMinutes)), 0) " +
+    /*@Query("SELECT COALESCE(SUM(COALESCE(dr.focusTime, 0)), 0) " +
+        "FROM DailyRoutine dr WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false")
+    Integer getTotalFocusTimeByUser(@Param("user") User user);*/
+
+    @Query("SELECT COALESCE(SUM(COALESCE(ps.durationMinutes, 0)), 0) " +
         "FROM PomodoroSession ps " +
         "JOIN ps.routine dr " +
         "WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false")
