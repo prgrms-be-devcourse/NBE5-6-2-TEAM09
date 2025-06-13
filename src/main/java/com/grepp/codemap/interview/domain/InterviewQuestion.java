@@ -40,6 +40,10 @@ public class InterviewQuestion {
 
     private LocalDateTime updatedAt;
 
+    // ✅ 핵심 키워드 필드 (쉼표로 구분된 문자열)
+    @Column(length = 1000)
+    private String keywords;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
