@@ -56,11 +56,9 @@ public class MyPageService {
 
         for (Object[] row : result) {
             Integer weekdayNumber = ((Number) row[0]).intValue(); // 1~7
-            Integer actualFocusTime = row[1] != null ? ((Number) row[1]).intValue() : 0;
+            Integer focusTime = row[1] != null ? ((Number) row[1]).intValue() : 0;
             String weekday = WEEKDAY_MAP.get(weekdayNumber);
-            if (weekday != null) {
-                focusMap.put(weekday, actualFocusTime);
-            }
+            focusMap.put(weekday, focusTime);
         }
 
         return focusMap;

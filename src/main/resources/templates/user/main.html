@@ -518,7 +518,7 @@
           <tr th:each="routine : ${activeRoutines}">
             <td th:text="${routine.title}">루틴 제목</td>
             <td th:text="${routine.category}">카테고리</td>
-            <td th:text="${routine.focusTime} + '분'">60분</td>
+            <td th:text="${routine.actualFocusTime} + '분'">60분</td>
             <td>
               <span class="status-badge status-active">시작전</span>
             </td>
@@ -533,7 +533,7 @@
           <tr th:each="routine : ${completedRoutines}">
             <td th:text="${routine.title}">루틴 제목</td>
             <td th:text="${routine.category}">카테고리</td>
-            <td th:text="${routine.focusTime} + '분'">60분</td>
+            <td th:text="${routine.actualFocusTime} + '분'">60분</td>
             <td>
               <span class="status-badge status-completed">완료</span>
             </td>
@@ -546,7 +546,7 @@
           <tr th:each="routine : ${passedRoutines}">
             <td th:text="${routine.title}">루틴 제목</td>
             <td th:text="${routine.category}">카테고리</td>
-            <td th:text="${routine.focusTime} + '분'">60분</td>
+            <td th:text="${routine.actualFocusTime} + '분'">60분</td>
             <td>
               <span class="status-badge status-pass">패스</span>
             </td>

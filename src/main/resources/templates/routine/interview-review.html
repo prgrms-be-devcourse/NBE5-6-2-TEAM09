@@ -309,7 +309,7 @@
     <div class="routine-info">
       <h3 th:text="${routine.title}">루틴 제목</h3>
       <p><strong>설명:</strong> <span th:text="${routine.description ?: '설명 없음'}">설명</span></p>
-      <p><strong>집중 시간:</strong> <span th:text="${routine.focusTime}">60</span>분</p>
+      <p><strong>집중 시간:</strong> <span th:text="${routine.actualFocusTime}">60</span>분</p>
     </div>
 
     <!-- 작성 모드 -->

@@ -20,10 +20,17 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
     List<DailyRoutine> findByUserAndStatusAndNotDeleted(@Param("user") User user,
         @Param("status") String status);
 
-    @Query("SELECT SUM(dr.focusTime) FROM DailyRoutine dr WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false")
+    @Query("SELECT COALESCE(FLOOR(SUM(ps.durationMinutes)), 0) " +
+        "FROM PomodoroSession ps " +
+        "JOIN ps.routine dr " +
+        "WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false")
     Integer getTotalFocusTimeByUser(@Param("user") User user);
 
-    @Query("SELECT dr.category, SUM(dr.focusTime) FROM DailyRoutine dr WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false GROUP BY dr.category")
+    @Query("SELECT dr.category, COALESCE(FLOOR(SUM(ps.durationMinutes)), 0) " +
+        "FROM PomodoroSession ps " +
+        "JOIN ps.routine dr " +
+        "WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false " +
+        "GROUP BY dr.category")
     List<Object[]> getTotalFocusTimeByCategory(@Param("user") User user);
 
     // 전체 루틴 수
@@ -50,11 +57,13 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
     void deleteByUserId(@Param("userId") Long userId);
 
     @Query(value = """
-            SELECT DAYOFWEEK(r.created_at) AS weekday, SUM(r.focus_time)
-            FROM daily_routines r
-            WHERE r.user_id = :userId AND r.status = 'COMPLETED' AND r.is_deleted = false
-            GROUP BY DAYOFWEEK(r.created_at)
-        """, nativeQuery = true)
+        SELECT DAYOFWEEK(ps.started_at) AS weekday, 
+               COALESCE(FLOOR(SUM(ps.duration_minutes)), 0) as total_minutes
+        FROM pomodoro_sessions ps
+        JOIN daily_routines r ON ps.routine_id = r.id
+        WHERE r.user_id = :userId AND r.status = 'COMPLETED' AND r.is_deleted = false
+        GROUP BY DAYOFWEEK(ps.started_at)
+    """, nativeQuery = true)
     List<Object[]> sumFocusTimeGroupedByWeekday(@Param("userId") Long userId);
 
 

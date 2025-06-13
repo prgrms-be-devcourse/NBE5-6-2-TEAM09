@@ -13,9 +13,10 @@ public interface PomodoroSessionRepository extends JpaRepository<PomodoroSession
     @Query("SELECT ps FROM PomodoroSession ps WHERE ps.routine.id = :routineId ORDER BY ps.startedAt DESC")
     List<PomodoroSession> findByRoutineIdOrderByStartedAtDesc(@Param("routineId") Long routineId);
 
-    @Query("SELECT COALESCE(SUM(TIMESTAMPDIFF(SECOND, ps.startedAt, COALESCE(ps.endedAt, CURRENT_TIMESTAMP))), 0) " +
+    @Query("SELECT COALESCE(FLOOR(SUM(TIMESTAMPDIFF(SECOND, ps.startedAt, COALESCE(ps.endedAt, CURRENT_TIMESTAMP))) / 60), 0) " +
         "FROM PomodoroSession ps WHERE ps.routine.id = :routineId")
     Long getTotalSessionTimeByRoutineId(@Param("routineId") Long routineId);
+
 
     @Modifying
     @Query("DELETE FROM PomodoroSession ps WHERE ps.routine.id IN (SELECT r.id FROM DailyRoutine r WHERE r.user.id = :userId)")
