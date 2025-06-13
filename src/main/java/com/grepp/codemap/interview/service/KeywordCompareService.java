@@ -15,7 +15,7 @@ public class KeywordCompareService {
     );
 
     private final Pattern particlePattern = Pattern.compile(
-            "[은는이가을를의에서로으로와과도만부터까지에게한테께보다마저조차라도나이나적]+$"
+            "(은|는|이|가|을|를|의|에서|로|으로|와|과|도|만|부터|까지|에게|한테|께|보다|마저|조차|라도|나|이나|적)$"
     );
 
     /** 키워드 문자열(DB) 파싱 */
