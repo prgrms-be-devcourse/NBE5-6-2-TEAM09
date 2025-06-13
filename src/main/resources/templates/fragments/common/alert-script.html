@@ -1,7 +1,7 @@
 <th:block th:fragment="alert-script">
   <style>
     @keyframes flash {
-      0%   { background-color: #ffffff; }
+      0% { background-color: #ffffff; }
       100% { background-color: #ffeaa7; }
     }
 
@@ -18,52 +18,54 @@
 
   <script th:inline="javascript">
     /*<![CDATA[*/
-    const alertTodos = /*[[${alertTodos}]]*/ [];
-    console.log("🔔 alertTodos:", alertTodos);
-
     window.addEventListener('load', () => {
-      const now = new Date();
       const icon = document.getElementById('notification-icon');
       const popup = document.getElementById('notification-popup');
 
-      let shouldBlink = false;
+      // ✅ SSE 연결
+      const eventSource = new EventSource('/sse/alerts');
 
-      (alertTodos || []).forEach(todo => {
-        if (!todo.startTime) return;
-        const start = new Date(todo.startTime);
-        const diffMin = (start.getTime() - now.getTime()) / 60000;
+      eventSource.addEventListener('ALERT', (event) => {
+        const todos = JSON.parse(event.data);
+        console.log("📩 수신된 알림:", todos);
 
-        console.log(`⏱️ ${todo.title}까지 ${diffMin.toFixed(2)}분`);
+        if (!Array.isArray(todos) || todos.length === 0) return;
 
-        if (diffMin >= 0 && diffMin <= 10) {
-          shouldBlink = true;
-        }
-      });
+        // ✅ 아이콘 깜빡임
+        if (icon) icon.classList.add('blink');
 
-      // 화면 점멸 + 아이콘 깜빡임
-      if (shouldBlink) {
+        // ✅ 화면 점멸
         document.body.style.animation = "flash 0.3s alternate 6";
 
-        if (icon) {
-          icon.classList.add('blink');
-          console.log("🟠 아이콘 깜빡임 적용됨");
-        }
-
-        // 음성 알림 (첫 클릭 시 재생)
+        // ✅ 음성 알림 (첫 클릭 시만 재생)
         document.addEventListener('click', function handler() {
           const audio = new Audio('/sounds/alert.mp3');
           audio.play().catch(e => console.warn("🔇 자동 재생 차단:", e));
           document.removeEventListener('click', handler);
         });
 
-        // 아이콘 클릭 시 팝업 열기
+        // ✅ 팝업 내용 채우기
+        popup.innerHTML = todos.map(todo =>
+            `<p>🕐 <strong>${todo.title}</strong><br/><span style="font-size: 12px;">시작 10분 전입니다.</span></p>`
+        ).join('');
+
+        // ✅ 팝업 토글
         if (icon && popup) {
           icon.addEventListener('click', () => {
             popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
             console.log("🟡 팝업 토글됨");
           });
         }
-      }
+      });
+
+      eventSource.addEventListener('CONNECTED', () => {
+        console.log("✅ SSE 연결됨");
+      });
+
+      eventSource.onerror = (e) => {
+        console.error("❌ SSE 연결 오류:", e);
+        eventSource.close();
+      };
     });
     /*]]>*/
   </script>

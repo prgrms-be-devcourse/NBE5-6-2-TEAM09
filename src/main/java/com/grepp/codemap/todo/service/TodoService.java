@@ -1,6 +1,7 @@
 package com.grepp.codemap.todo.service;
 
 import com.grepp.codemap.todo.domain.Todo;
+import com.grepp.codemap.todo.dto.TodoAlertDto;
 import com.grepp.codemap.todo.dto.TodoResponse;
 import com.grepp.codemap.todo.repository.TodoRepository;
 import com.grepp.codemap.user.domain.User;
@@ -130,6 +131,20 @@ public class TodoService {
     public List<Todo> getTodosToNotify(Long userId, LocalDateTime now, LocalDateTime tenMinutesLater) {
         return todoRepository.findAllByUser_IdAndStartTimeBetweenAndIsCompletedFalse(
             userId, now, tenMinutesLater);
+    }
+
+    public List<Long> findAllUserIds() {
+        return todoRepository.findDistinctUserIds();
+    }
+
+    public List<TodoAlertDto> findTodosStartingIn10Minutes(Long userId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime in10Min = now.plusMinutes(10);
+
+        return todoRepository.findByUserIdAndStartTimeBetween(userId, now, in10Min)
+            .stream()
+            .map(todo -> new TodoAlertDto(todo.getTitle(), todo.getStartTime()))
+            .toList();
     }
 
 

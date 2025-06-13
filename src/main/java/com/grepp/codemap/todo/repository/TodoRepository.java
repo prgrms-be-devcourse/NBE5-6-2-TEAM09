@@ -59,4 +59,10 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             ORDER BY t.startTime ASC
         """)
     List<Todo> findTodayTodos(@Param("today") LocalDate today, @Param("userId") Long userId);
+
+    @Query("SELECT DISTINCT t.user.id FROM Todo t WHERE t.isDeleted = false")
+    List<Long> findDistinctUserIds();
+
+    List<Todo> findByUserIdAndStartTimeBetween(Long userId, LocalDateTime start, LocalDateTime end);
+
 }
