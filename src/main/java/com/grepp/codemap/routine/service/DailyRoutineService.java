@@ -331,17 +331,18 @@ public class DailyRoutineService {
         }
         LocalDateTime endTime = LocalDateTime.now();
 
+        long totalSeconds = Duration.between(session.getStartedAt(), endTime).getSeconds();
+        int actualMinutes = (int) (totalSeconds / 60);
+
         PomodoroSession endedSession = PomodoroSession.builder()
             .id(session.getId())
             .routine(session.getRoutine())
-            .durationMinutes(session.getDurationMinutes())
+            .durationMinutes(actualMinutes)
             .startedAt(session.getStartedAt())
             .endedAt(endTime)
             .build();
 
         PomodoroSession saved = pomodoroSessionRepository.save(endedSession);
-        long actualMinutes = Duration.between(session.getStartedAt(), endTime).toMinutes();
-        updateActualFocusTime(session.getRoutine().getId(), (int) actualMinutes, userId);
         return PomodoroSessionDto.fromEntity(saved);
     }
 
