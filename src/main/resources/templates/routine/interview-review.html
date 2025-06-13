@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+  <title>면접준비 회고</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      font-family: "Pretendard", sans-serif;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    aside {
+      position: fixed;
+      top: 116px;
+      left: 0;
+      width: 250px;
+      height: calc(100% - 116px);
+      z-index: 900;
+    }
+
+    main {
+      margin-left: 250px;
+      margin-top: -40vw;
+      padding: 30px;
+      min-height: calc(100vh - 116px);
+    }
+
+    .review-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #d8e3ff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .review-header h2 {
+      color: #1b2c50;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .routine-info {
+      background-color: #f0f6ff;
+      border: 2px solid #4e6df2;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .routine-info h3 {
+      color: #1b2c50;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 15px 0;
+    }
+
+    .routine-info p {
+      margin: 8px 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .routine-info strong {
+      color: #1b2c50;
+      font-weight: 600;
+    }
+
+    .study-section {
+      background-color: white;
+      border: 2px solid #e0e7ff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .study-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f6ff;
+    }
+
+    .study-header h4 {
+      color: #1b2c50;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .remove-study {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .remove-study:hover {
+      background-color: #c82333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      margin-top: 15px;
+      color: #1b2c50;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    label:first-of-type {
+      margin-top: 0;
+    }
+
+    select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e7ff;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: "Pretendard", sans-serif;
+      transition: border-color 0.3s ease;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    select:focus, textarea:focus {
+      outline: none;
+      border-color: #4e6df2;
+      box-shadow: 0 0 0 3px rgba(78, 109, 242, 0.1);
+    }
+
+    textarea {
+      min-height: 80px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .button-group button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+
+    .button-group button[type="button"]:first-child {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .button-group button[type="button"]:first-child:hover {
+      background-color: #218838;
+      transform: translateY(-1px);
+    }
+
+    .button-group button[type="submit"] {
+      background-color: #4e6df2;
+      color: white;
+    }
+
+    .button-group button[type="submit"]:hover {
+      background-color: #3b6fe0;
+      transform: translateY(-1px);
+    }
+
+    .button-group button[onclick*="routines"] {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .button-group button[onclick*="routines"]:hover {
+      background-color: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    /* 조회 모드 스타일 */
+    .view-content .study-section {
+      background-color: #f8f9ff;
+      border-color: #c7d2fe;
+    }
+
+    .view-field {
+      margin-bottom: 20px;
+    }
+
+    .view-field label {
+      margin-bottom: 8px;
+      color: #1b2c50;
+      font-weight: 600;
+    }
+
+    .field-content {
+      background-color: white;
+      padding: 12px;
+      border: 2px solid #e0e7ff;
+      border-radius: 8px;
+      color: #333;
+      line-height: 1.5;
+      min-height: 20px;
+      white-space: pre-wrap;
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+      main {
+        margin-left: 0;
+        padding: 20px;
+      }
+
+      .review-container {
+        padding: 20px;
+      }
+
+      .study-section {
+        padding: 20px;
+      }
+
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .button-group button {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    /* 폼 유효성 검사 오류 스타일 */
+    .error {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+    }
+
+    /* 로딩 상태 */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* 성공 메시지 */
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #c3e6cb;
+    }
+  </style>
+</head>
+<body>
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<main>
+  <div class="review-container" th:class="${isViewMode} ? 'review-container view-mode' : 'review-container'">
+    <div class="review-header">
+      <h2 th:text="${isViewMode} ? '면접준비 회고 조회' : '면접준비 회고 작성'">면접준비 회고 작성</h2>
+    </div>
+
+    <div class="routine-info">
+      <h3 th:text="${routine.title}">루틴 제목</h3>
+      <p><strong>설명:</strong> <span th:text="${routine.description ?: '설명 없음'}">설명</span></p>
+      <p><strong>집중 시간:</strong> <span th:text="${routine.focusTime}">60</span>분</p>
+    </div>
+
+    <!-- 작성 모드 -->
+    <form th:if="${!isViewMode}" th:action="@{'/routines/' + ${routine.id} + '/interview-review'}" method="post" id="reviewForm">
+      <input type="hidden" name="sessionId" th:value="${sessionId}" />
+
+      <div id="studySessionsContainer">
+        <div class="study-section">
+          <div class="study-header">
+            <h4>학습 세션 1</h4>
+            <button type="button" class="remove-study" onclick="removeStudySession(this)" style="display: none;">삭제</button>
+          </div>
+
+
+          <label>오늘 공부한 내용</label>
+          <textarea name="studyContents" placeholder="오늘 공부한 주요 내용을 입력하세요" required></textarea>
+
+          <label>어려웠던 부분</label>
+          <textarea name="difficultParts" placeholder="이해하기 어려웠던 부분이나 더 학습이 필요한 부분을 입력하세요" required></textarea>
+
+          <label>다음에 공부할 내용</label>
+          <textarea name="nextStudyPlans" placeholder="다음 학습 계획이나 목표를 입력하세요" required></textarea>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" onclick="addStudySession()">+ 학습 세션 추가</button>
+        <button type="submit">저장하기</button>
+        <button type="button" onclick="location.href='/routines'">취소</button>
+      </div>
+    </form>
+
+    <!-- 조회 모드 -->
+    <div th:if="${isViewMode}" class="view-content">
+      <div th:each="review, iterStat : ${existingReviews}" class="study-section view-mode">
+        <div class="study-header">
+          <h4 th:text="'학습 세션 ' + (${iterStat.index} + 1)">학습 세션 1</h4>
+        </div>
+
+        <div class="view-field">
+          <label>기술 분야</label>
+          <div class="field-content" th:text="${review.techCategory}">알고리즘</div>
+        </div>
+
+        <div class="view-field">
+          <label>오늘 공부한 내용</label>
+          <div class="field-content" th:text="${review.studyContent}">학습 내용</div>
+        </div>
+
+        <div class="view-field">
+          <label>어려웠던 부분</label>
+          <div class="field-content" th:text="${review.difficultParts}">어려웠던 부분</div>
+        </div>
+
+        <div class="view-field">
+          <label>다음에 공부할 내용</label>
+          <div class="field-content" th:text="${review.nextStudyPlan}">다음 계획</div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" onclick="location.href='/routines'">목록으로</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  let studySessionCount = 1;
+
+  function addStudySession() {
+    studySessionCount++;
+    const container = document.getElementById('studySessionsContainer');
+    const newSession = document.createElement('div');
+    newSession.className = 'study-section';
+    newSession.innerHTML = `
+      <div class="study-header">
+        <h4>학습 세션 ${studySessionCount}</h4>
+        <button type="button" class="remove-study" onclick="removeStudySession(this)">삭제</button>
+      </div>
+
+
+      <label>오늘 공부한 내용</label>
+      <textarea name="studyContents" placeholder="오늘 공부한 주요 내용을 입력하세요" required></textarea>
+
+      <label>어려웠던 부분</label>
+      <textarea name="difficultParts" placeholder="이해하기 어려웠던 부분이나 더 학습이 필요한 부분을 입력하세요" required></textarea>
+
+      <label>다음에 공부할 내용</label>
+      <textarea name="nextStudyPlans" placeholder="다음 학습 계획이나 목표를 입력하세요" required></textarea>
+    `;
+
+    container.appendChild(newSession);
+
+    // 모든 삭제 버튼 표시
+    document.querySelectorAll('.remove-study').forEach(btn => {
+      btn.style.display = 'inline-block';
+    });
+  }
+
+  function removeStudySession(button) {
+    const sessionDiv = button.closest('.study-section');
+    sessionDiv.remove();
+    studySessionCount--;
+
+    // 세션 번호 재정렬
+    const sessions = document.querySelectorAll('.study-section');
+    sessions.forEach((session, index) => {
+      const header = session.querySelector('h4');
+      header.textContent = `학습 세션 ${index + 1}`;
+    });
+
+    // 세션이 1개만 남으면 삭제 버튼 숨기기
+    if (sessions.length === 1) {
+      sessions[0].querySelector('.remove-study').style.display = 'none';
+    }
+  }
+
+  // 폼 유효성 검사
+  document.getElementById('reviewForm')?.addEventListener('submit', function(e) {
+    const sessions = document.querySelectorAll('.study-section');
+
+    if (sessions.length === 0) {
+      e.preventDefault();
+      alert('최소 하나의 학습 세션을 작성해주세요.');
+      return;
+    }
+
+    // 모든 필수 필드가 채워졌는지 확인
+    let isValid = true;
+    sessions.forEach(session => {
+      const requiredFields = session.querySelectorAll('select[required], textarea[required]');
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          isValid = false;
+          field.classList.add('error');
+        } else {
+          field.classList.remove('error');
+        }
+      });
+    });
+
+    if (!isValid) {
+      e.preventDefault();
+      alert('모든 필수 항목을 입력해주세요.');
+    } else {
+      // 제출 중 표시
+      this.classList.add('loading');
+      const submitBtn = this.querySelector('button[type="submit"]');
+      submitBtn.textContent = '저장 중...';
+      submitBtn.disabled = true;
+    }
+  });
+
+  // 입력 필드 에러 상태 제거
+  document.addEventListener('input', function(e) {
+    if (e.target.matches('select, textarea')) {
+      e.target.classList.remove('error');
+    }
+  });
+
+  // 페이지 로드 시 사이드바 활성화
+  document.addEventListener('DOMContentLoaded', function() {
+    const routineButton = Array.from(document.querySelectorAll('.nav-link-button'))
+    .find(el => el.textContent.includes('데일리 루틴'));
+    if (routineButton) {
+      routineButton.classList.add('active');
+    }
+  });
+</script>
+
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

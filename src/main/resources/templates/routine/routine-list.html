@@ -284,7 +284,7 @@
       text-decoration: line-through;
       color: #777;
     }
-    #routineModal, #codingTestModal {
+    #routineModal, #codingTestModal, #interviewModal {
       display: none;
       position: fixed;
       top: 20%;
@@ -297,13 +297,14 @@
       z-index: 2000;
       width: 380px; /* 너비 줄임 */
     }
-    #routineModal h3, #codingTestModal h3 {
+    #routineModal h3, #codingTestModal h3, #interviewModal h3{
       margin-bottom: 16px; /* 여백 줄임 */
       color: #1b2c50;
       font-size: 18px; /* 글씨 크기 줄임 */
     }
     #routineModal input, #routineModal select, #routineModal textarea,
-    #codingTestModal input, #codingTestModal select, #codingTestModal textarea {
+    #codingTestModal input, #codingTestModal select, #codingTestModal textarea,
+    #interviewModal input, #interviewModal select, #interviewModal textarea {
       display: block;
       width: 100%;
       margin-bottom: 12px; /* 여백 줄임 */
@@ -312,27 +313,27 @@
       border-radius: 8px;
       font-size: 14px; /* 글씨 크기 줄임 */
     }
-    #routineModal textarea, #codingTestModal textarea {
+    #routineModal textarea, #codingTestModal textarea, #interviewModal textarea {
       height: 80px; /* 높이 줄임 */
       resize: vertical;
     }
-    #routineModal .button-group, #codingTestModal .button-group {
+    #routineModal .button-group, #codingTestModal .button-group, #interviewModal .button-group {
       display: flex;
       justify-content: flex-end;
       gap: 8px; /* 간격 줄임 */
       margin-top: 16px; /* 여백 줄임 */
     }
-    #routineModal .button-group button, #codingTestModal .button-group button {
+    #routineModal .button-group button, #codingTestModal .button-group button, #interviewModal .button-group button {
       padding: 7px 14px; /* 패딩 줄임 */
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px; /* 글씨 크기 줄임 */
     }
-    #routineModal .button-group button.cancel, #codingTestModal .button-group button.cancel {
+    #routineModal .button-group button.cancel, #codingTestModal .button-group button.cancel, #interviewModal .button-group button.cancel {
       background-color: #e0e0e0;
     }
-    #routineModal .button-group button.submit, #codingTestModal .button-group button.submit {
+    #routineModal .button-group button.submit, #codingTestModal .button-group button.submit, #interviewModal .button-group button.submit {
       background-color: #4e6df2;
       color: white;
     }
@@ -377,7 +378,8 @@
 
     <!-- 고정 루틴 섹션 - 가로 배치 -->
     <div class="fixed-routines-section">
-      <h3>고정 루틴</h3>
+      <h3>필수 루틴</h3>
+
       <div class="fixed-routines-container">
         <div class="fixed-routine-card">
           <div class="fixed-routine-content">
@@ -396,17 +398,7 @@
               <span class="fixed-routine-description">기술 면접 질문 연습</span>
             </div>
           </div>
-          <button class="fixed-routine-start-btn" onclick="location.href='/interview/select'">시작하기</button>
-        </div>
-
-        <div class="fixed-routine-card">
-          <div class="fixed-routine-content">
-            <div class="fixed-routine-info">
-              <span class="fixed-routine-title">채용공고 확인</span>
-              <span class="fixed-routine-description">새로운 채용공고 및 지원 현황 체크</span>
-            </div>
-          </div>
-          <button class="fixed-routine-start-btn" onclick="openJobSearchModal()">시작하기</button>
+          <button class="fixed-routine-start-btn" onclick="openInterviewModal()">시작하기</button>
         </div>
       </div>
     </div>
@@ -435,6 +427,9 @@
               <div th:onclick="'skipRoutine(' + ${routine.id} + ')'">쉬어가기</div>
             </div>
           </div>
+        </div>
+        <div th:if="${activeRoutines == null or activeRoutines.isEmpty()}" class="no-routines">
+          진행 중인 루틴이 없습니다.
         </div>
       </div>
       <!-- 쉬어가기 루틴 목록 -->
@@ -484,6 +479,9 @@
               <!-- 코딩테스트 루틴인 경우 정보보기 추가 -->
               <div th:if="${routine.category != null and #strings.startsWith(routine.category, '코딩테스트 준비')}"
                    th:onclick="'viewCodingReview(' + ${routine.id} + ')'">정보보기</div>
+              <!-- 면접준비 루틴인 경우 정보보기 추가 -->
+              <div th:if="${routine.category != null and #strings.startsWith(routine.category, '면접준비')}"
+                   th:onclick="'viewInterviewReview(' + ${routine.id} + ')'">정보보기</div>
               <div th:onclick="'cancelComplete(' + ${routine.id} + ')'">완료 취소</div>
               <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
             </div>
@@ -511,7 +509,7 @@
   </form>
 </div>
 
-
+<!-- 코딩테스트 준비 루틴 모달 -->
 <div id="codingTestModal">
   <h3>코딩테스트 준비 루틴 추가</h3>
   <form id="codingTestForm" th:action="@{/routines}" method="post">
@@ -539,6 +537,33 @@
   </form>
 </div>
 
+<!-- 면접 준비 루틴 모달 -->
+<div id="interviewModal">
+  <h3>면접 준비 루틴 추가</h3>
+  <form id="interviewForm" th:action="@{/routines}" method="post">
+    <input type="hidden" id="interviewTitle" name="title" />
+    <input type="hidden" id="interviewCategory" name="category" />
+
+    <select name="techType" required>
+      <option value="">기술 종류 선택</option>
+      <option value="알고리즘">알고리즘</option>
+      <option value="자료구조">자료구조</option>
+      <option value="데이터베이스">데이터베이스</option>
+      <option value="운영체제">운영체제</option>
+      <option value="네트워크">네트워크</option>
+      <option value="컴퓨터구조">컴퓨터구조</option>
+    </select>
+
+    <textarea name="description" placeholder="상세 설명 (선택사항)"></textarea>
+    <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180"  required />
+    <input type="number" name="breakTime" placeholder="휴식 시간(분)" min="1" max="60" value="5" required />
+
+    <div class="button-group">
+      <button type="button" class="cancel" onclick="closeInterviewModal()">취소</button>
+      <button type="submit" class="submit">저장</button>
+    </div>
+  </form>
+</div>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // 빈 상태 메시지가 여러 개 있으면 첫 번째만 남기고 나머지 제거
@@ -617,6 +642,15 @@
     document.getElementById('codingTestModal').style.display = 'none';
   }
 
+  function openInterviewModal() {
+    document.getElementById('interviewForm').reset();
+    document.getElementById('interviewModal').style.display = 'block';
+  }
+
+  function closeInterviewModal() {
+    document.getElementById('interviewModal').style.display = 'none';
+  }
+
   function openJobSearchModal() {
     document.getElementById('jobSearchForm').reset();
     document.getElementById('jobSearchModal').style.display = 'block';
@@ -626,6 +660,8 @@
     document.getElementById('jobSearchModal').style.display = 'none';
   }
 
+
+  // 코딩테스트 폼 제출 시
   document.getElementById('codingTestForm').addEventListener('submit', function(e) {
     const problemType = document.querySelector('select[name="problemType"]').value;
     if (problemType) {
@@ -635,10 +671,26 @@
     }
   });
 
+  // 면접준비 폼 제출 시
+  document.getElementById('interviewForm').addEventListener('submit', function(e) {
+    const techType = document.querySelector('select[name="techType"]').value;
+    if (techType) {
+      // title을 "면접준비 - 기술종류" 형식으로 저장
+      document.getElementById('interviewTitle').value = `면접준비 - ${techType}`;
+      document.getElementById('interviewCategory').value = `면접준비 - ${techType}`;
+    }
+  });
+
   // 코딩테스트 회고 정보보기
   function viewCodingReview(routineId) {
     location.href = '/routines/' + routineId + '/coding-review';
   }
+
+  // 면접준비 회고 정보보기
+  function viewInterviewReview(routineId) {
+    location.href = '/routines/' + routineId + '/interview-review';
+  }
+
 
   function editRoutine(routineId) {
     fetch(`/routines/${routineId}/edit`)
@@ -839,12 +891,12 @@
         emptyState.className = 'empty-state';
         emptyState.innerHTML = '<p>등록된 데일리 루틴이 없습니다.</p><p>오늘의 루틴을 추가해 보세요!</p>';
 
-        const routineWrapper = document.querySelector('.routine-wrapper');
-        const header = document.querySelector('.routine-header');
+        const activeRoutinesSection = document.querySelector('.active-routines-section');
+        const sectionHeader = activeRoutinesSection.querySelector('.section-header');
 
-        // 헤더 다음에 빈 상태 메시지 삽입
-        if (header && routineWrapper) {
-          routineWrapper.insertBefore(emptyState, header.nextSibling);
+        // 진행루틴에 빈 상태 메시지 삽입
+        if (sectionHeader && activeRoutinesSection) {
+          sectionHeader.insertAdjacentElement('afterend', emptyState);
         }
       }
     } else {

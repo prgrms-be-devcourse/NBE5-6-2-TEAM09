@@ -2,15 +2,19 @@ package com.grepp.codemap.routine.service;
 
 import com.grepp.codemap.routine.domain.CodingTestReview;
 import com.grepp.codemap.routine.domain.DailyRoutine;
+import com.grepp.codemap.routine.domain.InterviewReview;
 import com.grepp.codemap.routine.domain.PomodoroSession;
 import com.grepp.codemap.routine.dto.CodingTestReviewDto;
 import com.grepp.codemap.routine.dto.DailyRoutineDto;
+import com.grepp.codemap.routine.dto.InterviewReviewDto;
 import com.grepp.codemap.routine.dto.PomodoroSessionDto;
 import com.grepp.codemap.routine.repository.CodingTestReviewRepository;
 import com.grepp.codemap.routine.repository.DailyRoutineRepository;
+import com.grepp.codemap.routine.repository.InterviewReviewRepository;
 import com.grepp.codemap.routine.repository.PomodoroSessionRepository;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +34,7 @@ public class DailyRoutineService {
     private final DailyRoutineRepository dailyRoutineRepository;
     private final PomodoroSessionRepository pomodoroSessionRepository;
     private final CodingTestReviewRepository codingTestReviewRepository;
+    private final InterviewReviewRepository interviewReviewRepository;
     private final UserService userService;
 
     // 사용자의 모든 활성 루틴 조회
@@ -196,6 +201,7 @@ public class DailyRoutineService {
             .title(routine.getTitle())
             .description(routine.getDescription())
             .focusTime(routine.getFocusTime())
+            .actualFocusTime(routine.getActualFocusTime())
             .breakTime(routine.getBreakTime())
             .status("COMPLETED") // 완료 상태로 변경
             .startedAt(routine.getStartedAt())
@@ -323,17 +329,53 @@ public class DailyRoutineService {
         if (!session.getRoutine().getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("You don't have permission to end this session");
         }
+        LocalDateTime endTime = LocalDateTime.now();
 
         PomodoroSession endedSession = PomodoroSession.builder()
             .id(session.getId())
             .routine(session.getRoutine())
             .durationMinutes(session.getDurationMinutes())
             .startedAt(session.getStartedAt())
-            .endedAt(LocalDateTime.now())
+            .endedAt(endTime)
             .build();
 
         PomodoroSession saved = pomodoroSessionRepository.save(endedSession);
+        long actualMinutes = Duration.between(session.getStartedAt(), endTime).toMinutes();
+        updateActualFocusTime(session.getRoutine().getId(), (int) actualMinutes, userId);
         return PomodoroSessionDto.fromEntity(saved);
+    }
+
+    @Transactional
+    public void updateActualFocusTime(Long routineId, int actualMinutes, Long userId) {
+        DailyRoutine routine = dailyRoutineRepository.findById(routineId)
+            .orElseThrow(() -> new IllegalArgumentException("Routine not found with id: " + routineId));
+
+        // 권한 검증
+        if (!routine.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("You don't have permission to update this routine");
+        }
+
+        // 기존 실제 시간에 새 시간 누적 (여러 세션이 있을 수 있으므로)
+        int currentActualTime = routine.getActualFocusTime() != null ? routine.getActualFocusTime() : 0;
+        int newActualTime = currentActualTime + actualMinutes;
+
+        DailyRoutine updatedRoutine = DailyRoutine.builder()
+            .id(routine.getId())
+            .user(routine.getUser())
+            .category(routine.getCategory())
+            .title(routine.getTitle())
+            .description(routine.getDescription())
+            .focusTime(routine.getFocusTime())
+            .actualFocusTime(newActualTime) // 실제 시간 업데이트
+            .breakTime(routine.getBreakTime())
+            .status(routine.getStatus())
+            .startedAt(routine.getStartedAt())
+            .completedAt(routine.getCompletedAt())
+            .isDeleted(routine.getIsDeleted())
+            .createdAt(routine.getCreatedAt())
+            .build();
+
+        dailyRoutineRepository.save(updatedRoutine);
     }
 
 
@@ -418,6 +460,71 @@ public class DailyRoutineService {
     public DailyRoutineDto completeCodingTestRoutine(Long routineId, Long userId, List<CodingTestReviewDto> reviewDtos) {
         // 회고 저장
         saveCodingTestReviews(routineId, userId, reviewDtos);
+
+        // 루틴 완료 처리
+        return completeRoutine(routineId, userId);
+    }
+
+    // 면접준비 회고 저장
+    @Transactional
+    public List<InterviewReviewDto> saveInterviewReviews(Long routineId, Long userId, List<InterviewReviewDto> reviewDtos) {
+        User user = userService.getUserById(userId);
+        DailyRoutine routine = dailyRoutineRepository.findById(routineId)
+            .orElseThrow(() -> new IllegalArgumentException("Routine not found with id: " + routineId));
+
+        // 권한 검증
+        if (!routine.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("You don't have permission to add reviews to this routine");
+        }
+
+        List<InterviewReview> reviews = reviewDtos.stream()
+            .map(dto -> InterviewReview.builder()
+                .routine(routine)
+                .techCategory(dto.getTechCategory())
+                .studyContent(dto.getStudyContent())
+                .learnedConcepts(dto.getLearnedConcepts())
+                .difficultParts(dto.getDifficultParts())
+                .nextStudyPlan(dto.getNextStudyPlan())
+                .isDeleted(false)
+                .build())
+            .collect(Collectors.toList());
+
+        List<InterviewReview> savedReviews = interviewReviewRepository.saveAll(reviews);
+
+        return savedReviews.stream()
+            .map(InterviewReviewDto::fromEntity)
+            .collect(Collectors.toList());
+    }
+
+    // 면접준비 회고 조회
+    @Transactional(readOnly = true)
+    public List<InterviewReviewDto> getInterviewReviews(Long routineId, Long userId) {
+        User user = userService.getUserById(userId);
+        DailyRoutine routine = dailyRoutineRepository.findById(routineId)
+            .orElseThrow(() -> new IllegalArgumentException("Routine not found with id: " + routineId));
+
+        // 권한 검증
+        if (!routine.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("You don't have permission to view reviews for this routine");
+        }
+
+        List<InterviewReview> reviews = interviewReviewRepository.findByRoutineAndIsDeletedFalse(routine);
+
+        return reviews.stream()
+            .map(InterviewReviewDto::fromEntity)
+            .collect(Collectors.toList());
+    }
+
+    // 면접준비 루틴인지 확인
+    public boolean isInterviewRoutine(DailyRoutineDto routine) {
+        return routine.getCategory() != null && routine.getCategory().startsWith("면접준비");
+    }
+
+    // 면접준비 회고와 함께 루틴 완료 처리
+    @Transactional
+    public DailyRoutineDto completeInterviewRoutine(Long routineId, Long userId, List<InterviewReviewDto> reviewDtos) {
+        // 회고 저장
+        saveInterviewReviews(routineId, userId, reviewDtos);
 
         // 루틴 완료 처리
         return completeRoutine(routineId, userId);

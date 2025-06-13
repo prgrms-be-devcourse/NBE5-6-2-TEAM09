@@ -58,4 +58,22 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
     List<Object[]> sumFocusTimeGroupedByWeekday(@Param("userId") Long userId);
 
 
+
+    // 실제 집중 시간 기반 총 시간 조회
+    @Query("SELECT SUM(dr.actualFocusTime) FROM DailyRoutine dr WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false AND dr.actualFocusTime IS NOT NULL")
+    Integer getTotalActualFocusTimeByUser(@Param("user") User user);
+
+    // 실제 집중 시간 기반 카테고리별 시간 조회
+    @Query("SELECT dr.category, SUM(dr.actualFocusTime) FROM DailyRoutine dr WHERE dr.user = :user AND dr.status = 'COMPLETED' AND dr.isDeleted = false AND dr.actualFocusTime IS NOT NULL GROUP BY dr.category")
+    List<Object[]> getTotalActualFocusTimeByCategory(@Param("user") User user);
+
+    // 실제 집중 시간 기반 요일별 시간 조회
+    @Query(value = """
+        SELECT DAYOFWEEK(r.created_at) AS weekday, SUM(r.actual_focus_time)
+        FROM daily_routines r
+        WHERE r.user_id = :userId AND r.status = 'COMPLETED' AND r.is_deleted = false AND r.actual_focus_time IS NOT NULL
+        GROUP BY DAYOFWEEK(r.created_at)
+    """, nativeQuery = true)
+    List<Object[]> sumActualFocusTimeGroupedByWeekday(@Param("userId") Long userId);
+
 }
