@@ -1,143 +1,170 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>투두 리스트 조회 페이지</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>투두 리스트 조회</title>
 
-  <!-- ✅ 공통 스타일 -->
-  <link rel="stylesheet" th:href="@{/css/header/global.css}"/>
-  <link rel="stylesheet" th:href="@{/css/header/style.css}"/>
-  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}"/>
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}"/>
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}"/>
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}"/>
+  <link rel="stylesheet" th:href="@{/css/header/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/header/styleguide.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
 
   <style>
     body {
-      margin: 0;
-      padding: 0;
       background-color: #f8f9fa;
       font-family: "Pretendard", sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
-    header {
+    header, aside {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
       z-index: 1000;
     }
-
+    header {
+      top: 0; left: 0; right: 0;
+    }
     aside {
-      position: fixed;
       top: 116px;
       left: 0;
       width: 250px;
       height: calc(100% - 116px);
-      z-index: 900;
     }
 
     main {
       margin-left: 250px;
-      margin-top: -31vw;
+      margin-top: -36vw;
       padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .selected-date-banner {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 32px;
+      background-color: #e0edff;
+      padding: 12px 24px;
+      border-radius: 12px;
     }
 
     .todo-wrapper {
-      background-color: #d8e3ff;
-      padding: 40px;
-      border-radius: 12px;
-      max-width: 800px;
-      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 850px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     }
 
     .todo-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
 
     .todo-header h2 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1b2c50;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1f2937;
     }
 
     .todo-header button {
-      background-color: #4e6df2;
-      color: white;
+      background: #dbeafe;
+      color: #1e3a8a;
       border: none;
       padding: 10px 20px;
+      border-radius: 12px;
       font-size: 14px;
-      border-radius: 20px;
+      font-weight: 500;
       cursor: pointer;
     }
 
     .todo-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #f9f9f9;
-      border: 2px solid #1b2c50;
+      background-color: #f1f5f9;
       border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
       position: relative;
     }
 
-    .todo-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .todo-left input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-    }
-
-    .todo-left span {
-      font-size: 16px;
-    }
-
-    .todo-complete span {
+    .todo-item.todo-complete {
+      background-color: #e2e8f0;
       text-decoration: line-through;
-      color: gray;
+      opacity: 0.6;
+    }
+
+    .todo-content {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .todo-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .todo-box .label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .todo-box .content {
+      font-size: 16px;
+      color: #1f2937;
+      word-wrap: break-word;
+
     }
 
     .menu-button {
-      background-color: #e6ff00;
+      background-color: #f3f4f6;
       border: none;
       border-radius: 50%;
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       font-weight: bold;
       cursor: pointer;
+      position: absolute;
+      top: 16px;
+      right: 16px;
     }
 
     .menu-box {
       position: absolute;
-      right: 0;
-      top: 40px;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 6px 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      top: 50px;
+      right: 16px;
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 6px 12px;
       z-index: 100;
       display: none;
+      flex-direction: column;
+      gap: 8px;
+
     }
 
     .menu-box div {
-      padding: 6px 16px;
       font-size: 14px;
+      color: #1f2937;
       cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
     }
 
     .menu-box div:hover {
-      background-color: #f0f0f0;
+      background-color: #f3f4f6;
     }
 
     #modalContainer {
@@ -154,74 +181,67 @@
     }
   </style>
 </head>
+
 <body>
 <header th:replace="fragments/header/header :: header"></header>
 <aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
-
-<!-- ✅ 모달 컨테이너 -->
 <div id="modalContainer"></div>
 
 <main>
+  <div class="selected-date-banner">
+    📅 선택한 날짜: <span th:text="${selectedDate}"></span>
+  </div>
+
   <div class="todo-wrapper">
     <div class="todo-header">
-      <h2>투두</h2>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="nav-icon" style="background: #e8f5e8; color: #388e3c; font-size: 20px;">
+          ✅
+        </div>
+        <h2>투두 리스트</h2>
+      </div>
       <button id="addTodoBtn" th:attr="data-date=${selectedDate}">추가</button>
     </div>
 
-    <!-- 투두 목록 반복 -->
     <div th:each="todo : ${todos}" class="todo-item"
          th:classappend="${todo.completed} ? 'todo-complete'">
-      <div class="todo-left">
-        <input type="checkbox"
-               class="complete-checkbox"
-               th:attr="data-id=${todo.id}, data-date=${selectedDate}"
-               th:checked="${todo.completed}"/>
-
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <span th:text="${todo.title}" style="font-weight: bold;">투두 제목</span>
-          <span th:text="${todo.description}" style="font-size: 14px; color: #555;">내용</span>
-          <span style="font-size: 12px; color: #888;"
-                th:text="'시작: ' + ${#temporals.format(todo.startTime, 'HH:mm')} + ' | 마감: ' + ${#temporals.format(todo.completedAt, 'yyyy-MM-dd')}">
-        시작 / 마감
-      </span>
+      <div class="todo-content">
+        <div class="todo-box">
+          <div class="label">제목</div>
+          <div class="content" th:text="${todo.title}">제목</div>
+        </div>
+        <div class="todo-box">
+          <div class="label">내용</div>
+          <div class="content" th:text="${todo.description}">내용</div>
+        </div>
+        <div class="todo-box">
+          <div class="label">시간</div>
+          <div class="content" th:text="'시작: ' + ${#temporals.format(todo.startTime, 'HH:mm')}"></div>
+          <div class="content" th:text="'마감: ' + ${#temporals.format(todo.completedAt, 'yyyy-MM-dd')}"></div>
         </div>
       </div>
-      <div>
-        <button class="menu-button">⋯</button>
-        <div class="menu-box">
-          <div class="edit-button"
-               th:attr="data-id=${todo.id}, data-date=${selectedDate}">
-            수정
-          </div>
-          <div class="delete-button"
-               th:attr="data-id=${todo.id}, data-date=${selectedDate}">
-            삭제
-          </div>
-        </div>
+
+      <button class="menu-button">⋯</button>
+      <div class="menu-box">
+        <div class="edit-button" th:attr="data-id=${todo.id}, data-date=${selectedDate}">수정</div>
+        <div class="delete-button" th:attr="data-id=${todo.id}, data-date=${selectedDate}">삭제</div>
       </div>
     </div>
   </div>
 </main>
 
 <script>
-
-
   document.addEventListener('DOMContentLoaded', function () {
-    // 사이드 메뉴 활성화
     const todoButton = Array.from(document.querySelectorAll('.nav-link-button'))
     .find(el => el.textContent.includes('투두 리스트'));
-    if (todoButton) {
-      todoButton.classList.add('active');
-    }
+    if (todoButton) todoButton.classList.add('active');
 
-    // ✅ 추가 버튼 클릭
     document.getElementById('addTodoBtn').addEventListener('click', function () {
       const date = this.getAttribute('data-date');
       openAddModal(date);
     });
 
-    // ✅ 추가 모달 열기
     window.openAddModal = function (date) {
       fetch(`/todos/new?date=${date}`)
       .then(res => res.text())
@@ -232,7 +252,6 @@
       });
     };
 
-    // ✅ 수정 모달 열기
     window.openEditModal = function (id, date) {
       fetch(`/todos/${id}/edit?date=${date}`)
       .then(res => res.text())
@@ -243,7 +262,6 @@
       });
     };
 
-    // ✅ 삭제 모달 열기
     window.openDeleteModal = function (id, date) {
       fetch(`/todos/${id}/confirm-delete?date=${date}`)
       .then(res => res.text())
@@ -251,80 +269,51 @@
         const container = document.getElementById('modalContainer');
         container.innerHTML = html;
         container.style.display = 'block';
-
         document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-          fetch(`/todos/${id}?date=${date}`, {
-            method: "DELETE"
-          }).then(res => {
-            if (res.ok) {
-              window.location.href = `/todos?date=${date}`;
-            } else {
-              alert("삭제 실패");
-            }
+          fetch(`/todos/${id}?date=${date}`, { method: "DELETE" }).then(res => {
+            if (res.ok) window.location.href = `/todos?date=${date}`;
+            else alert("삭제 실패");
           });
         });
       });
     };
 
-    // ✅ 모달 닫기
     window.closeModal = function () {
       const container = document.getElementById('modalContainer');
       container.style.display = 'none';
       container.innerHTML = '';
     };
 
-    // ✅ 메뉴 버튼 클릭 처리
-    const menuButtons = document.querySelectorAll('.menu-button');
-    menuButtons.forEach(button => {
+    document.querySelectorAll('.menu-button').forEach(button => {
       button.addEventListener('click', function (event) {
         document.querySelectorAll('.menu-box').forEach(box => box.style.display = 'none');
         const menuBox = this.nextElementSibling;
-        menuBox.style.display = 'block';
+        menuBox.style.display = 'flex';
+        event.stopPropagation();
 
         document.addEventListener('click', function handler(e) {
-          if (!button.contains(e.target) && !menuBox.contains(e.target)) {
+          if (!menuBox.contains(e.target) && e.target !== button) {
             menuBox.style.display = 'none';
             document.removeEventListener('click', handler);
           }
         });
-
-        event.stopPropagation();
       });
     });
 
-    // 삭제 버튼 클릭 처리
-    document.querySelectorAll('.delete-button').forEach(btn => {
-      btn.addEventListener('click', function () {
-        const id = this.getAttribute('data-id');
-        const date = this.getAttribute('data-date');
-        openDeleteModal(id, date);
-      });
-    });
-
-    // ✅ 수정 버튼 클릭 이벤트
     document.querySelectorAll('.edit-button').forEach(btn => {
       btn.addEventListener('click', function () {
-        const id = this.getAttribute('data-id');
-        const date = this.getAttribute('data-date');
-        openEditModal(id, date);
+        openEditModal(this.getAttribute('data-id'), this.getAttribute('data-date'));
       });
-
     });
-  });
 
-  // ✅ 완료 체크 토글 처리
-  document.querySelectorAll('.complete-checkbox').forEach(box => {
-    box.addEventListener('change', function () {
-      const id = this.getAttribute('data-id');
-      const date = this.getAttribute('data-date');
-      fetch(`/todos/${id}/complete?date=${date}`, {
-        method: "PATCH"
-      }).then(() => {
-        window.location.href = `/todos?date=${date}`;
+    document.querySelectorAll('.delete-button').forEach(btn => {
+      btn.addEventListener('click', function () {
+        openDeleteModal(this.getAttribute('data-id'), this.getAttribute('data-date'));
       });
     });
   });
 </script>
+
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>
 </html>

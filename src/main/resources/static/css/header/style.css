@@ -86,22 +86,53 @@
 }
 
 /* ✅ 알림 아이콘 */
+
+
+.notification-container {
+  position: relative;
+}
+
 .notification {
   width: 24px;
   height: 24px;
   background: #ff4757;
   border-radius: 50%;
-  position: relative;
-  animation: pulse 2s infinite;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .notification::before {
   content: '🔔';
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.blink {
+  animation: blink-animation 1s step-start infinite;
+}
+
+@keyframes blink-animation {
+  50% {
+    opacity: 0;
+  }
+}
+
+.notification-popup {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 12px 16px;
+  z-index: 9999;
+  min-width: 200px;
+  color: #333;
+  font-size: 0.875rem;
+  display: none;
 }
 
 @keyframes pulse {

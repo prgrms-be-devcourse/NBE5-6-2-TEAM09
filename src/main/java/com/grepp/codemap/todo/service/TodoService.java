@@ -1,11 +1,14 @@
 package com.grepp.codemap.todo.service;
 
 import com.grepp.codemap.todo.domain.Todo;
+import com.grepp.codemap.todo.dto.TodoAlertDto;
 import com.grepp.codemap.todo.dto.TodoResponse;
 import com.grepp.codemap.todo.repository.TodoRepository;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.repository.UserRepository;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,11 @@ public class TodoService {
         this.todoRepository = todoRepository;
         this.userRepository = userRepository;
     }
+    // 캘린더 렌더링 위해 사용자 전체 Todo 리스트 조회
+    @Transactional(readOnly = true)
+    public List<Todo> findAllByUser(Long userId) {
+        return todoRepository.findAllByUser_Id(userId);
+    }
 
     /**
      * 특정 기간 동안 사용자의 Todo 목록을 조회한다.
@@ -44,6 +52,17 @@ public class TodoService {
             .sorted(Comparator.comparing(Todo::getIsCompleted)) // 완료된 투두는 맨 아래로 이동
             .map(TodoResponse::of)
             .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, List<String>> getTodoTitlesGroupedByDate(Long userId) {
+        List<Todo> todos = todoRepository.findAllByUser_Id(userId);
+
+        return todos.stream()
+            .collect(Collectors.groupingBy(
+                todo -> todo.getStartTime().toLocalDate().format(DateTimeFormatter.ISO_DATE),
+                Collectors.mapping(Todo::getTitle, Collectors.toList())
+            ));
     }
 
     @Transactional(readOnly = true)
@@ -112,6 +131,20 @@ public class TodoService {
     public List<Todo> getTodosToNotify(Long userId, LocalDateTime now, LocalDateTime tenMinutesLater) {
         return todoRepository.findAllByUser_IdAndStartTimeBetweenAndIsCompletedFalse(
             userId, now, tenMinutesLater);
+    }
+
+    public List<Long> findAllUserIds() {
+        return todoRepository.findDistinctUserIds();
+    }
+
+    public List<TodoAlertDto> findTodosStartingIn10Minutes(Long userId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime in10Min = now.plusMinutes(10);
+
+        return todoRepository.findByUserIdAndStartTimeBetween(userId, now, in10Min)
+            .stream()
+            .map(todo -> new TodoAlertDto(todo.getTitle(), todo.getStartTime()))
+            .toList();
     }
 
 

@@ -15,6 +15,7 @@ public record TodoResponse(
     LocalDateTime completedAt,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
+
 ) {
     public static TodoResponse of(Todo todo) {
         return new TodoResponse(

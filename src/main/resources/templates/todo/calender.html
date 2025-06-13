@@ -19,7 +19,6 @@
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-
   <style>
     body {
       margin: 0;
@@ -48,7 +47,7 @@
       align-items: center;
       justify-content: center;
       margin-left: 250px;
-      margin-top: -31vw;
+      margin-top: -37vw;
       padding: 40px;
     }
     button {
@@ -71,32 +70,35 @@
       font-weight: 600;
     }
     .calendar-wrapper {
-      background-color: #d8e3ff;
+      background-color: #ffffff;
       padding: 40px;
       border-radius: 12px;
       margin-top: 40px;
       width: 100%;
       max-width: 900px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e5e7eb;
     }
+
     #calendar {
       width: 100%;
     }
-  </style>
 
+    .fc-day-today {
+      background-color: #E9ECEF !important;
+    }
+  </style>
 </head>
 <body>
-<!-- 헤더 -->
 <header th:replace="fragments/header/header :: header"></header>
-
-<!-- 사이드 네비게이션 (사용자용) -->
 <aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
-<!--알림 -->
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
 
-<!-- 본문 -->
 <main>
-  <h1 style="font-size: 24px;">📅 날짜를 선택하고 투두를 확인해보세요</h1>
+  <h1 style="font-size: 24px; margin-bottom: 8px;">
+    📅 날짜를 선택하고 투두를 확인해보세요
+  </h1>
+  <hr style="border: none; border-top: 1px solid #dee2e6; width: 100%; max-width: 900px; margin-bottom: 28px;" />
   <div class="calendar-wrapper">
     <div id="calendar"></div>
   </div>
@@ -105,25 +107,48 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      locale: 'ko',
-      height: 'auto',
-      selectable: true,
-      headerToolbar: {
-        start: 'title',
-        center: '',
-        end: 'prev,next'
-      },
-      dateClick: function(info) {
-        const selectedDate = info.dateStr;
-        window.location.href = `/todos?date=${selectedDate}`;
-      }
-    });
-    calendar.render();
 
+    fetch('/api/todos/summary')
+    .then(response => response.json())
+    .then(data => {
+      const events = [];
+
+      // 날짜별 투두 제목 → 각각 이벤트로 처리
+      Object.entries(data).forEach(([date, titles]) => {
+        titles.forEach(title => {
+          events.push({
+            title: title,
+            start: date,
+            allDay: true,
+            backgroundColor: '#FEE2E2',
+            textColor: '#991B1B',
+            borderColor: '#FCA5A5'
+          });
+        });
+      });
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ko',
+        height: 'auto',
+        selectable: true,
+        headerToolbar: {
+          start: 'title',
+          center: '',
+          end: 'prev,next'
+        },
+        dateClick: function(info) {
+          const selectedDate = info.dateStr;
+          window.location.href = `/todos?date=${selectedDate}`;
+        },
+        events: events
+      });
+
+      calendar.render();
+    });
   });
 </script>
+
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>
 </html>
