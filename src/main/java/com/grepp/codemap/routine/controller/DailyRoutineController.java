@@ -2,6 +2,7 @@ package com.grepp.codemap.routine.controller;
 
 import com.grepp.codemap.routine.dto.CodingTestReviewDto;
 import com.grepp.codemap.routine.dto.DailyRoutineDto;
+import com.grepp.codemap.routine.dto.InterviewReviewDto;
 import com.grepp.codemap.routine.dto.PomodoroSessionDto;
 import com.grepp.codemap.routine.service.DailyRoutineService;
 import com.grepp.codemap.user.domain.User;
@@ -250,6 +251,7 @@ public class DailyRoutineController {
     public String completeTimer(@RequestParam Long sessionId,
         @RequestParam Long routineId,
         @RequestParam(required = false) Long nextRoutineId,
+        @RequestParam(required = false) Integer actualMinutes,
         @SessionAttribute("userId") Long userId,
         RedirectAttributes redirectAttributes) {
 
@@ -257,10 +259,16 @@ public class DailyRoutineController {
             // 포모도로 세션 종료
             PomodoroSessionDto endedSession = dailyRoutineService.endPomodoroSession(sessionId, userId);
 
+            if (actualMinutes != null && actualMinutes > 0) {
+                dailyRoutineService.updateActualFocusTime(routineId, actualMinutes, userId);
+            }
+
             // 루틴 완료 처리
             DailyRoutineDto completedRoutine = dailyRoutineService.completeRoutine(routineId, userId);
 
-            redirectAttributes.addFlashAttribute("successMessage", "루틴이 성공적으로 완료되었습니다!");
+            redirectAttributes.addFlashAttribute("successMessage",
+                String.format("루틴이 성공적으로 완료되었습니다! (실제 진행 시간: %d분)",
+                    completedRoutine.getActualFocusTime() != null ? completedRoutine.getActualFocusTime() : 0));
 
             // 다음 루틴이 있는 경우 해당 루틴의 타이머 페이지로 이동
             if (nextRoutineId != null) {
@@ -313,23 +321,24 @@ public class DailyRoutineController {
         @RequestParam("problemDescriptions") List<String> problemDescriptions,
         @RequestParam("mySolutions") List<String> mySolutions,
         @RequestParam("correctSolutions") List<String> correctSolutions,
-        @RequestParam("problemTypes") List<String> problemTypes,
         @RequestParam(required = false) Long sessionId,
         @SessionAttribute("userId") Long userId,
         RedirectAttributes redirectAttributes) {
 
         try {
+            DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
+
             // 회고 DTO 리스트 생성
             List<CodingTestReviewDto> reviewDtos = new ArrayList<>();
             for (int i = 0; i < problemTitles.size(); i++) {
                 if (i < problemDescriptions.size() && i < mySolutions.size() &&
-                    i < correctSolutions.size() && i < problemTypes.size()) {
+                    i < correctSolutions.size()) {
                     reviewDtos.add(CodingTestReviewDto.builder()
                         .problemTitle(problemTitles.get(i))
                         .problemDescription(problemDescriptions.get(i))
                         .mySolution(mySolutions.get(i))
                         .correctSolution(correctSolutions.get(i))
-                        .problemType(problemTypes.get(i))
+                        .problemType(routine.getCategory())
                         .build());
                 }
             }
@@ -356,6 +365,7 @@ public class DailyRoutineController {
     @PatchMapping("/timer/complete-coding")
     public String completeCodingTimer(@RequestParam Long sessionId,
         @RequestParam Long routineId,
+        @RequestParam(required = false) Integer actualMinutes,
         @SessionAttribute("userId") Long userId,
         RedirectAttributes redirectAttributes) {
 
@@ -364,11 +374,119 @@ public class DailyRoutineController {
             DailyRoutineDto routine = dailyRoutineService.getRoutineById(routineId, userId);
 
             if (dailyRoutineService.isCodingTestRoutine(routine)) {
+                if (actualMinutes != null && actualMinutes > 0) {
+                    dailyRoutineService.updateActualFocusTime(routineId, actualMinutes, userId);
+                }
                 // 코딩테스트 루틴이면 회고 페이지로 이동
                 return "redirect:/routines/" + routineId + "/coding-review?sessionId=" + sessionId;
             } else {
                 // 일반 루틴이면 기존 로직
-                return completeTimer(sessionId, routineId, null, userId, redirectAttributes);
+                return completeTimer(sessionId, routineId, null, actualMinutes, userId, redirectAttributes);
+            }
+        } catch (Exception e) {
+            log.error("타이머 완료 처리 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "타이머 완료 처리에 실패했습니다: " + e.getMessage());
+            return "redirect:/routines";
+        }
+    }
+
+    // 면접준비 회고 페이지 이동
+    @GetMapping("/{id}/interview-review")
+    public String showInterviewReviewPage(@PathVariable Long id, Model model,
+        @SessionAttribute("userId") Long userId,
+        @RequestParam(required = false) Long sessionId) {
+
+        User user = userService.getUserById(userId);
+        model.addAttribute("user", user);
+
+        try {
+            DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
+
+            // 면접준비 루틴인지 확인
+            if (!dailyRoutineService.isInterviewRoutine(routine)) {
+                return "redirect:/routines";
+            }
+
+            // 기존 회고가 있는지 확인
+            List<InterviewReviewDto> existingReviews = dailyRoutineService.getInterviewReviews(id, userId);
+
+            model.addAttribute("routine", routine);
+            model.addAttribute("existingReviews", existingReviews);
+            model.addAttribute("sessionId", sessionId);
+            model.addAttribute("isViewMode", !existingReviews.isEmpty());
+
+            return "routine/interview-review";
+        } catch (Exception e) {
+            log.error("면접준비 회고 페이지 로드 중 오류 발생", e);
+            return "redirect:/routines";
+        }
+    }
+
+    // 면접준비 회고 저장 및 루틴 완료
+    @PostMapping("/{id}/interview-review")
+    public String saveInterviewReview(@PathVariable Long id,
+        @RequestParam("studyContents") List<String> studyContents,
+        @RequestParam("difficultParts") List<String> difficultParts,
+        @RequestParam("nextStudyPlans") List<String> nextStudyPlans,
+        @RequestParam(required = false) Long sessionId,
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
+
+        try {
+            DailyRoutineDto routine = dailyRoutineService.getRoutineById(id, userId);
+            // 회고 DTO 리스트 생성
+            List<InterviewReviewDto> reviewDtos = new ArrayList<>();
+            for (int i = 0; i < studyContents.size(); i++) {
+                if (i < studyContents.size() &&
+                    i < difficultParts.size() && i < nextStudyPlans.size()) {
+                    reviewDtos.add(InterviewReviewDto.builder()
+                        .techCategory(routine.getCategory())
+                        .studyContent(studyContents.get(i))
+                        .difficultParts(difficultParts.get(i))
+                        .nextStudyPlan(nextStudyPlans.get(i))
+                        .build());
+                }
+            }
+
+            // 세션이 있으면 종료 처리
+            if (sessionId != null) {
+                dailyRoutineService.endPomodoroSession(sessionId, userId);
+            }
+
+            // 회고와 함께 루틴 완료
+            dailyRoutineService.completeInterviewRoutine(id, userId, reviewDtos);
+
+            redirectAttributes.addFlashAttribute("successMessage", "면접준비 회고가 저장되고 루틴이 완료되었습니다!");
+
+        } catch (Exception e) {
+            log.error("면접준비 회고 저장 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "회고 저장에 실패했습니다: " + e.getMessage());
+        }
+
+        return "redirect:/routines";
+    }
+
+    // 기존 completeCodingTimer 메서드 수정 - 면접준비도 처리하도록
+    @PatchMapping("/timer/complete-interview")
+    public String completeInterviewTimer(@RequestParam Long sessionId,
+        @RequestParam Long routineId,
+        @RequestParam(required = false) Integer actualMinutes,
+        @SessionAttribute("userId") Long userId,
+        RedirectAttributes redirectAttributes) {
+
+        try {
+            // 면접준비 루틴인지 확인
+            DailyRoutineDto routine = dailyRoutineService.getRoutineById(routineId, userId);
+
+            if (dailyRoutineService.isInterviewRoutine(routine)) {
+                if (actualMinutes != null && actualMinutes > 0) {
+                    dailyRoutineService.updateActualFocusTime(routineId, actualMinutes, userId);
+                }
+                // 면접준비 루틴이면 회고 페이지로 이동
+                return "redirect:/routines/" + routineId + "/interview-review?sessionId=" + sessionId;
+            } else {
+                // 일반 루틴이면 기존 로직
+                return completeTimer(sessionId, routineId, null, actualMinutes, userId, redirectAttributes);
             }
         } catch (Exception e) {
             log.error("타이머 완료 처리 중 오류 발생", e);

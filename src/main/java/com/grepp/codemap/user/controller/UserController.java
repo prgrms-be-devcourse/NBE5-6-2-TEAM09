@@ -80,8 +80,8 @@ public class UserController {
             List<DailyRoutineDto> passedRoutines = routinesByStatus.get("passed");
 
             // 오늘의 총 집중시간 계산 (완료된 루틴들의 집중시간 합)
-            int totalFocusMinutes = completedRoutines.stream()
-                .mapToInt(routine -> routine.getFocusTime() != null ? routine.getFocusTime() : 0)
+            int totalActualFocusMinutes = completedRoutines.stream()
+                .mapToInt(routine -> routine.getActualFocusTime() != null ? routine.getActualFocusTime() : 0)
                 .sum();
 
             // 전체 루틴 수와 완료된 루틴 수
@@ -96,7 +96,7 @@ public class UserController {
             model.addAttribute("completedRoutines", completedRoutines);
             model.addAttribute("passedRoutines", passedRoutines);
             model.addAttribute("todayTodos", todayTodos);
-            model.addAttribute("totalFocusMinutes", totalFocusMinutes);
+            model.addAttribute("totalActualFocusMinutes", totalActualFocusMinutes);
             model.addAttribute("totalRoutines", totalRoutines);
             model.addAttribute("completedRoutineCount", completedRoutineCount);
             model.addAttribute("completionRate", Math.round(completionRate));

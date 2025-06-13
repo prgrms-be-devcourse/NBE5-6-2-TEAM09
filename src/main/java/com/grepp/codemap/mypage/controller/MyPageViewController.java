@@ -40,6 +40,9 @@ public class MyPageViewController {
         RoutineCompletionDto completionDto = myPageService.getRoutineCompletionStats(user.getId());
         List<RoutineCategoryCompletionDto> categoryStats = myPageService.getRoutineCompletionStatsByCategory(user.getId());
 
+        Integer totalActualFocusTime = myPageService.getTotalActualFocusTime(user.getId());
+        Map<String, Integer> actualFocusTimeByCategory = myPageService.getActualFocusTimeByCategory(user.getId());
+
         Map<String, Integer> rawFocusMap = myPageService.getFocusTimePerDay(user.getId());
         Map<String, Integer> orderedFocusMap = new LinkedHashMap<>();
         for (String day : WEEKDAYS) {
@@ -54,6 +57,9 @@ public class MyPageViewController {
         model.addAttribute("categoryStats", categoryStats);
         model.addAttribute("focusTimes", orderedFocusMap);
         model.addAttribute("todayTodos", todayTodos);
+
+        model.addAttribute("totalActualFocusTime", totalActualFocusTime);
+        model.addAttribute("actualFocusTimeByCategory", actualFocusTimeByCategory);
 
         return "mypage/stats";
     }
