@@ -77,8 +77,9 @@
 
     .routine-info h3 {
       color: #1b2c50;
-      margin-bottom: 5px;
-    }
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 15px 0;    }
 
     .routine-info p {
       color: #666;
@@ -206,11 +207,12 @@
 
     <div class="routine-info">
       <h3 th:text="${routine.title}">루틴 제목</h3>
-      <p><strong>카테고리:</strong> <span th:text="${routine.category}">카테고리</span></p>
       <p><strong>설명:</strong> <span th:text="${routine.description}">설명</span></p>
       <p><strong>집중 시간:</strong> <span th:text="${routine.focusTime}">60</span>분</p>
     </div>
 
+
+    <!-- 작성 모드 -->
     <form th:if="${!isViewMode}" th:action="@{'/routines/' + ${routine.id} + '/coding-review'}" method="post" id="reviewForm">
       <input type="hidden" name="sessionId" th:value="${sessionId}" />
 
@@ -220,20 +222,6 @@
             <h4>문제 1</h4>
             <button type="button" class="remove-problem" onclick="removeProblem(this)" style="display: none;">삭제</button>
           </div>
-
-          <label>문제 종류</label>
-          <select name="problemTypes" required>
-            <option value="">선택하세요</option>
-            <option value="자료구조">자료구조</option>
-            <option value="BFS/DFS">BFS/DFS</option>
-            <option value="구현">구현</option>
-            <option value="다익스트라">다익스트라</option>
-            <option value="트리">트리</option>
-            <option value="다이나믹 프로그래밍">다이나믹 프로그래밍</option>
-            <option value="탐색">탐색</option>
-            <option value="그리디">그리디</option>
-            <option value="기타">기타</option>
-          </select>
 
           <label>문제 제목</label>
           <input type="text" name="problemTitles" placeholder="문제 제목을 입력하세요" required />
@@ -264,9 +252,6 @@
           <h4 th:text="'문제 ' + ${iterStat.count}">문제 1</h4>
         </div>
 
-        <label>문제 종류</label>
-        <input type="text" th:value="${review.problemType}" readonly />
-
         <label>문제 제목</label>
         <input type="text" th:value="${review.problemTitle}" readonly />
 
@@ -293,7 +278,6 @@
   function addProblem() {
     problemCount++;
     const container = document.getElementById('problemsContainer');
-
     const newProblem = document.createElement('div');
     newProblem.className = 'problem-section';
 
@@ -303,19 +287,7 @@
         <button type="button" class="remove-problem" onclick="removeProblem(this)">삭제</button>
       </div>
 
-      <label>문제 종류</label>
-      <select name="problemTypes" required>
-        <option value="">선택하세요</option>
-        <option value="자료구조">자료구조</option>
-        <option value="BFS/DFS">BFS/DFS</option>
-        <option value="구현">구현</option>
-        <option value="다익스트라">다익스트라</option>
-        <option value="트리">트리</option>
-        <option value="다이나믹 프로그래밍">다이나믹 프로그래밍</option>
-        <option value="탐색">탐색</option>
-        <option value="그리디">그리디</option>
-        <option value="기타">기타</option>
-      </select>
+
 
       <label>문제 제목</label>
       <input type="text" name="problemTitles" placeholder="문제 제목을 입력하세요" required />
