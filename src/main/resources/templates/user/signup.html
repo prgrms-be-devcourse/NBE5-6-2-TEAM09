@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodeMap - 회원가입</title>
-  <link rel="stylesheet" th:href="@{/css/header/base.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/header.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/token.css}" />
   <style>
     .auto-layout,
     .style-filled,
@@ -14,141 +11,752 @@
     form[action="/logout"] {
       display: none !important;
     }
-    body {
+
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Pretendard', sans-serif;
-      background-color: #f8f9fa;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 애니메이션 배경 */
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .floating-shape {
+      position: absolute;
+      opacity: 0.08;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    .floating-shape:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 50%;
+      animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+      top: 60%;
+      right: 8%;
+      width: 90px;
+      height: 90px;
+      background: white;
+      border-radius: 25px;
+      animation-delay: 4s;
+    }
+
+    .floating-shape:nth-child(3) {
+      bottom: 20%;
+      left: 10%;
+      width: 70px;
+      height: 70px;
+      background: white;
+      transform: rotate(45deg);
+      animation-delay: 7s;
+    }
+
+    .floating-shape:nth-child(4) {
+      top: 30%;
+      right: 30%;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      animation-delay: 2s;
+    }
+
+    .floating-shape:nth-child(5) {
+      top: 85%;
+      left: 70%;
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 20px;
+      animation-delay: 5s;
+    }
+
+    .floating-shape:nth-child(6) {
+      top: 45%;
+      left: 25%;
+      width: 35px;
+      height: 35px;
+      background: white;
+      border-radius: 50%;
+      animation-delay: 8s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+        opacity: 0.08;
+      }
+      25% {
+        transform: translateY(-25px) rotate(90deg) scale(1.05);
+        opacity: 0.12;
+      }
+      50% {
+        transform: translateY(-15px) rotate(180deg) scale(0.95);
+        opacity: 0.06;
+      }
+      75% {
+        transform: translateY(-35px) rotate(270deg) scale(1.1);
+        opacity: 0.1;
+      }
     }
 
     main {
       display: flex;
-      height: calc(100vh - 116px);
-      padding: 0 80px;
+      min-height: calc(100vh - 116px);
       justify-content: center;
       align-items: center;
-      gap: 60px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .signup-container {
+      display: flex;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+      max-width: 1000px;
       width: 100%;
+      min-height: 600px;
+      animation: slideIn 0.8s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .left-panel {
-      width: 360px;
+      flex: 1;
+      padding: 3.5rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 16px;
+      text-align: center;
+      position: relative;
     }
 
-    .left-panel img {
-      width: 160px;
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+      border-radius: 24px 0 0 24px;
+    }
+
+    .left-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      width: 130px;
       height: auto;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.25));
+      animation: logoFloat 3.5s ease-in-out infinite;
     }
 
-    .left-panel .title {
-      font-size: 42px;
-      font-weight: bold;
-      color: #0019a5;
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
     }
 
-    .left-panel .slogan {
-      font-size: 20px;
-      color: #0019a5;
+    .brand-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .brand-slogan {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.95);
       font-weight: 500;
+      margin-bottom: 2.5rem;
     }
 
-    .login-card {
-      width: 420px;
-      background-color: #bdd2ff;
-      padding: 48px;
-      border-radius: 16px;
+    .welcome-text {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.7;
+      max-width: 320px;
+    }
+
+    .features-preview {
       display: flex;
       flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .feature-item {
+      display: flex;
       align-items: center;
+      gap: 0.75rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
     }
 
-    .login-card h2 {
-      margin-bottom: 24px;
-      color: #0019a5;
-      font-size: 24px;
+    .feature-icon {
+      font-size: 1.2rem;
     }
 
-    .login-card input {
+    .right-panel {
+      flex: 1.2;
+      padding: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+    }
+
+    .signup-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .signup-title {
+      font-size: 2rem;
+      color: #2d3748;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .signup-subtitle {
+      color: #718096;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
       width: 100%;
-      padding: 12px 16px;
-      font-size: 14px;
-      border: 1px solid #ccc;
+      padding: 1rem 1.25rem;
+      border: 2px solid #e2e8f0;
       border-radius: 12px;
-      margin-bottom: 12px;
-    }
-
-    .login-card .input-group {
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
       position: relative;
-      width: 100%;
     }
 
-    .login-card .input-group img {
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-input.valid {
+      border-color: #48bb78;
+      background-image: url("data:image/svg+xml,%3csvg width='16' height='16' fill='%2348bb78' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .form-input.invalid {
+      border-color: #f56565;
+      background-image: url("data:image/svg+xml,%3csvg width='16' height='16' fill='%23f56565' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM4.5 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5Z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .password-group {
+      position: relative;
+    }
+
+    .password-input {
+      padding-right: 3.5rem;
+    }
+
+    .password-toggle {
       position: absolute;
-      right: 16px;
+      right: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      width: 28px;
-      height: 28px;
       cursor: pointer;
-    }
-
-    .login-card .buttons {
-      width: 100%;
-      margin-top: 16px;
-    }
-
-    .login-card .buttons button {
-      width: 100%;
-      padding: 12px 0;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      background: none;
       border: none;
-      border-radius: 999px;
-      background-color: #3b82f6;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
+      color: #718096;
+      font-size: 1.2rem;
     }
 
-    .login-card .buttons button:hover {
-      background-color: #2563eb;
+    .password-toggle:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .password-strength {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .strength-bar {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 0.25rem;
+    }
+
+    .strength-segment {
+      height: 3px;
+      flex: 1;
+      background: #e2e8f0;
+      border-radius: 2px;
+      transition: background-color 0.3s ease;
+    }
+
+    .strength-segment.active {
+      background: #48bb78;
+    }
+
+    .strength-segment.active.weak {
+      background: #f56565;
+    }
+
+    .strength-segment.active.medium {
+      background: #ed8936;
+    }
+
+    .strength-segment.active.strong {
+      background: #48bb78;
+    }
+
+    .strength-text {
+      color: #718096;
+    }
+
+    .validation-message {
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      color: #f56565;
+    }
+
+    .validation-message.valid {
+      color: #48bb78;
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-top: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .submit-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .submit-button:hover::before {
+      left: 100%;
+    }
+
+    .submit-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .login-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .login-link a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 968px) {
+      .signup-container {
+        flex-direction: column;
+        margin: 1rem;
+        min-height: auto;
+      }
+
+      .left-panel {
+        padding: 2.5rem;
+        border-radius: 24px 24px 0 0;
+      }
+
+      .left-panel::before {
+        border-radius: 24px 24px 0 0;
+      }
+
+      .right-panel {
+        padding: 2.5rem;
+        border-radius: 0 0 24px 24px;
+      }
+
+      .brand-title {
+        font-size: 2.3rem;
+      }
+
+      .features-preview {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      main {
+        padding: 1rem;
+      }
+
+      .left-panel,
+      .right-panel {
+        padding: 2rem;
+      }
+
+      .brand-title {
+        font-size: 2rem;
+      }
+
+      .logo {
+        width: 110px;
+      }
+
+      .features-preview {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-<!-- ✅ 헤더 -->
-<header th:replace="fragments/header/header :: header"></header>
+<!-- 애니메이션 배경 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
 
-<!-- ✅ 본문 -->
 <main>
-  <!-- 왼쪽 -->
-  <div class="left-panel">
-    <img src="/img/codemap_blue.png" alt="CodeMap Logo" />
-    <div class="slogan">: Stay on Track, Become a Dev.</div>
-  </div>
+  <div class="signup-container">
+    <!-- 왼쪽 패널 -->
+    <div class="left-panel">
+      <img src="/img/codemap_blue.png" alt="CodeMap Logo" class="logo" />
+      <h1 class="brand-title">CodeMap</h1>
+      <p class="brand-slogan">Stay on Track, Become a Dev.</p>
+      <p class="welcome-text">
+        지금 가입하고 개발자로서의<br>
+        성장 여정을 체계적으로 관리해보세요
+      </p>
 
-  <!-- 오른쪽 -->
-  <div class="login-card">
-    <h2>회원가입</h2>
-    <form th:action="@{/user/signup}" method="post">
-      <input type="email" name="email" placeholder="이메일" required />
-      <input type="text" name="nickname" placeholder="닉네임" required />
-      <div class="input-group">
-        <input type="password" name="password" placeholder="비밀번호" required />
-        <img src="/img/eye.png" alt="비밀번호 보기" />
+      <div class="features-preview">
+        <div class="feature-item">
+          <span class="feature-icon">📊</span>
+          <span>실시간 진도 추적</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span>스마트 할일 관리</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🎯</span>
+          <span>맞춤형 루틴 제공</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">💬</span>
+          <span>AI 면접 준비</span>
+        </div>
       </div>
-      <div class="input-group">
-        <input type="password" name="passwordConfirm" placeholder="비밀번호 확인" required />
-        <img src="/img/eye.png" alt="비밀번호 확인 보기" />
+    </div>
+
+    <!-- 오른쪽 패널 -->
+    <div class="right-panel">
+      <div class="signup-header">
+        <h2 class="signup-title">회원가입</h2>
+        <p class="signup-subtitle">새로운 계정을 만들어 CodeMap을 시작하세요</p>
       </div>
-      <div class="buttons">
-        <button type="submit">회원가입</button>
+
+      <form th:action="@{/user/signup}" method="post" id="signupForm">
+        <div class="form-group">
+          <label class="form-label">이메일</label>
+          <input type="email" name="email" class="form-input" placeholder="이메일을 입력하세요" required id="emailField" />
+          <div class="validation-message" id="emailValidation"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">닉네임</label>
+          <input type="text" name="nickname" class="form-input" placeholder="닉네임을 입력하세요" required id="nicknameField" />
+          <div class="validation-message" id="nicknameValidation"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">비밀번호</label>
+          <div class="password-group">
+            <input type="password" name="password" class="form-input password-input" placeholder="비밀번호를 입력하세요" required id="passwordField" />
+            <button type="button" class="password-toggle" id="togglePassword">
+              👁️
+            </button>
+          </div>
+          <div class="password-strength" id="passwordStrength">
+            <div class="strength-bar">
+              <div class="strength-segment"></div>
+              <div class="strength-segment"></div>
+              <div class="strength-segment"></div>
+              <div class="strength-segment"></div>
+            </div>
+            <div class="strength-text">비밀번호 강도</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">비밀번호 확인</label>
+          <div class="password-group">
+            <input type="password" name="passwordConfirm" class="form-input password-input" placeholder="비밀번호를 다시 입력하세요" required id="passwordConfirmField" />
+            <button type="button" class="password-toggle" id="togglePasswordConfirm">
+              👁️
+            </button>
+          </div>
+          <div class="validation-message" id="passwordConfirmValidation"></div>
+        </div>
+
+        <button type="submit" class="submit-button" id="submitButton">
+          계정 생성하기
+        </button>
+      </form>
+
+      <div class="login-link">
+        이미 계정이 있으신가요? <a href="/user/signin">로그인하기</a>
       </div>
-    </form>
+    </div>
   </div>
 </main>
+
+<script>
+  // 비밀번호 토글 기능
+  const setupPasswordToggle = (toggleId, fieldId) => {
+    const toggle = document.getElementById(toggleId);
+    const field = document.getElementById(fieldId);
+
+    toggle.addEventListener('click', () => {
+      const isPassword = field.type === 'password';
+      field.type = isPassword ? 'text' : 'password';
+      toggle.textContent = isPassword ? '🙈' : '👁️';
+    });
+  };
+
+  setupPasswordToggle('togglePassword', 'passwordField');
+  setupPasswordToggle('togglePasswordConfirm', 'passwordConfirmField');
+
+  // 비밀번호 강도 체크
+  const passwordField = document.getElementById('passwordField');
+  const strengthBar = document.querySelector('.strength-bar');
+  const strengthText = document.querySelector('.strength-text');
+
+  passwordField.addEventListener('input', () => {
+    const password = passwordField.value;
+    const strength = calculatePasswordStrength(password);
+    updateStrengthBar(strength);
+  });
+
+  function calculatePasswordStrength(password) {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  }
+
+  function updateStrengthBar(strength) {
+    const segments = strengthBar.querySelectorAll('.strength-segment');
+    const texts = ['매우 약함', '약함', '보통', '강함', '매우 강함'];
+    const classes = ['weak', 'weak', 'medium', 'strong', 'strong'];
+
+    segments.forEach((segment, index) => {
+      segment.classList.remove('active', 'weak', 'medium', 'strong');
+      if (index < strength) {
+        segment.classList.add('active', classes[strength - 1]);
+      }
+    });
+
+    strengthText.textContent = strength > 0 ? `비밀번호 강도: ${texts[strength - 1]}` : '비밀번호 강도';
+  }
+
+  // 실시간 유효성 검사
+  const emailField = document.getElementById('emailField');
+  const nicknameField = document.getElementById('nicknameField');
+  const passwordConfirmField = document.getElementById('passwordConfirmField');
+
+  emailField.addEventListener('input', validateEmail);
+  nicknameField.addEventListener('input', validateNickname);
+  passwordConfirmField.addEventListener('input', validatePasswordConfirm);
+
+  function validateEmail() {
+    const email = emailField.value;
+    const validation = document.getElementById('emailValidation');
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email && emailPattern.test(email)) {
+      emailField.classList.add('valid');
+      emailField.classList.remove('invalid');
+      validation.textContent = '유효한 이메일입니다.';
+      validation.classList.add('valid');
+    } else if (email) {
+      emailField.classList.add('invalid');
+      emailField.classList.remove('valid');
+      validation.textContent = '올바른 이메일 형식을 입력해주세요.';
+      validation.classList.remove('valid');
+    } else {
+      emailField.classList.remove('valid', 'invalid');
+      validation.textContent = '';
+    }
+  }
+
+  function validateNickname() {
+    const nickname = nicknameField.value;
+    const validation = document.getElementById('nicknameValidation');
+
+    if (nickname.length >= 2 && nickname.length <= 20) {
+      nicknameField.classList.add('valid');
+      nicknameField.classList.remove('invalid');
+      validation.textContent = '사용 가능한 닉네임입니다.';
+      validation.classList.add('valid');
+    } else if (nickname) {
+      nicknameField.classList.add('invalid');
+      nicknameField.classList.remove('valid');
+      validation.textContent = '닉네임은 2-20자 사이여야 합니다.';
+      validation.classList.remove('valid');
+    } else {
+      nicknameField.classList.remove('valid', 'invalid');
+      validation.textContent = '';
+    }
+  }
+
+  function validatePasswordConfirm() {
+    const password = passwordField.value;
+    const passwordConfirm = passwordConfirmField.value;
+    const validation = document.getElementById('passwordConfirmValidation');
+
+    if (passwordConfirm && password === passwordConfirm) {
+      passwordConfirmField.classList.add('valid');
+      passwordConfirmField.classList.remove('invalid');
+      validation.textContent = '비밀번호가 일치합니다.';
+      validation.classList.add('valid');
+    } else if (passwordConfirm) {
+      passwordConfirmField.classList.add('invalid');
+      passwordConfirmField.classList.remove('valid');
+      validation.textContent = '비밀번호가 일치하지 않습니다.';
+      validation.classList.remove('valid');
+    } else {
+      passwordConfirmField.classList.remove('valid', 'invalid');
+      validation.textContent = '';
+    }
+  }
+
+  // 폼 제출
+  const form = document.getElementById('signupForm');
+  const submitButton = document.getElementById('submitButton');
+
+  form.addEventListener('submit', (e) => {
+    submitButton.innerHTML = '계정 생성 중...';
+    submitButton.disabled = true;
+  });
+
+  // 입력 필드 포커스 애니메이션
+  const inputs = document.querySelectorAll('.form-input');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.classList.add('focused');
+    });
+
+    input.addEventListener('blur', function() {
+      if (this.value === '') {
+        this.parentElement.classList.remove('focused');
+      }
+    });
+  });
+</script>
 </body>
 </html>
