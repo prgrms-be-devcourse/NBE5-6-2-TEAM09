@@ -143,6 +143,7 @@ public class TodoService {
 
         return todoRepository.findByUserIdAndStartTimeBetween(userId, now, in10Min)
             .stream()
+            .filter(todo -> !todo.getIsCompleted())
             .map(todo -> new TodoAlertDto(todo.getTitle(), todo.getStartTime()))
             .toList();
     }

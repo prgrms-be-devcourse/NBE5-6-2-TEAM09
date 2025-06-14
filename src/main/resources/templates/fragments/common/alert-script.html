@@ -22,6 +22,20 @@
       const icon = document.getElementById('notification-icon');
       const popup = document.getElementById('notification-popup');
 
+      // ✅ 아이콘 클릭 시 항상 팝업 표시되도록 기본 핸들러 등록
+      if (icon && popup) {
+        icon.addEventListener('click', () => {
+          if (popup.innerHTML.trim() !== '') {
+            // 기존 알림 내용이 있다면 그냥 토글
+            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+          } else {
+            // 알림이 없으면 기본 메시지 출력
+            popup.innerHTML = '<p>🔕 아직 알림이 없습니다.</p>';
+            popup.style.display = 'block';
+          }
+        });
+      }
+
       // ✅ SSE 연결
       const eventSource = new EventSource('/sse/alerts');
 
@@ -44,17 +58,14 @@
           document.removeEventListener('click', handler);
         });
 
-        // ✅ 팝업 내용 채우기
+        // ✅ 팝업 내용 갱신
         popup.innerHTML = todos.map(todo =>
             `<p>🕐 <strong>${todo.title}</strong><br/><span style="font-size: 12px;">시작 10분 전입니다.</span></p>`
         ).join('');
 
-        // ✅ 팝업 토글
-        if (icon && popup) {
-          icon.addEventListener('click', () => {
-            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
-            console.log("🟡 팝업 토글됨");
-          });
+        // 팝업 열려있으면 자동 갱신된 내용 보이도록 유지
+        if (popup.style.display !== 'none') {
+          popup.style.display = 'block';
         }
       });
 
