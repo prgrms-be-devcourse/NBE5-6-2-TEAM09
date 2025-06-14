@@ -1,0 +1,450 @@
+/* ✅ 사이드바 전용 CSS 변수 */
+.sidebar {
+  --sidebar-primary: #667eea;
+  --sidebar-primary-dark: #5a67d8;
+  --sidebar-primary-light: #e7f1ff;
+  --sidebar-secondary: #764ba2;
+  --sidebar-text-primary: #2d3748;
+  --sidebar-text-secondary: #4a5568;
+  --sidebar-text-light: #718096;
+  --sidebar-background: #f7fafc;
+  --sidebar-background-white: #ffffff;
+  --sidebar-border: #e2e8f0;
+  --sidebar-border-dark: #cbd5e0;
+  --sidebar-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --sidebar-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --sidebar-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --sidebar-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --sidebar-width: 250px;
+  --sidebar-header-height: 70px;
+  --sidebar-spacing-xs: 4px;
+  --sidebar-spacing-sm: 8px;
+  --sidebar-spacing-md: 16px;
+  --sidebar-spacing-lg: 24px;
+  --sidebar-spacing-xl: 32px;
+  --sidebar-radius-sm: 4px;
+  --sidebar-radius-md: 8px;
+  --sidebar-radius-lg: 12px;
+  --sidebar-radius-xl: 16px;
+  --sidebar-font-size-sm: 14px;
+  --sidebar-font-size-base: 16px;
+  --sidebar-font-size-lg: 18px;
+  --sidebar-font-weight-medium: 500;
+  --sidebar-font-weight-semibold: 600;
+  --sidebar-font-weight-bold: 700;
+  --sidebar-z-index: 900;
+}
+
+/* ✅ 사이드바 메인 컨테이너 - 메인 페이지 CSS와 충돌 방지 */
+.sidebar {
+  position: fixed !important;
+  top: var(--sidebar-header-height) !important;
+  left: 0 !important;
+  width: var(--sidebar-width) !important;
+  height: calc(100vh - var(--sidebar-header-height)) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-right: 1px solid var(--sidebar-border) !important;
+  box-shadow: var(--sidebar-shadow-lg) !important;
+  z-index: var(--sidebar-z-index) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  backdrop-filter: blur(10px) !important;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* ✅ 프로필 섹션 */
+.sidebar .sidebar-profile {
+  padding: var(--sidebar-spacing-lg) var(--sidebar-spacing-md) !important;
+  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--sidebar-spacing-md) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  border: none !important;
+  box-sizing: border-box !important;
+}
+
+.sidebar .sidebar-profile::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  right: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%) !important;
+  animation: profileGlow 4s ease-in-out infinite !important;
+}
+
+@keyframes profileGlow {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+  50% { transform: scale(1.1) rotate(180deg); opacity: 0.1; }
+}
+
+.sidebar .profile-avatar {
+  position: relative !important;
+  flex-shrink: 0 !important;
+}
+
+.sidebar .avatar-gradient {
+  width: 48px !important;
+  height: 48px !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 20px !important;
+  border: 2px solid rgba(255,255,255,0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.sidebar .status-indicator {
+  position: absolute !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 12px !important;
+  height: 12px !important;
+  background: #4ade80 !important;
+  border: 2px solid white !important;
+  border-radius: 50% !important;
+  animation: pulse 2s ease-in-out infinite !important;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+  50% { box-shadow: 0 0 0 4px rgba(74, 222, 128, 0); }
+}
+
+.sidebar .profile-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.sidebar .profile-name {
+  font-size: var(--sidebar-font-size-base) !important;
+  font-weight: var(--sidebar-font-weight-bold) !important;
+  margin: 0 0 var(--sidebar-spacing-xs) 0 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+  color: white !important;
+}
+
+.sidebar .profile-status {
+  font-size: var(--sidebar-font-size-sm) !important;
+  opacity: 0.9 !important;
+  font-weight: var(--sidebar-font-weight-medium) !important;
+  margin: 0 !important;
+  color: white !important;
+}
+
+/* ✅ 네비게이션 컨테이너 */
+.sidebar .sidebar-nav {
+  padding: var(--sidebar-spacing-md) var(--sidebar-spacing-sm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--sidebar-spacing-xs) !important;
+}
+
+/* ✅ 네비게이션 아이템 */
+.sidebar .nav-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--sidebar-spacing-md) !important;
+  padding: var(--sidebar-spacing-md) var(--sidebar-spacing-md) !important;
+  border-radius: var(--sidebar-radius-lg) !important;
+  color: var(--sidebar-text-secondary) !important;
+  text-decoration: none !important;
+  transition: var(--sidebar-transition) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  border: none !important;
+  font-size: var(--sidebar-font-size-base) !important;
+  font-family: inherit !important;
+}
+
+.sidebar .nav-item::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg, var(--sidebar-primary-light) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+  transition: left 0.3s ease !important;
+  z-index: -1 !important;
+}
+
+.sidebar .nav-item:hover::before {
+  left: 0 !important;
+}
+
+.sidebar .nav-item:hover {
+  color: var(--sidebar-text-primary) !important;
+  transform: translateX(4px) !important;
+  box-shadow: var(--sidebar-shadow-md) !important;
+}
+
+.sidebar .nav-item.active {
+  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+  color: white !important;
+  font-weight: var(--sidebar-font-weight-semibold) !important;
+  box-shadow: var(--sidebar-shadow-md) !important;
+}
+
+.sidebar .nav-item.active::before {
+  display: none !important;
+}
+
+/* ✅ 아이콘 래퍼 */
+.sidebar .nav-icon-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+/* ✅ 아이콘 스타일 */
+.sidebar .nav-icon {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: var(--sidebar-radius-md) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  transition: var(--sidebar-transition) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ✅ 개별 아이콘 색상 */
+.sidebar .home-icon { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important; color: #1976d2 !important; }
+.sidebar .todo-icon { background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%) !important; color: #388e3c !important; }
+.sidebar .routine-icon { background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important; color: #e91e63 !important; }
+.sidebar .job-icon { background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%) !important; color: #3f51b5 !important; }
+.sidebar .interview-icon { background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%) !important; color: #9c27b0 !important; }
+.sidebar .stats-icon { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%) !important; color: #f57c00 !important; }
+.sidebar .settings-icon { background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%) !important; color: #673ab7 !important; }
+
+/* ✅ 활성 상태 아이콘 */
+.sidebar .nav-item.active .nav-icon {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ 리플 효과 */
+.sidebar .icon-ripple {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, transparent 70%) !important;
+  border-radius: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: none !important;
+}
+
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 60px;
+    height: 60px;
+    opacity: 0;
+  }
+}
+
+.sidebar .nav-item:hover .nav-icon {
+  transform: translateY(-2px) scale(1.05) !important;
+}
+
+.sidebar .nav-item.active .nav-icon {
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* ✅ 텍스트 */
+.sidebar .nav-text {
+  font-size: var(--sidebar-font-size-base) !important;
+  font-weight: var(--sidebar-font-weight-medium) !important;
+  white-space: nowrap !important;
+  user-select: none !important;
+  flex: 1 !important;
+}
+
+/* ✅ 화살표 */
+.sidebar .nav-arrow {
+  font-size: var(--sidebar-font-size-base) !important;
+  opacity: 0 !important;
+  transform: translateX(-10px) !important;
+  transition: var(--sidebar-transition) !important;
+  color: var(--sidebar-primary) !important;
+}
+
+.sidebar .nav-item:hover .nav-arrow {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.sidebar .nav-item.active .nav-arrow {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+  color: white !important;
+}
+
+/* ✅ 사이드바 하단 */
+.sidebar .sidebar-footer {
+  padding: var(--sidebar-spacing-md) !important;
+  margin-top: auto !important;
+}
+
+.sidebar .progress-card {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
+  padding: var(--sidebar-spacing-md) !important;
+  border-radius: var(--sidebar-radius-lg) !important;
+  border: 1px solid rgba(102, 126, 234, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.sidebar .progress-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: var(--sidebar-spacing-md) !important;
+}
+
+.sidebar .progress-title {
+  font-size: var(--sidebar-font-size-sm) !important;
+  color: var(--sidebar-text-secondary) !important;
+  font-weight: var(--sidebar-font-weight-medium) !important;
+  margin: 0 !important;
+}
+
+.sidebar .progress-percent {
+  font-size: var(--sidebar-font-size-sm) !important;
+  color: var(--sidebar-primary) !important;
+  font-weight: var(--sidebar-font-weight-bold) !important;
+  margin: 0 !important;
+}
+
+.sidebar .progress-bar {
+  width: 100% !important;
+  height: 6px !important;
+  background: rgba(102, 126, 234, 0.1) !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+}
+
+.sidebar .progress-fill {
+  height: 100% !important;
+  background: linear-gradient(90deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+  border-radius: 3px !important;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+}
+
+.sidebar .progress-fill::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%) !important;
+  animation: progressShine 2s ease-in-out infinite !important;
+}
+
+@keyframes progressShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ✅ 스크롤바 */
+.sidebar::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+  border-radius: 3px !important;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--sidebar-primary-dark) 0%, var(--sidebar-secondary) 100%) !important;
+}
+
+/* ✅ 반응형 - 모바일 */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  /* 모바일 토글 버튼 */
+  .sidebar-toggle {
+    display: flex !important;
+    position: fixed !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 1001 !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: var(--sidebar-shadow-lg) !important;
+    transition: var(--sidebar-transition) !important;
+    font-size: 20px !important;
+  }
+
+  .sidebar-toggle:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2) !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
+
+/* ✅ 애니메이션 줄이기 설정 */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ✅ 포커스 접근성 */
+.sidebar .nav-item:focus-visible {
+  outline: 2px solid var(--sidebar-primary) !important;
+  outline-offset: 2px !important;
+}
