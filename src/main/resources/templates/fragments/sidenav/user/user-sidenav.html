@@ -49,6 +49,16 @@
                 </a>
               </div>
 
+              <!-- ✅ 채용공고 -->
+              <div class="overlap-group">
+                <a th:href="@{/jobposting/list}" class="side-navigation-item nav-item" data-nav="jobpostings">
+                  <div class="nav-icon" style="background: #e8eaf6; color: #3f51b5;">
+                    💼
+                  </div>
+                  <span class="nav-link-button">채용공고</span>
+                </a>
+              </div>
+
               <!-- 면접 질문 -->
               <div class="overlap-group">
                 <a th:href="@{/interview/select}" class="side-navigation-item nav-item" data-nav="interview">
@@ -115,6 +125,8 @@
       '/todos': 'todos',
       '/todos/calender': 'todos',
       '/routines': 'routines',
+      '/jobposting': 'jobposting',
+      '/jobposting/list': 'jobposting',
       '/interview': 'interview',
       '/interview/select': 'interview',
       '/mypage/stats': 'stats',
