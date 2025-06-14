@@ -45,7 +45,7 @@ public class DailyRoutine {
     private String status; // ACTIVE, COMPLETED, PASS
 
     private Integer focusTime;
-    private Integer actualFocusTime;
+    private Integer actualFocusTime = 0;
 
     @Builder.Default
     private Integer breakTime = 5;

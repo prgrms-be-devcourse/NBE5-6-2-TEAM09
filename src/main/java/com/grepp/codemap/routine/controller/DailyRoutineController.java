@@ -1,13 +1,17 @@
 package com.grepp.codemap.routine.controller;
 
+import com.grepp.codemap.interview.service.InterviewService;
+import com.grepp.codemap.routine.domain.PomodoroSession;
 import com.grepp.codemap.routine.dto.CodingTestReviewDto;
 import com.grepp.codemap.routine.dto.DailyRoutineDto;
 import com.grepp.codemap.routine.dto.InterviewReviewDto;
 import com.grepp.codemap.routine.dto.PomodoroSessionDto;
+import com.grepp.codemap.routine.repository.PomodoroSessionRepository;
 import com.grepp.codemap.routine.service.DailyRoutineService;
 import com.grepp.codemap.user.domain.User;
 import com.grepp.codemap.user.service.UserService;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +33,7 @@ public class DailyRoutineController {
 
     private final DailyRoutineService dailyRoutineService;
     private final UserService userService;
+    private final PomodoroSessionRepository pomodoroSessionRepository;
 
 
     //루틴 목록 조회 페이지
@@ -256,19 +261,32 @@ public class DailyRoutineController {
         RedirectAttributes redirectAttributes) {
 
         try {
-            // 포모도로 세션 종료
-            PomodoroSessionDto endedSession = dailyRoutineService.endPomodoroSession(sessionId, userId);
+            if (actualMinutes != null) {
+                // 세션의 실제 진행 시간 업데이트
 
-            if (actualMinutes != null && actualMinutes > 0) {
+                PomodoroSession session = pomodoroSessionRepository.findById(sessionId)
+                    .orElseThrow(() -> new IllegalArgumentException("Session not found"));
+
+                PomodoroSession updatedSession = PomodoroSession.builder()
+                    .id(session.getId())
+                    .routine(session.getRoutine())
+                    .durationMinutes(actualMinutes)  // 최소 0분 보장
+                    .startedAt(session.getStartedAt())
+                    .endedAt(LocalDateTime.now())
+                    .build();
+
+                pomodoroSessionRepository.save(updatedSession);
+
                 dailyRoutineService.updateActualFocusTime(routineId, actualMinutes, userId);
+            } else {
+                // 기존 방식으로 세션 종료
+                dailyRoutineService.endPomodoroSession(sessionId, userId);
             }
 
             // 루틴 완료 처리
             DailyRoutineDto completedRoutine = dailyRoutineService.completeRoutine(routineId, userId);
 
-            redirectAttributes.addFlashAttribute("successMessage",
-                String.format("루틴이 성공적으로 완료되었습니다! (실제 진행 시간: %d분)",
-                    completedRoutine.getActualFocusTime() != null ? completedRoutine.getActualFocusTime() : 0));
+            redirectAttributes.addFlashAttribute("successMessage", "루틴이 성공적으로 완료되었습니다!");
 
             // 다음 루틴이 있는 경우 해당 루틴의 타이머 페이지로 이동
             if (nextRoutineId != null) {
@@ -374,7 +392,7 @@ public class DailyRoutineController {
             DailyRoutineDto routine = dailyRoutineService.getRoutineById(routineId, userId);
 
             if (dailyRoutineService.isCodingTestRoutine(routine)) {
-                if (actualMinutes != null && actualMinutes > 0) {
+                if (actualMinutes != null && actualMinutes >= 0) {
                     dailyRoutineService.updateActualFocusTime(routineId, actualMinutes, userId);
                 }
                 // 코딩테스트 루틴이면 회고 페이지로 이동
@@ -479,7 +497,7 @@ public class DailyRoutineController {
             DailyRoutineDto routine = dailyRoutineService.getRoutineById(routineId, userId);
 
             if (dailyRoutineService.isInterviewRoutine(routine)) {
-                if (actualMinutes != null && actualMinutes > 0) {
+                if (actualMinutes != null && actualMinutes >= 0) {
                     dailyRoutineService.updateActualFocusTime(routineId, actualMinutes, userId);
                 }
                 // 면접준비 루틴이면 회고 페이지로 이동
