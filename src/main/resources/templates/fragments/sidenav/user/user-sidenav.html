@@ -1,142 +1,122 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta charset="utf-8" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.6/dist/web/static/pretendard.css" />
-</head>
-<body>
-<div th:fragment="sidebar">
-  <div class="box">
-    <div class="group">
-      <div class="view">
-        <div class="overlap">
-          <div class="side-navigation-bar">
+<!-- 사이드바 Fragment -->
+<div th:fragment="sidebar" class="sidebar">
+  <!-- 프로필 섹션 -->
+  <div class="sidebar-profile">
+    <div class="profile-avatar">
+      <div class="avatar-gradient">👤</div>
+      <div class="status-indicator"></div>
+    </div>
+    <div class="profile-info">
+      <h3 class="profile-name">개발자님</h3>
+      <p class="profile-status">열심히 성장 중 🚀</p>
+    </div>
+  </div>
 
-            <!-- ✅ 네비게이션 메뉴 -->
-            <div class="group-3">
+  <nav class="sidebar-nav">
+    <!-- 메인화면 -->
+    <a th:href="@{/user/main}" class="nav-item" data-nav="main">
+      <div class="nav-icon-wrapper">
+        <div class="nav-icon home-icon">🏠</div>
+        <div class="icon-ripple"></div>
+      </div>
+      <span class="nav-text">메인화면</span>
+      <div class="nav-arrow">→</div>
+    </a>
 
-              <!-- 메인화면 -->
-              <div class="overlap-group">
-                <a th:href="@{/user/main}" class="side-navigation-item nav-item" data-nav="main">
-                  <div class="nav-icon" style="background: #e3f2fd; color: #1976d2;">
-                    🏠
-                  </div>
-                  <span class="nav-link-button">메인화면</span>
-                </a>
-              </div>
+    <!-- 투두 리스트 -->
+    <a th:href="@{/todos/calender}" class="nav-item" data-nav="todos">
+      <div class="nav-icon-wrapper">
+        <div class="nav-icon todo-icon">✅</div>
+        <div class="icon-ripple"></div>
+      </div>
+      <span class="nav-text">투두 리스트</span>
+      <div class="nav-arrow">→</div>
+    </a>
 
-              <!-- 투두 리스트 -->
-              <div class="overlap-2">
-                <a th:href="@{/todos/calender}" class="side-navigation-item nav-item" data-nav="todos">
-                  <div class="nav-icon" style="background: #e8f5e8; color: #388e3c;">
-                    ✅
-                  </div>
-                  <span class="nav-link-button">투두 리스트</span>
-                </a>
-              </div>
+    <!-- 데일리 루틴 -->
+    <a th:href="@{/routines}" class="nav-item" data-nav="routines">
+      <div class="nav-icon-wrapper">
+        <div class="nav-icon routine-icon">🎯</div>
+        <div class="icon-ripple"></div>
+      </div>
+      <span class="nav-text">데일리 루틴</span>
+      <div class="nav-arrow">→</div>
+    </a>
 
-              <!-- 데일리 루틴 -->
-              <div class="overlap-3">
-                <a th:href="@{/routines}" class="side-navigation-item nav-item" data-nav="routines">
-                  <div class="nav-icon" style="background: #fce4ec; color: #e91e63;">
-                    🎯
-                  </div>
-                  <span class="nav-link-button">데일리 루틴</span>
-                </a>
-              </div>
+    <!-- 채용공고 -->
+    <a th:href="@{/jobposting/list}" class="nav-item" data-nav="jobposting">
+      <div class="nav-icon-wrapper">
+        <div class="nav-icon job-icon">💼</div>
+        <div class="icon-ripple"></div>
+      </div>
+      <span class="nav-text">채용공고</span>
+      <div class="nav-arrow">→</div>
+    </a>
 
-              <!-- ✅ 채용공고 -->
-              <div class="overlap-group">
-                <a th:href="@{/jobposting/list}" class="side-navigation-item nav-item" data-nav="jobpostings">
-                  <div class="nav-icon" style="background: #e8eaf6; color: #3f51b5;">
-                    💼
-                  </div>
-                  <span class="nav-link-button">채용공고</span>
-                </a>
-              </div>
+    <!-- 면접 질문 -->
+    <a th:href="@{/interview/select}" class="nav-item" data-nav="interview">
+      <div class="nav-icon-wrapper">
+        <div class="nav-icon interview-icon">💬</div>
+        <div class="icon-ripple"></div>
+      </div>
+      <span class="nav-text">면접 질문</span>
+      <div class="nav-arrow">→</div>
+    </a>
 
-              <!-- 면접 질문 -->
-              <div class="overlap-group">
-                <a th:href="@{/interview/select}" class="side-navigation-item nav-item" data-nav="interview">
-                  <div class="nav-icon" style="background: #f3e5f5; color: #9c27b0;">
-                    💬
-                  </div>
-                  <span class="nav-link-button">면접 질문</span>
-                </a>
-              </div>
+    <!-- My 통계 -->
+    <a th:href="@{/mypage/stats}" class="nav-item" data-nav="stats">
+      <div class="nav-icon-wrapper">
+        <div class="nav-icon stats-icon">📊</div>
+        <div class="icon-ripple"></div>
+      </div>
+      <span class="nav-text">My 통계</span>
+      <div class="nav-arrow">→</div>
+    </a>
 
-              <!-- My 통계 -->
-              <div class="overlap-2">
-                <a th:href="@{/mypage/stats}" class="side-navigation-item nav-item" data-nav="stats">
-                  <div class="nav-icon" style="background: #fff8e1; color: #f57c00;">
-                    📊
-                  </div>
-                  <span class="nav-link-button">My 통계</span>
-                </a>
-              </div>
+    <!-- 환경설정 -->
+    <a th:href="@{/settings}" class="nav-item" data-nav="settings">
+      <div class="nav-icon-wrapper">
+        <div class="nav-icon settings-icon">⚙️</div>
+        <div class="icon-ripple"></div>
+      </div>
+      <span class="nav-text">환경설정</span>
+      <div class="nav-arrow">→</div>
+    </a>
+  </nav>
 
-              <!-- 환경설정 -->
-              <div class="overlap-3">
-                <a th:href="@{/settings}" class="side-navigation-item nav-item" data-nav="settings">
-                  <div class="nav-icon" style="background: #ede7f6; color: #673ab7;">
-                    ⚙️
-                  </div>
-                  <span class="nav-link-button">환경설정</span>
-                </a>
-              </div>
-
-            </div> <!-- group-3 end -->
-
-          </div> <!-- side-navigation-bar end -->
-        </div>
+  <!-- 하단 정보 -->
+  <div class="sidebar-footer">
+    <div class="progress-card">
+      <div class="progress-header">
+        <span class="progress-title">오늘의 진척도</span>
+        <span class="progress-percent">78%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 78%"></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  // ✅ 현재 페이지에 따른 active 클래스 설정 개선
   document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname;
     const navItems = document.querySelectorAll('.nav-item');
 
-    // 초기화: 모든 nav-item에서 active 클래스 제거 및 스타일 리셋
-    navItems.forEach(item => {
-      item.classList.remove('active');
-      // 강제로 스타일 리셋
-      const icon = item.querySelector('.nav-icon');
-      const text = item.querySelector('.nav-link-button');
-      if (icon) {
-        icon.style.transform = 'translateY(0) scale(1)';
-        icon.style.boxShadow = 'none';
-      }
-      if (text) {
-        text.style.transform = 'translateX(0)';
-      }
-    });
-
-    // 경로 매핑 객체
+    // 경로 매핑
     const pathMapping = {
       '/user/main': 'main',
       '/todos': 'todos',
       '/todos/calender': 'todos',
       '/routines': 'routines',
-      '/jobposting': 'jobposting',
       '/jobposting/list': 'jobposting',
-      '/interview': 'interview',
       '/interview/select': 'interview',
       '/mypage/stats': 'stats',
       '/settings': 'settings'
     };
 
-    // 정확한 경로 매칭
+    // 현재 경로에 따른 활성화
     let activeNav = pathMapping[currentPath];
-
-    // 정확한 매칭이 없으면 부분 매칭 시도
     if (!activeNav) {
       for (const [path, nav] of Object.entries(pathMapping)) {
         if (currentPath.startsWith(path) && path !== '/') {
@@ -146,7 +126,7 @@
       }
     }
 
-    // 해당하는 네비게이션 아이템에 active 클래스 추가
+    // 활성 상태 설정
     if (activeNav) {
       const activeItem = document.querySelector(`[data-nav="${activeNav}"]`);
       if (activeItem) {
@@ -154,55 +134,42 @@
       }
     }
 
-    // 네비게이션 아이템 클릭 이벤트
+    // 클릭 이벤트 - 리플 효과 추가
     navItems.forEach(item => {
       item.addEventListener('click', function(e) {
-        // 클릭 시 모든 항목 리셋
-        navItems.forEach(nav => {
-          nav.classList.remove('active');
-          const icon = nav.querySelector('.nav-icon');
-          const text = nav.querySelector('.nav-link-button');
-          if (icon) {
-            icon.style.transform = 'translateY(0) scale(1)';
-            icon.style.boxShadow = 'none';
-          }
-          if (text) {
-            text.style.transform = 'translateX(0)';
-          }
-        });
-
-        // 클릭된 항목에 active 추가
+        navItems.forEach(nav => nav.classList.remove('active'));
         this.classList.add('active');
-      });
 
-      // 마우스 이벤트 리스너 추가 (상태 관리)
-      item.addEventListener('mouseleave', function() {
-        if (!this.classList.contains('active')) {
-          const icon = this.querySelector('.nav-icon');
-          const text = this.querySelector('.nav-link-button');
-          if (icon) {
-            icon.style.transform = 'translateY(0) scale(1)';
-            icon.style.boxShadow = 'none';
-          }
-          if (text) {
-            text.style.transform = 'translateX(0)';
-          }
+        // 리플 효과
+        const ripple = this.querySelector('.icon-ripple');
+        if (ripple) {
+          ripple.style.animation = 'none';
+          ripple.offsetHeight; // 리플로우 강제
+          ripple.style.animation = 'ripple 0.6s ease-out';
         }
       });
     });
+
+    // 진척도 애니메이션
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+      setTimeout(() => {
+        progressFill.style.transition = 'width 1.5s ease-out';
+      }, 500);
+    }
   });
 
-  // ✅ 사이드바 토글 기능 (모바일용)
+  // 모바일 토글 함수
   function toggleSidebar() {
-    const sidebar = document.querySelector('.box');
+    const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
       sidebar.classList.toggle('open');
     }
   }
 
-  // ✅ 외부 클릭시 사이드바 닫기 (모바일용)
+  // 외부 클릭시 닫기 (모바일 전용)
   document.addEventListener('click', function(event) {
-    const sidebar = document.querySelector('.box');
+    const sidebar = document.querySelector('.sidebar');
     const toggleButton = document.querySelector('.sidebar-toggle');
 
     if (window.innerWidth <= 768 &&
@@ -214,115 +181,16 @@
     }
   });
 
-  // ✅ 키보드 네비게이션 지원
+  // ESC 키로 닫기 (모바일 전용)
   document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      const sidebar = document.querySelector('.box');
+    if (event.key === 'Escape' && window.innerWidth <= 768) {
+      const sidebar = document.querySelector('.sidebar');
       if (sidebar && sidebar.classList.contains('open')) {
         sidebar.classList.remove('open');
       }
     }
   });
-
-  // ✅ 리사이즈 이벤트 처리
-  window.addEventListener('resize', function() {
-    const sidebar = document.querySelector('.box');
-    if (window.innerWidth > 768 && sidebar) {
-      sidebar.classList.remove('open');
-    }
-  });
 </script>
 
 <style>
-  /* ✅ 사이드바 전용 추가 스타일 */
-  .nav-item {
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* ✅ 클릭 효과 - 더 부드럽게 */
-  .nav-item:active {
-    transform: scale(0.99);
-  }
-
-  /* ✅ 로딩 인디케이터 (선택사항) */
-  .nav-item.loading::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent);
-    animation: loading 1.5s infinite;
-  }
-
-  @keyframes loading {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-
-  /* ✅ 아이콘 애니메이션 개선 - 더 안정적으로 */
-  .nav-icon {
-    transition: all 0.2s ease;
-    transform: translateY(0) scale(1); /* 기본 상태 명시 */
-  }
-
-  .nav-item:hover .nav-icon {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-
-  .nav-item.active .nav-icon {
-    transform: translateY(0) scale(1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-
-  /* ✅ 클릭 후 상태 리셋 */
-  .nav-item:not(:hover):not(.active) .nav-icon {
-    transform: translateY(0) scale(1);
-    box-shadow: none;
-  }
-
-  /* ✅ 텍스트 애니메이션 - 더 안정적으로 */
-  .nav-link-button {
-    transition: all 0.2s ease;
-    transform: translateX(0); /* 기본 상태 명시 */
-  }
-
-  .nav-item:hover .nav-link-button {
-    transform: translateX(1px);
-  }
-
-  /* ✅ 클릭 후 상태 리셋 */
-  .nav-item:not(:hover) .nav-link-button {
-    transform: translateX(0);
-  }
-
-  /* ✅ 모바일 햄버거 메뉴 스타일 (필요시) */
-  .sidebar-toggle {
-    display: none;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1001;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
-
-  @media (max-width: 768px) {
-    .sidebar-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
 </style>
-</body>
-</html>

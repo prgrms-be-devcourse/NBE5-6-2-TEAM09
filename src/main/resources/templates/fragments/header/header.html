@@ -1,84 +1,189 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta charset="utf-8" />
-  <link rel="stylesheet" th:href="@{/css/header/base.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/header.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/token.css}" />
-</head>
-<body>
+<!-- ✅ 헤더 Fragment -->
+<div th:fragment="header" class="header">
+  <!-- 모바일 사이드바 토글 버튼 -->
+  <button class="sidebar-toggle" onclick="toggleSidebar()">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
 
-<!-- ✅ 알림 기능 스크립트 fragment 삽입 -->
-<th:replace="~{fragments/common/alert-script :: alert-script}" />
-
-<div th:fragment="header">
-  <div class="div-wrapper">
-    <div class="div">
-
-      <!-- ✅ 좌측 로고 영역 -->
-      <div class="group">
-        <a th:href="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/user/main}">
-          <div class="vector">📊</div>
-        </a>
-        <span class="logo-text">CodeMap</span>
+  <!-- 좌측 로고 영역 -->
+  <div class="header-logo">
+    <a th:href="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/user/main}" class="logo-link">
+      <div class="logo-icon">
+        <div class="logo-gradient">📊</div>
+        <div class="logo-pulse"></div>
       </div>
+      <span class="logo-text">CodeMap</span>
+    </a>
+  </div>
 
-      <!-- ✅ 중앙 페이지 제목 영역 -->
-      <h1 class="page-title"></h1>
+  <!-- 중앙 페이지 제목 영역 -->
+  <div class="header-title">
+    <h1 class="page-title">
+      <span class="title-text"></span>
+      <div class="title-underline"></div>
+    </h1>
+  </div>
 
-      <!-- ✅ 우측 사용자 정보 영역 -->
-      <div class="auto-layout">
+  <!-- 우측 사용자 정보 영역 -->
+  <div class="header-actions">
+    <!-- 알림 버튼 -->
+    <div class="notification-wrapper">
+      <button id="notification-btn" class="action-btn notification-btn">
+        <div class="btn-icon">🔔</div>
+        <div class="notification-badge" th:if="${alertTodos != null and #lists.size(alertTodos) > 0}"
+             th:text="${#lists.size(alertTodos)}">3</div>
+        <div class="btn-ripple"></div>
+      </button>
 
-        <!-- 알림 아이콘 -->
-        <div class="notification-container">
-          <div id="notification-icon" class="notification"></div>
-
-          <!-- 알림 메시지 팝업 -->
-          <div id="notification-popup" class="notification-popup" style="display: none;">
-            <p th:each="todo : ${alertTodos}" th:text="${todo.title} + ' 시작 10분 전입니다.'"></p>
+      <!-- 알림 드롭다운 -->
+      <div id="notification-dropdown" class="notification-dropdown">
+        <div class="dropdown-header">
+          <span class="dropdown-title">알림</span>
+          <span class="notification-count" th:text="${alertTodos != null ? #lists.size(alertTodos) : 0}">0</span>
+        </div>
+        <div class="dropdown-content">
+          <div th:if="${alertTodos == null or #lists.isEmpty(alertTodos)}" class="no-notifications">
+            <div class="empty-icon">📭</div>
+            <p>새로운 알림이 없습니다</p>
+          </div>
+          <div th:if="${alertTodos != null}" class="notification-list">
+            <div th:each="todo : ${alertTodos}" class="notification-item">
+              <div class="notification-icon">⏰</div>
+              <div class="notification-content">
+                <p class="notification-text" th:text="${todo.title} + ' 시작 10분 전입니다.'"></p>
+                <span class="notification-time">방금 전</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- 사용자 아바타 -->
-        <div class="user-avatar" th:text="${user != null ? #strings.substring(user.nickname, 0, 1) : ''}">김</div>
-
-        <!-- 사용자 닉네임 -->
-        <span th:text="${user != null ? user.nickname : ''}">사용자</span>
-
-        <!-- 로그아웃 버튼 -->
-        <div class="style-filled">
-          <form th:action="@{/user/logout}" method="post" style="margin-left: 1rem;">
-            <button type="submit" class="logout-button">로그아웃</button>
-          </form>
-        </div>
-
       </div>
     </div>
+
+    <!-- 사용자 정보 -->
+    <div class="user-info">
+      <div class="user-avatar" th:text="${user != null ? #strings.substring(user.nickname, 0, 1) : 'U'}">U</div>
+      <div class="user-details">
+        <span class="user-name" th:text="${user != null ? user.nickname : '사용자'}">사용자</span>
+        <span class="user-status">온라인</span>
+      </div>
+    </div>
+
+    <!-- 로그아웃 버튼 -->
+    <form th:action="@{/user/logout}" method="post" class="logout-form">
+      <button type="submit" class="action-btn logout-btn">
+        <div class="btn-icon">🚪</div>
+        <span class="btn-text">로그아웃</span>
+        <div class="btn-ripple"></div>
+      </button>
+    </form>
   </div>
 </div>
 
-<!-- ✅ 스크립트: 제목 설정만 유지 -->
+<!-- ✅ 알림 기능 스크립트 fragment 삽입 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- ✅ 헤더 스크립트 -->
 <script th:inline="javascript">
   /*<![CDATA[*/
-  window.addEventListener('load', () => {
-    const pageTitle = document.querySelector('.page-title');
+  document.addEventListener('DOMContentLoaded', function() {
+    // 페이지 제목 설정
+    const titleElement = document.querySelector('.title-text');
     const currentPath = window.location.pathname;
 
-    if (pageTitle) {
+    if (titleElement) {
       let title = '';
-      if (currentPath.includes('/user/main')) title = '대시보드';
-      else if (currentPath.includes('/todos')) title = '투두 리스트';
-      else if (currentPath.includes('/routines')) title = '데일리 루틴';
-      else if (currentPath.includes('/interview')) title = '면접 질문';
-      else if (currentPath.includes('/mypage/stats')) title = 'My 통계';
-      else if (currentPath.includes('/settings')) title = '환경설정';
-      else if (currentPath.includes('/admin')) title = '관리자';
-      pageTitle.textContent = title;
+      let icon = '';
+
+      if (currentPath.includes('/user/main')) {
+        title = '대시보드';
+        icon = '🏠';
+      } else if (currentPath.includes('/todos')) {
+        title = '투두 리스트';
+        icon = '✅';
+      } else if (currentPath.includes('/routines')) {
+        title = '데일리 루틴';
+        icon = '🎯';
+      } else if (currentPath.includes('/jobposting')) {
+        title = '채용공고';
+        icon = '💼';
+      } else if (currentPath.includes('/interview')) {
+        title = '면접 질문';
+        icon = '💬';
+      } else if (currentPath.includes('/mypage/stats')) {
+        title = 'My 통계';
+        icon = '📊';
+      } else if (currentPath.includes('/settings')) {
+        title = '환경설정';
+        icon = '⚙️';
+      } else if (currentPath.includes('/admin')) {
+        title = '관리자';
+        icon = '👑';
+      }
+
+      titleElement.innerHTML = `${icon} ${title}`;
+
+      // 제목 애니메이션
+      setTimeout(() => {
+        titleElement.style.opacity = '1';
+        titleElement.style.transform = 'translateY(0)';
+      }, 100);
     }
+
+    // 알림 드롭다운 토글
+    const notificationBtn = document.getElementById('notification-btn');
+    const notificationDropdown = document.getElementById('notification-dropdown');
+
+    if (notificationBtn && notificationDropdown) {
+      notificationBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = notificationDropdown.classList.contains('show');
+
+        if (isOpen) {
+          notificationDropdown.classList.remove('show');
+        } else {
+          // 다른 드롭다운 닫기
+          document.querySelectorAll('.notification-dropdown.show').forEach(dropdown => {
+            dropdown.classList.remove('show');
+          });
+          notificationDropdown.classList.add('show');
+        }
+      });
+
+      // 외부 클릭시 드롭다운 닫기
+      document.addEventListener('click', function() {
+        notificationDropdown.classList.remove('show');
+      });
+
+      // 드롭다운 내부 클릭시 이벤트 전파 방지
+      notificationDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+
+    // 버튼 리플 효과
+    document.querySelectorAll('.action-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = this.querySelector('.btn-ripple');
+        if (ripple) {
+          ripple.style.animation = 'none';
+          ripple.offsetHeight; // 리플로우 강제
+          ripple.style.animation = 'btnRipple 0.6s ease-out';
+        }
+      });
+    });
+
+    // 사이드바 토글 함수
+    window.toggleSidebar = function() {
+      const sidebar = document.querySelector('.sidebar');
+      const toggleBtn = document.querySelector('.sidebar-toggle');
+
+      if (sidebar) {
+        sidebar.classList.toggle('open');
+        toggleBtn.classList.toggle('active');
+      }
+    };
   });
   /*]]>*/
 </script>
-
-</body>
-</html>

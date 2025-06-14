@@ -6,411 +6,20 @@
   <title>CodeMap - 대시보드</title>
 
   <!-- ✅ 공통 스타일 -->
-  <link rel="stylesheet" th:href="@{/css/header/base.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/header.css}" />
-  <link rel="stylesheet" th:href="@{/css/header/token.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/globals.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/style.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav/user/styleguide.css}" />
-
-  <style>
-    /* ✅ 전체 리셋 */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      font-family: 'Pretendard', sans-serif;
-      background: #f8f9fa;
-      color: #333;
-      overflow-x: hidden;
-    }
-
-    /* ✅ 헤더 고정 */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 116px; /* 명시적 높이 설정 */
-      z-index: 1000;
-      background: white;
-    }
-
-    /* ✅ 사이드바 고정 */
-    aside {
-      position: fixed;
-      top: 116px;
-      left: 0;
-      width: 250px;
-      height: calc(100vh - 116px);
-      z-index: 900;
-      background: white;
-    }
-
-    /* ✅ 메인 콘텐츠 영역 */
-    main {
-      /* 기본 위치 설정 */
-      position: absolute;
-      top: 116px; /* 헤더 바로 아래부터 시작 */
-      margin-left: 270px; /* 사이드바 오른쪽부터 시작 */
-      width: calc(100vw - 250px);
-      min-height: calc(100vh - 116px);
-
-      /* 패딩 최소화 */
-      padding: 20px;
-
-      /* 레이아웃 설정 */
-      display: block;
-
-      transform: none;
-    }
-
-    /* ✅ 컨테이너 */
-    .main-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      padding: 0; /* 추가 패딩 제거 */
-    }
-
-    /* ✅ 통계 그리드 */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border-left: 4px solid #667eea;
-      transition: transform 0.2s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .stat-header {
-      color: #6c757d;
-      font-size: 0.875rem;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-subtext {
-      color: #6c757d;
-      font-size: 0.875rem;
-    }
-
-    .content-section {
-      background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid #f8f9fa;
-      padding-bottom: 1rem;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #333;
-    }
-
-    .add-btn {
-      color: #667eea;
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .add-btn:hover {
-      background: #f8f9ff;
-      text-decoration: none;
-    }
-
-    /* 투두 아이템 스타일 */
-    .todo-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f8f9fa;
-      transition: background 0.2s ease;
-    }
-
-    .todo-item:hover {
-      background: #f8f9fa;
-      border-radius: 8px;
-      margin: 0 -0.5rem;
-      padding: 1rem 0.5rem;
-    }
-
-    .todo-item:last-child {
-      border-bottom: none;
-    }
-
-    .todo-checkbox {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #dee2e6;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-
-    .todo-checkbox:hover {
-      border-color: #28a745;
-    }
-
-    .todo-checkbox.checked {
-      background: #28a745;
-      border-color: #28a745;
-      color: white;
-    }
-
-    .todo-info {
-      flex: 1;
-    }
-
-    .todo-title {
-      font-weight: 500;
-      color: #333;
-      margin-bottom: 0.25rem;
-    }
-
-    .todo-time {
-      color: #6c757d;
-      font-size: 0.875rem;
-    }
-
-    .todo-completed .todo-title {
-      text-decoration: line-through;
-      color: #6c757d;
-    }
-
-    /* 루틴 테이블 스타일 */
-    .routine-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .routine-table th {
-      text-align: left;
-      color: #6c757d;
-      font-weight: 500;
-      padding: 0.75rem;
-      border-bottom: 2px solid #e9ecef;
-      background: #f8f9fa;
-      font-size: 0.875rem;
-    }
-
-    .routine-table td {
-      padding: 1rem 0.75rem;
-      border-bottom: 1px solid #f8f9fa;
-      vertical-align: middle;
-    }
-
-    .routine-table tr:hover {
-      background: #f8f9fa;
-    }
-
-    .status-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-align: center;
-      min-width: 60px;
-      display: inline-block;
-    }
-
-    .status-active {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .status-completed {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .status-pass {
-      background: #f8d7da;
-      color: #721c24;
-    }
-
-    .btn {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .btn-primary {
-      background: #667eea;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #5a67d8;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .btn-disabled {
-      background: #e9ecef;
-      color: #6c757d;
-      cursor: not-allowed;
-    }
-
-    .btn-disabled:hover {
-      transform: none;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 2rem;
-      color: #6c757d;
-    }
-
-    .empty-state p {
-      margin: 0.5rem 0;
-    }
-
-    .empty-state a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .empty-state a:hover {
-      text-decoration: underline;
-    }
-
-    /* ✅ 페이지 제목 추가 */
-    .page-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    /* ✅ 반응형 디자인 */
-    @media (max-width: 768px) {
-      aside {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-      }
-
-      aside.open {
-        transform: translateX(0);
-      }
-
-      main {
-        position: absolute;
-        top: 116px;
-        left: 0;
-        width: 100vw;
-        padding: 1rem;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
-
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-
-      .routine-table {
-        font-size: 0.875rem;
-      }
-
-      .routine-table th,
-      .routine-table td {
-        padding: 0.5rem;
-      }
-
-      .page-title {
-        font-size: 1.5rem;
-      }
-    }
-
-    /* ✅ 알림 애니메이션 */
-    @keyframes flash {
-      0% { background-color: #f8f9fa; }
-      100% { background-color: #ffeaa7; }
-    }
-
-    /* ✅ 스크롤바 스타일링 */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
-    }
-
-    /* ✅ 브라우저 호환성을 위한 추가 설정 */
-    main {
-      -webkit-transform: none;
-      -moz-transform: none;
-      -ms-transform: none;
-      transform: none;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/header.css}" />
+  <link rel="stylesheet" th:href="@{/css/sidenav.css}" />
+  <link rel="stylesheet" th:href="@{/css/chatbot.css}" />
+  <!-- ✅ 대시보드 전용 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
 </head>
 <body>
+
+<!-- 배경 애니메이션 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
 
 <!-- ✅ 헤더 fragment 사용 -->
 <header th:replace="fragments/header/header :: header"></header>
@@ -424,12 +33,14 @@
 <main>
   <div class="main-container">
 
-    <!-- ✅ 페이지 제목 -->
-    <h1 class="page-title"></h1>
+    <!-- ✅ 웰컴 섹션 -->
+    <div class="welcome-section">
+      <h1 class="welcome-title">안녕하세요! 👋</h1>
+      <p class="welcome-subtitle">오늘도 개발자로의 여정을 계속해보세요</p>
+    </div>
 
     <!-- 📊 통계 카드 -->
     <div class="stats-grid">
-
       <div class="stat-card">
         <div class="stat-header">📚 오늘의 집중시간</div>
         <div class="stat-value" th:text="${totalActualFocusMinutes} + '분'">0분</div>
@@ -448,13 +59,13 @@
       </div>
 
       <div class="stat-card">
-        <div class="stat-header">🔥연속 출석</div>
+        <div class="stat-header">🔥 연속 출석</div>
         <div class="stat-value">15일</div>
         <div class="stat-subtext">최고 기록: 23일</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-header">🎯주간 목표</div>
+        <div class="stat-header">🎯 주간 목표</div>
         <div class="stat-value">82%</div>
         <div class="stat-subtext">32/40 시간</div>
       </div>
@@ -478,10 +89,10 @@
           <div class="todo-info">
             <div class="todo-title" th:text="${todo.title}">할 일 제목</div>
             <div class="todo-time">
-          <span style="font-size:12px; color: #888;"
-                th:text="'시작: ' + ${#temporals.format(todo.startTime, 'HH:mm')} + ' | 마감: ' + ${#temporals.format(todo.completedAt, 'yyyy-MM-dd')}">
-            시작 / 마감
-          </span>
+              <span style="font-size:12px;"
+                    th:text="'시작: ' + ${#temporals.format(todo.startTime, 'HH:mm')} + ' | 마감: ' + ${#temporals.format(todo.completedAt, 'yyyy-MM-dd')}">
+                시작 / 마감
+              </span>
             </div>
           </div>
         </div>
@@ -490,7 +101,7 @@
       <!-- 투두가 없는 경우 -->
       <div th:if="${todayTodos == null or todayTodos.isEmpty()}" class="empty-state">
         <p>📭 오늘 등록된 할일이 없습니다</p>
-        <p><a th:href="@{/todos(date=${today})}">할일을 추가해보세요!</a></p>
+        <a th:href="@{/todos(date=${today})}">할일을 추가해보세요!</a>
       </div>
     </div>
 
@@ -562,7 +173,7 @@
       <div th:if="${(activeRoutines == null or activeRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty()) and (passedRoutines == null or passedRoutines.isEmpty())}"
            class="empty-state">
         <p>🎯 오늘 등록된 데일리 루틴이 없습니다</p>
-        <p><a th:href="@{/routines}">루틴을 추가해보세요!</a></p>
+        <a th:href="@{/routines}">루틴을 추가해보세요!</a>
       </div>
     </div>
 
@@ -572,68 +183,8 @@
 <!-- 📱 챗봇 -->
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 
-<script>
-  // ✅ 페이지 로드 즉시 상단으로 스크롤 강제 실행
-  document.addEventListener('DOMContentLoaded', function() {
-    // 즉시 상단으로 스크롤
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+<!-- ✅ 대시보드 전용 스크립트 -->
+<script th:src="@{/js/dashboard.js}"></script>
 
-    // 추가 보장을 위해 약간의 지연 후 다시 실행
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 100);
-  });
-
-  const checkboxes = document.querySelectorAll('.todo-checkbox');
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('click', function () {
-      const todoId = this.getAttribute('data-todo-id');
-      const today = new Date().toISOString().split('T')[0];
-
-      fetch(`/todos/${todoId}/complete?date=${today}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          this.classList.toggle('checked');
-          const todoItem = this.closest('.todo-item');
-          todoItem.classList.toggle('todo-completed');
-          this.innerHTML = this.classList.contains('checked') ? '<span>✓</span>' : '';
-        } else {
-          alert('서버에서 완료 상태 업데이트 실패');
-        }
-      })
-      .catch(error => {
-        console.error('에러 발생:', error);
-      });
-    });
-  });
-
-
-  // 사이드바 메인화면 active 처리
-  document.addEventListener('DOMContentLoaded', function() {
-    const mainNavItem = document.querySelector('a[href="/user/main"]');
-    if (mainNavItem) {
-      mainNavItem.classList.add('active');
-    }
-  });
-
-  // ✅ 브라우저 뒤로가기/앞으로가기 시에도 상단 스크롤 보장
-  window.addEventListener('pageshow', function(event) {
-    window.scrollTo(0, 0);
-  });
-
-  // ✅ 모든 로드 이벤트에서 스크롤 리셋
-  window.addEventListener('load', function() {
-    window.scrollTo(0, 0);
-  });
-</script>
 </body>
 </html>
