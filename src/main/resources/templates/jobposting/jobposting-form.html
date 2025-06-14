@@ -1,0 +1,82 @@
+<!-- 목표 기업 등록 -->
+<div id="jobPostingModal">
+  <h2>목표 기업 등록</h2>
+  <form th:action="@{/jobposting}" method="post" th:object="${jobPostingRequest}">
+    <input type="text" name="title" placeholder="기업명 또는 공고 제목" required />
+
+    <input type="text" name="site" placeholder="공고 사이트 (ex: 원티드)" required />
+
+    <input type="url" name="url" placeholder="공고 링크(URL)" required />
+
+    <label for="dueDate" class="input-label">📅 마감일</label>
+    <input type="date" id="dueDate" name="dueDate" required />
+
+    <button type="submit" class="submit-button">등록</button>
+    <button type="button" class="cancel-button" onclick="closeModal()">취소</button>
+  </form>
+</div>
+
+<style>
+  #jobPostingModal {
+    display: block;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    width: 400px;
+  }
+
+  #jobPostingModal h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  #jobPostingModal input,
+  #jobPostingModal button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-family: "Pretendard", sans-serif;
+    font-size: 15px;
+  }
+
+  .input-label {
+    display: block;
+    margin: 6px 0 4px 2px;
+    font-size: 14px;
+    color: #374151;
+  }
+
+  .submit-button {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .submit-button:hover {
+    background-color: #bfdbfe;
+  }
+
+  .cancel-button {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .cancel-button:hover {
+    background-color: #e5e7eb;
+  }
+</style>

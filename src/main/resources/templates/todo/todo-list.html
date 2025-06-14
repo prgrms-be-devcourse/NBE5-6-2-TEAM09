@@ -20,69 +20,71 @@
       padding: 0;
     }
 
-    header, aside {
-      position: fixed;
-      z-index: 1000;
-    }
     header {
+      position: fixed;
       top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background-color: white;
     }
+
     aside {
+      position: fixed;
       top: 116px;
       left: 0;
       width: 250px;
-      height: calc(100% - 116px);
+      height: calc(100vh - 116px);
+      z-index: 900;
+      background-color: white;
     }
 
     main {
-      margin-left: 250px;
-      margin-top: -36vw;
+      position: absolute;
+      top: 100px;
+      left: 270px;
+      width: calc(100vw - 270px);
+      min-height: calc(100vh - 116px);
       padding: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .selected-date-banner {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1e3a8a;
-      margin-bottom: 32px;
-      background-color: #e0edff;
-      padding: 12px 24px;
-      border-radius: 12px;
+      background-color: #f8f9fa;
     }
 
     .todo-wrapper {
-      background: #fff;
+      background: #ffffff;
       border-radius: 16px;
       padding: 32px;
-      width: 100%;
       max-width: 850px;
+      margin: 0 auto;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .selected-date-banner {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+      text-align: center;
+      margin-bottom: 12px;
     }
 
     .todo-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
 
     .todo-header h2 {
-      font-size: 26px;
-      font-weight: 800;
+      font-size: 20px;
+      font-weight: 700;
       color: #1f2937;
+      margin: 0;
     }
 
     .todo-header button {
       background: #dbeafe;
       color: #1e3a8a;
       border: none;
-      padding: 10px 20px;
-      border-radius: 12px;
+      padding: 8px 18px;
+      border-radius: 10px;
       font-size: 14px;
-      font-weight: 500;
       cursor: pointer;
     }
 
@@ -109,21 +111,18 @@
     .todo-box {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 12px;
     }
 
     .todo-box .label {
-      font-size: 15px;
-      font-weight: 700;
-      color: #374151;
-      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #111827;
     }
 
     .todo-box .content {
-      font-size: 16px;
+      font-size: 15px;
       color: #1f2937;
-      word-wrap: break-word;
-
     }
 
     .menu-button {
@@ -152,7 +151,6 @@
       display: none;
       flex-direction: column;
       gap: 8px;
-
     }
 
     .menu-box div {
@@ -189,18 +187,13 @@
 <div id="modalContainer"></div>
 
 <main>
-  <div class="selected-date-banner">
-    📅 선택한 날짜: <span th:text="${selectedDate}"></span>
-  </div>
-
   <div class="todo-wrapper">
+    <div class="selected-date-banner">
+      📅 선택한 날짜: <span th:text="${selectedDate}"></span>
+    </div>
+
     <div class="todo-header">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <div class="nav-icon" style="background: #e8f5e8; color: #388e3c; font-size: 20px;">
-          ✅
-        </div>
-        <h2>투두 리스트</h2>
-      </div>
+      <h2>📝 오늘의 할 일을 확인해보세요</h2>
       <button id="addTodoBtn" th:attr="data-date=${selectedDate}">추가</button>
     </div>
 

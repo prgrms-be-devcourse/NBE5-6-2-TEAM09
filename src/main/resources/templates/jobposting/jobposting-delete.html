@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
-  <title>삭제 확인</title>
+  <title>채용 공고 삭제 확인</title>
   <style>
-    #deleteModal {
+    #jobDeleteModal {
       display: block;
       position: fixed;
       top: 25%;
@@ -20,7 +20,7 @@
       font-family: "Pretendard", sans-serif;
     }
 
-    #deleteModal h2 {
+    #jobDeleteModal h2 {
       margin-bottom: 20px;
       font-size: 22px;
       font-weight: 700;
@@ -57,6 +57,7 @@
 
     .delete-button:hover {
       background-color: #dc2626;
+      color: white;
     }
 
     .cancel-button {
@@ -71,14 +72,24 @@
 </head>
 <body>
 
-<div id="deleteModal">
-  <h2>투두 삭제</h2>
-  <div class="modal-message">정말로 삭제하시겠습니까?</div>
+<div id="jobDeleteModal">
+  <h2>채용 공고 삭제</h2>
+  <div class="modal-message">정말로 이 채용 공고를 삭제하시겠습니까?</div>
   <div class="button-group">
-    <button id="confirmDeleteBtn" class="delete-button">삭제</button>
-    <button class="cancel-button" onclick="closeModal()">취소</button>
+    <button id="confirmJobDeleteBtn" class="delete-button">삭제</button>
+    <button class="cancel-button" onclick="closeJobDeleteModal()">취소</button>
   </div>
 </div>
+
+<script>
+  function closeJobDeleteModal() {
+    document.getElementById("jobDeleteModal").style.display = "none";
+  }
+
+  // confirmJobDeleteBtn.onclick = function() {
+  //   실제 삭제 요청 보내는 로직은 여기에 추가하면 돼.
+  // };
+</script>
 
 </body>
 </html>
