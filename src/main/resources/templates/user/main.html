@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeMap - 대시보드</title>
+  <title>CodeMap - 메인화면</title>
 
   <!-- ✅ 공통 스타일 -->
-  <link rel="stylesheet" th:href="@{/css/header.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav.css}" />
-  <link rel="stylesheet" th:href="@{/css/chatbot.css}" />
+  <link rel="stylesheet" th:href="@{/css/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/chatbot.css}"/>
   <!-- ✅ 대시보드 전용 스타일 -->
-  <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
 
@@ -77,7 +77,8 @@
 
       <!-- 투두가 있는 경우 -->
       <div th:if="${todayTodos != null and !todayTodos.isEmpty()}">
-        <div th:each="todo : ${todayTodos}" class="todo-item" th:classappend="${todo.completed} ? 'todo-completed'">
+        <div th:each="todo : ${todayTodos}" class="todo-item"
+             th:classappend="${todo.completed} ? 'todo-completed'">
           <div class="todo-checkbox"
                th:classappend="${todo.completed} ? 'checked'"
                th:attr="data-todo-id=${todo.id}, data-todo-completed=${todo.completed}">
@@ -110,7 +111,8 @@
       </div>
 
       <!-- 루틴이 있는 경우 -->
-      <div th:if="${(activeRoutines != null and !activeRoutines.isEmpty()) or (completedRoutines != null and !completedRoutines.isEmpty()) or (passedRoutines != null and !passedRoutines.isEmpty())}">
+      <div
+          th:if="${(activeRoutines != null and !activeRoutines.isEmpty()) or (completedRoutines != null and !completedRoutines.isEmpty()) or (passedRoutines != null and !passedRoutines.isEmpty())}">
         <table class="routine-table">
           <thead>
           <tr>
@@ -126,7 +128,8 @@
           <tr th:each="routine : ${activeRoutines}">
             <td th:text="${routine.title}">루틴 제목</td>
             <td th:text="${routine.category}">카테고리</td>
-            <td th:text="${routine.focusTime != null ? routine.focusTime + '분(시작 전)' : '0분'}">60분</td>
+            <td th:text="${routine.focusTime != null ? routine.focusTime + '분(시작 전)' : '0분'}">60분
+            </td>
             <td>
               <span class="status-badge status-active">시작전</span>
             </td>
@@ -167,8 +170,9 @@
       </div>
 
       <!-- 루틴이 없는 경우 -->
-      <div th:if="${(activeRoutines == null or activeRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty()) and (passedRoutines == null or passedRoutines.isEmpty())}"
-           class="empty-state">
+      <div
+          th:if="${(activeRoutines == null or activeRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty()) and (passedRoutines == null or passedRoutines.isEmpty())}"
+          class="empty-state">
         <p>🎯 오늘 등록된 데일리 루틴이 없습니다</p>
         <a th:href="@{/routines}">루틴을 추가해보세요!</a>
       </div>
