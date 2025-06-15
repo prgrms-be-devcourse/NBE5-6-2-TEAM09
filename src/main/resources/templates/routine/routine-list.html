@@ -7,356 +7,717 @@
   <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
   <title>데일리 루틴</title>
 
-  <!-- 공통 스타일 -->
-  <link rel="stylesheet" th:href="@{/css/header.css}" />
-  <link rel="stylesheet" th:href="@{/css/sidenav.css}" />
-
+  <!-- 개선된 공통 스타일 -->
   <style>
-    body {
+    /* 리셋 및 기본 스타일 */
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f8f9fa;
-      font-family: "Pretendard", sans-serif;
+      box-sizing: border-box;
     }
-    header {
+
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: #f8f9fa;
+      min-height: 100vh;
+    }
+
+    /* 헤더 스타일 */
+    .header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
+      height: 70px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       z-index: 1000;
-    }
-    aside {
-      position: fixed;
-      top: 116px; left: 0;
-      width: 250px;
-      height: calc(100% - 116px);
-      z-index: 900;
-    }
-    main {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+    }
+
+    .header-background {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .header-blur-overlay {
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%);
+      filter: blur(40px);
+    }
+
+    .sidebar-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      position: relative;
+      z-index: 1001;
+    }
+
+    .hamburger-container {
+      width: 24px;
+      height: 20px;
+      position: relative;
+    }
+
+    .hamburger-line {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background: white;
+      margin: 5px 0;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      position: relative;
+      width: 45px;
+      height: 45px;
+    }
+
+    .logo-gradient {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin-left: 250px;
-      margin-top: -40vw;
-      padding: 30px; /* 패딩 줄임 */
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-emoji {
+      font-size: 24px;
+      z-index: 1;
+    }
+
+    .logo-text-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .logo-subtitle {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar-wrapper {
+      position: relative;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .user-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+    }
+
+    .logout-form {
+      margin: 0;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    /* 사이드바 스타일 */
+    .sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 280px;
+      height: calc(100vh - 70px);
+      background: white;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+      z-index: 900;
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 24px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      margin: 4px 12px;
+      border-radius: 8px;
+    }
+
+    .nav-item:hover {
+      background-color: #f3f4f6;
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background-color: #f0f4ff;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 20px;
+      margin-right: 12px;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .nav-text {
+      font-size: 15px;
+    }
+
+    .nav-indicator {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 24px;
+      background: #667eea;
+      border-radius: 0 4px 4px 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-item.active .nav-indicator {
+      opacity: 1;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 16px 24px;
+    }
+
+    /* 메인 컨텐츠 스타일 */
+    main {
+      margin-left: 280px;
+      margin-top: 70px;
+      padding: 30px;
+      min-height: calc(100vh - 70px);
+      transition: margin-left 0.3s ease;
     }
 
     .routine-wrapper {
-      background-color: #d8e3ff;
-      padding: 30px; /* 패딩 줄임 */
-      border-radius: 12px;
-      width: 100%;
-      max-width: 1000px; /* 너비 확장 */
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
+
     .routine-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px; /* 여백 줄임 */
-    }
-    .routine-header h2 {
-      font-size: 24px; /* 글씨 크기 줄임 */
-      font-weight: 700;
-      color: #1b2c50;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f3f4f6;
     }
 
-    /* 고정 루틴 섹션 스타일 - 가로 배치 */
+    .routine-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    .date-filter {
+      margin-bottom: 24px;
+    }
+
+    .date-filter label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #4b5563;
+      margin-right: 12px;
+    }
+
+    .date-filter input[type="date"] {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    .date-filter input[type="date"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    /* 고정 루틴 섹션 */
     .fixed-routines-section {
-      margin-bottom: 30px; /* 여백 줄임 */
+      margin-bottom: 32px;
     }
 
     .fixed-routines-section h3 {
-      font-size: 18px; /* 글씨 크기 줄임 */
+      font-size: 20px;
       font-weight: 600;
-      color: #1b2c50;
-      margin-bottom: 12px; /* 여백 줄임 */
+      color: #374151;
+      margin-bottom: 16px;
     }
 
-    /* 고정 루틴을 가로로 배치 */
     .fixed-routines-container {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 16px;
-      flex-wrap: wrap;
     }
 
     .fixed-routine-card {
+      background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+      border: 2px solid #c7d2fe;
+      border-radius: 12px;
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #f0f6ff;
-      border: 2px solid #4e6df2;
-      border-radius: 12px;
-      padding: 12px 16px; /* 패딩 줄임 */
-      height: 50px; /* 높이 줄임 */
-      flex: 1;
-      min-width: 280px;
+      transition: all 0.3s ease;
     }
 
-    .fixed-routine-content {
-      display: flex;
-      align-items: center;
-      flex-grow: 1;
+    .fixed-routine-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
     }
 
     .fixed-routine-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px; /* 간격 줄임 */
+      flex: 1;
     }
 
     .fixed-routine-title {
-      font-size: 15px; /* 글씨 크기 줄임 */
+      font-size: 16px;
       font-weight: 600;
-      color: #1b2c50;
+      color: #4b5563;
+      margin-bottom: 4px;
     }
 
     .fixed-routine-description {
-      font-size: 12px; /* 글씨 크기 줄임 */
-      color: #666;
+      font-size: 14px;
+      color: #6b7280;
     }
 
     .fixed-routine-start-btn {
-      background-color: #4e6df2;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border: none;
-      padding: 8px 16px; /* 패딩 줄임 */
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 13px; /* 글씨 크기 줄임 */
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
       font-weight: 500;
-      min-width: 70px; /* 너비 줄임 */
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
     .fixed-routine-start-btn:hover {
-      background-color: #3b6fe0;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
-    /* 진행 루틴 섹션 스타일 */
+    /* 진행 루틴 섹션 */
     .active-routines-section {
-      margin-bottom: 30px; /* 여백 줄임 */
+      margin-bottom: 32px;
     }
 
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px; /* 여백 줄임 */
+      margin-bottom: 16px;
     }
 
     .section-header h3 {
-      font-size: 18px; /* 글씨 크기 줄임 */
+      font-size: 20px;
       font-weight: 600;
-      color: #1b2c50;
+      color: #374151;
       margin: 0;
     }
 
     .add-routine-btn {
-      background-color: #28a745;
+      background-color: #10b981;
       color: white;
       border: none;
-      padding: 6px 14px; /* 패딩 줄임 */
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 13px; /* 글씨 크기 줄임 */
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
       font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .add-routine-btn:hover {
-      background-color: #218838;
+      background-color: #059669;
+      transform: translateY(-1px);
     }
+
     .routine-item {
+      background-color: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #f9f9f9;
-      border: 2px solid #1b2c50;
-      border-radius: 16px;
-      padding: 12px; /* 패딩 줄임 */
-      margin-bottom: 12px; /* 여백 줄임 */
+      transition: all 0.3s ease;
     }
-    .routine-left {
-      display: flex;
-      align-items: center;
-      gap: 10px; /* 간격 줄임 */
+
+    .routine-item:hover {
+      border-color: #d1d5db;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-    .routine-left span {
-      font-size: 14px; /* 글씨 크기 줄임 */
-    }
+
     .routine-info {
-      display: flex;
-      flex-direction: column;
+      flex: 1;
     }
+
     .routine-title {
+      font-size: 16px;
       font-weight: 600;
-      font-size: 15px; /* 글씨 크기 줄임 */
-      margin-bottom: 3px; /* 여백 줄임 */
+      color: #374151;
+      margin-bottom: 4px;
     }
+
     .routine-category {
-      font-size: 13px; /* 글씨 크기 줄임 */
-      color: #666;
-      display: none;
+      font-size: 14px;
+      color: #6b7280;
     }
+
     .routine-right {
       display: flex;
       align-items: center;
-      gap: 6px; /* 간격 줄임 */
-    }
-    .start-timer {
-      background-color: #4e6df2;
-      color: white;
-      border: none;
-      padding: 6px 14px; /* 패딩 줄임 */
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 13px; /* 글씨 크기 줄임 */
-    }
-    .menu-button {
-      background-color: transparent;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 18px; /* 글씨 크기 줄임 */
-    }
-    .menu-box {
-      position: absolute;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 4px 0; /* 패딩 줄임 */
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      z-index: 10;
-      display: none;
-    }
-    .menu-box div {
-      padding: 5px 14px; /* 패딩 줄임 */
-      font-size: 13px; /* 글씨 크기 줄임 */
-      cursor: pointer;
-    }
-    .menu-box div:hover {
-      background-color: #f0f0f0;
-    }
-    .empty-state {
-      text-align: center;
-      padding: 30px 0; /* 패딩 줄임 */
-      color: #666;
-    }
-    .empty-state p {
-      margin-bottom: 15px; /* 여백 줄임 */
-      font-size: 14px; /* 글씨 크기 줄임 */
-    }
-    .completed-routines {
-      margin-top: 30px; /* 여백 줄임 */
-    }
-    .completed-routines h3 {
-      color: #1b2c50;
-      margin-bottom: 12px; /* 여백 줄임 */
-      font-size: 18px; /* 글씨 크기 줄임 */
-    }
-    .passed-routines {
-      margin-top: 30px; /* 여백 줄임 */
+      gap: 8px;
     }
 
+    .start-timer {
+      background-color: #667eea;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .start-timer:hover {
+      background-color: #5a67d8;
+      transform: translateY(-1px);
+    }
+
+    .menu-button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+
+    .menu-button:hover {
+      background-color: #f3f4f6;
+    }
+
+    .menu-box {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 10;
+      min-width: 120px;
+      overflow: hidden;
+    }
+
+    .menu-box div {
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .menu-box div:hover {
+      background-color: #f3f4f6;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    .empty-state p {
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .completed-routines h3,
     .passed-routines h3 {
-      color: #1b2c50;
-      margin-bottom: 12px; /* 여백 줄임 */
-      font-size: 18px; /* 글씨 크기 줄임 */
+      font-size: 20px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 16px;
+      margin-top: 32px;
+    }
+
+    .routine-complete {
+      background-color: #f3f4f6;
+      opacity: 0.8;
+    }
+
+    .routine-complete .routine-title {
+      text-decoration: line-through;
+      color: #9ca3af;
     }
 
     .passed-routine {
-      background-color: #f9f9f9;
-      border-color: #aaa;
+      background-color: #fef3c7;
+      border-color: #fbbf24;
     }
 
-    .passed-routine .routine-title {
-      color: #666;
-    }
-    .routine-complete {
-      background-color: #e9e9e9;
-      border-color: #999;
-    }
-    .routine-complete .routine-title {
-      text-decoration: line-through;
-      color: #777;
-    }
+    /* 모달 스타일 */
     #routineModal, #codingTestModal, #interviewModal {
       display: none;
       position: fixed;
-      top: 20%;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       background: white;
-      padding: 25px; /* 패딩 줄임 */
+      padding: 32px;
       border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
       z-index: 2000;
-      width: 380px; /* 너비 줄임 */
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-    #routineModal h3, #codingTestModal h3, #interviewModal h3{
-      margin-bottom: 16px; /* 여백 줄임 */
-      color: #1b2c50;
-      font-size: 18px; /* 글씨 크기 줄임 */
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1999;
     }
+
+    #routineModal h3, #codingTestModal h3, #interviewModal h3 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 24px;
+    }
+
     #routineModal input, #routineModal select, #routineModal textarea,
     #codingTestModal input, #codingTestModal select, #codingTestModal textarea,
     #interviewModal input, #interviewModal select, #interviewModal textarea {
-      display: block;
       width: 100%;
-      margin-bottom: 12px; /* 여백 줄임 */
-      padding: 8px; /* 패딩 줄임 */
-      border: 1px solid #ddd;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 2px solid #e5e7eb;
       border-radius: 8px;
-      font-size: 14px; /* 글씨 크기 줄임 */
+      font-size: 14px;
+      transition: border-color 0.3s ease;
     }
+
+    #routineModal input:focus, #routineModal select:focus, #routineModal textarea:focus,
+    #codingTestModal input:focus, #codingTestModal select:focus, #codingTestModal textarea:focus,
+    #interviewModal input:focus, #interviewModal select:focus, #interviewModal textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
     #routineModal textarea, #codingTestModal textarea, #interviewModal textarea {
-      height: 80px; /* 높이 줄임 */
+      min-height: 100px;
       resize: vertical;
     }
-    #routineModal .button-group, #codingTestModal .button-group, #interviewModal .button-group {
+
+    .button-group {
       display: flex;
       justify-content: flex-end;
-      gap: 8px; /* 간격 줄임 */
-      margin-top: 16px; /* 여백 줄임 */
+      gap: 12px;
+      margin-top: 24px;
     }
-    #routineModal .button-group button, #codingTestModal .button-group button, #interviewModal .button-group button {
-      padding: 7px 14px; /* 패딩 줄임 */
+
+    .button-group button {
+      padding: 10px 20px;
       border: none;
       border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
       cursor: pointer;
-      font-size: 13px; /* 글씨 크기 줄임 */
+      transition: all 0.3s ease;
     }
-    #routineModal .button-group button.cancel, #codingTestModal .button-group button.cancel, #interviewModal .button-group button.cancel {
-      background-color: #e0e0e0;
+
+    .button-group button.cancel {
+      background-color: #e5e7eb;
+      color: #4b5563;
     }
-    #routineModal .button-group button.submit, #codingTestModal .button-group button.submit, #interviewModal .button-group button.submit {
-      background-color: #4e6df2;
+
+    .button-group button.cancel:hover {
+      background-color: #d1d5db;
+    }
+
+    .button-group button.submit {
+      background-color: #667eea;
       color: white;
     }
 
-    /* 날짜 필터 스타일 개선 */
-    .date-filter {
-      margin-bottom: 20px; /* 여백 줄임 */
+    .button-group button.submit:hover {
+      background-color: #5a67d8;
     }
-    .date-filter label {
-      font-size: 14px; /* 글씨 크기 줄임 */
-      font-weight: 500;
-      color: #1b2c50;
-      margin-right: 8px;
-    }
-    .date-filter input[type="date"] {
-      padding: 6px 10px; /* 패딩 줄임 */
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 13px; /* 글씨 크기 줄임 */
+
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      main {
+        margin-left: 0;
+        padding: 20px;
+      }
+
+      .sidebar-toggle {
+        display: block;
+      }
+
+      .fixed-routines-container {
+        grid-template-columns: 1fr;
+      }
+
+      .routine-wrapper {
+        padding: 20px;
+      }
+
+      .logo-subtitle {
+        display: none;
+      }
+
+      .user-details {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
 <!--알림 -->
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- 헤더 -->
 <header th:replace="fragments/header/header :: header"></header>
+
+<!-- 사이드바 -->
 <aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<!-- 메인 컨텐츠 -->
 <main>
   <div class="routine-wrapper">
     <div class="routine-header">
@@ -405,6 +766,7 @@
         <h3>진행 루틴</h3>
         <button class="add-routine-btn" onclick="openModal()">+ 추가</button>
       </div>
+
       <!-- 활성 루틴 목록 -->
       <div th:if="${activeRoutines != null and !activeRoutines.isEmpty()}">
         <div th:each="routine : ${activeRoutines}" class="routine-item">
@@ -416,33 +778,40 @@
           </div>
           <div class="routine-right">
             <button class="start-timer" th:onclick="'location.href=\'/routines/' + ${routine.id} + '/timer\''">시작하기</button>
-            <button class="menu-button">⋯</button>
-            <div class="menu-box">
-              <div th:onclick="'editRoutine(' + ${routine.id} + ')'">수정</div>
-              <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
-              <div th:onclick="'skipRoutine(' + ${routine.id} + ')'">쉬어가기</div>
+            <div style="position: relative;">
+              <button class="menu-button">⋯</button>
+              <div class="menu-box">
+                <div th:onclick="'editRoutine(' + ${routine.id} + ')'">수정</div>
+                <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+                <div th:onclick="'skipRoutine(' + ${routine.id} + ')'">쉬어가기</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div th:if="${activeRoutines == null or activeRoutines.isEmpty()}" class="no-routines">
-          진행 중인 루틴이 없습니다.
         </div>
       </div>
-      <!-- 쉬어가기 루틴 목록 -->
-      <div th:if="${passedRoutines != null and !passedRoutines.isEmpty()}" class="passed-routines">
-        <h3>쉬어가는 루틴</h3>
-        <div th:each="routine : ${passedRoutines}" class="routine-item passed-routine">
-          <div class="routine-left">
-            <div class="routine-info">
-        <span class="routine-title">
-          <span style="color: #888;">(PASS)</span> <span th:text="${routine.title}">쉬어가기 루틴</span>
-        </span>
-              <span class="routine-category" th:text="${routine.category}">카테고리</span>
-            </div>
+
+      <!-- 루틴이 없을 때 보여줄 빈 상태 -->
+      <div th:if="${activeRoutines == null or activeRoutines.isEmpty()}" class="empty-state">
+        <p>등록된 데일리 루틴이 없습니다.</p>
+        <p>오늘의 루틴을 추가해 보세요!</p>
+      </div>
+    </div>
+
+    <!-- 쉬어가기 루틴 목록 -->
+    <div th:if="${passedRoutines != null and !passedRoutines.isEmpty()}" class="passed-routines">
+      <h3>쉬어가는 루틴</h3>
+      <div th:each="routine : ${passedRoutines}" class="routine-item passed-routine">
+        <div class="routine-left">
+          <div class="routine-info">
+            <span class="routine-title">
+              <span style="color: #888;">(PASS)</span> <span th:text="${routine.title}">쉬어가기 루틴</span>
+            </span>
+            <span class="routine-category" th:text="${routine.category}">카테고리</span>
           </div>
-          <div class="routine-right">
-            <!-- 비활성화된 시작 버튼 -->
-            <button class="start-timer" disabled style="background-color: #ccc; cursor: not-allowed;">시작하기</button>
+        </div>
+        <div class="routine-right">
+          <button class="start-timer" disabled style="background-color: #ccc; cursor: not-allowed;">시작하기</button>
+          <div style="position: relative;">
             <button class="menu-button">⋯</button>
             <div class="menu-box">
               <div th:onclick="'cancelPass(' + ${routine.id} + ')'">쉬어가기 취소</div>
@@ -451,25 +820,20 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- 루틴이 없을 때 보여줄 빈 상태 -->
-      <div id="emptyRoutineMessage" th:if="${activeRoutines.isEmpty() and (passedRoutines == null or passedRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty())}" class="empty-state">
-        <p>등록된 데일리 루틴이 없습니다.</p>
-        <p>오늘의 루틴을 추가해 보세요!</p>
-      </div>
-
-
-      <!-- 완료된 루틴 목록 -->
-      <div th:if="${completedRoutines != null and !completedRoutines.isEmpty()}" class="completed-routines">
-        <h3>완료된 루틴</h3>
-        <div th:each="routine : ${completedRoutines}" class="routine-item routine-complete">
-          <div class="routine-left">
-            <div class="routine-info">
-              <span class="routine-title" th:text="${routine.title}">완료된 루틴 1</span>
-              <span class="routine-category" th:text="${routine.category}">카테고리</span>
-            </div>
+    <!-- 완료된 루틴 목록 -->
+    <div th:if="${completedRoutines != null and !completedRoutines.isEmpty()}" class="completed-routines">
+      <h3>완료된 루틴</h3>
+      <div th:each="routine : ${completedRoutines}" class="routine-item routine-complete">
+        <div class="routine-left">
+          <div class="routine-info">
+            <span class="routine-title" th:text="${routine.title}">완료된 루틴 1</span>
+            <span class="routine-category" th:text="${routine.category}">카테고리</span>
           </div>
-          <div class="routine-right">
+        </div>
+        <div class="routine-right">
+          <div style="position: relative;">
             <button class="menu-button">⋯</button>
             <div class="menu-box">
               <!-- 코딩테스트 루틴인 경우 정보보기 추가 -->
@@ -487,6 +851,9 @@
     </div>
   </div>
 </main>
+
+<!-- 모달 배경 -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
 
 <!-- 일반 루틴 추가/수정 모달 -->
 <div id="routineModal">
@@ -560,37 +927,9 @@
     </div>
   </form>
 </div>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // 빈 상태 메시지가 여러 개 있으면 첫 번째만 남기고 나머지 제거
-    const emptyMessages = document.querySelectorAll('.empty-state');
-    if (emptyMessages.length > 1) {
-      for (let i = 1; i < emptyMessages.length; i++) {
-        emptyMessages[i].remove();
-      }
-    }
-
-    // 페이지 로드 시 초기 상태 확인
-    checkEmptySections();
-
-    // 투두 리스트 버튼 찾기 및 링크 설정
-    const todoButton = Array.from(document.querySelectorAll('.nav-link-button'))
-    .find(el => el.textContent.includes('투두 리스트'));
-
-    // 투두 리스트 경로 설정
-    if(todoButton) {
-      todoButton.onclick = function() {
-        location.href = '/todos/calender';
-      };
-    }
-
-    // 사이드바 루틴 메뉴 활성화
-    const routineButton = Array.from(document.querySelectorAll('.nav-link-button'))
-    .find(el => el.textContent.includes('데일리 루틴'));
-    if (routineButton) {
-      routineButton.classList.add('active');
-    }
-
     // 메뉴 버튼 이벤트 설정
     const menuButtons = document.querySelectorAll('.menu-button');
     menuButtons.forEach(btn => {
@@ -618,50 +957,55 @@
     });
   });
 
+  // 모달 배경 요소
+  const modalBackdrop = document.getElementById('modalBackdrop');
+
   function openModal() {
     // 폼 초기화
     document.getElementById('routineForm').reset();
     document.getElementById('routineId').value = '';
     document.getElementById('routineModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
   }
 
   function closeModal() {
     document.getElementById('routineModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
   }
 
   function openCodingTestModal() {
     document.getElementById('codingTestForm').reset();
     document.getElementById('codingTestModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
   }
 
   function closeCodingTestModal() {
     document.getElementById('codingTestModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
   }
 
   function openInterviewModal() {
     document.getElementById('interviewForm').reset();
     document.getElementById('interviewModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
   }
 
   function closeInterviewModal() {
     document.getElementById('interviewModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
   }
 
-  function openJobSearchModal() {
-    document.getElementById('jobSearchForm').reset();
-    document.getElementById('jobSearchModal').style.display = 'block';
-  }
-
-  function closeJobSearchModal() {
-    document.getElementById('jobSearchModal').style.display = 'none';
-  }
-
+  // 모달 배경 클릭 시 모달 닫기
+  modalBackdrop.addEventListener('click', function() {
+    closeModal();
+    closeCodingTestModal();
+    closeInterviewModal();
+  });
 
   // 코딩테스트 폼 제출 시
   document.getElementById('codingTestForm').addEventListener('submit', function(e) {
     const problemType = document.querySelector('select[name="problemType"]').value;
     if (problemType) {
-      // title을 "코딩테스트 준비 - 문제종류" 형식으로 저장
       document.getElementById('codingTestTitle').value = `코딩테스트 준비 - ${problemType}`;
       document.getElementById('codingTestCategory').value = `코딩테스트 준비 - ${problemType}`;
     }
@@ -671,7 +1015,6 @@
   document.getElementById('interviewForm').addEventListener('submit', function(e) {
     const techType = document.querySelector('select[name="techType"]').value;
     if (techType) {
-      // title을 "면접준비 - 기술종류" 형식으로 저장
       document.getElementById('interviewTitle').value = `면접준비 - ${techType}`;
       document.getElementById('interviewCategory').value = `면접준비 - ${techType}`;
     }
@@ -686,7 +1029,6 @@
   function viewInterviewReview(routineId) {
     location.href = '/routines/' + routineId + '/interview-review';
   }
-
 
   function editRoutine(routineId) {
     fetch(`/routines/${routineId}/edit`)
@@ -729,12 +1071,14 @@
 
       // 모달 표시
       document.getElementById('routineModal').style.display = 'block';
+      modalBackdrop.style.display = 'block';
     })
     .catch(error => {
       console.error('Error:', error);
       alert('루틴 정보를 불러오는 데 실패했습니다.');
     });
   }
+
   function deleteRoutine(routineId) {
     if (confirm('정말 이 루틴을 삭제하시겠습니까?')) {
       // CSRF 토큰 가져오기
@@ -754,13 +1098,9 @@
           const routineElement = document.querySelector(`.routine-item:has([onclick*="deleteRoutine(${routineId})"])`);
           if (routineElement) {
             routineElement.remove();
-            // 성공 메시지 표시
             showNotification(data.message);
-
-            // 해당 섹션이 비어있게 되면 섹션 숨기기
             checkEmptySections();
           } else {
-            // 요소를 찾지 못하면 페이지 새로고침
             window.location.reload();
           }
         } else {
@@ -783,7 +1123,6 @@
     methodInput.type = 'hidden';
     methodInput.name = '_method';
     methodInput.value = 'PATCH';
-
     form.appendChild(methodInput);
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').content;
@@ -796,16 +1135,16 @@
     document.body.appendChild(form);
     form.submit();
   }
+
   function cancelPass(routineId) {
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = `/routines/${routineId}/cancel`; // 완료 취소와 동일한 엔드포인트 사용
+    form.action = `/routines/${routineId}/cancel`;
 
     const methodInput = document.createElement('input');
     methodInput.type = 'hidden';
     methodInput.name = '_method';
     methodInput.value = 'PATCH';
-
     form.appendChild(methodInput);
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').content;
@@ -828,10 +1167,8 @@
     methodInput.type = 'hidden';
     methodInput.name = '_method';
     methodInput.value = 'PATCH';
-
     form.appendChild(methodInput);
 
-    // CSRF 토큰 추가
     const csrfToken = document.querySelector('meta[name="_csrf"]').content;
     const csrfInput = document.createElement('input');
     csrfInput.type = 'hidden';
@@ -842,30 +1179,27 @@
     document.body.appendChild(form);
     form.submit();
   }
-  function showNotification(message) {
-    // 이미 알림 요소가 있으면 제거
-    const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-      existingNotification.remove();
-    }
 
-    // 알림 요소 생성
+  function showNotification(message) {
+    // 알림 표시 로직
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.textContent = message;
-    notification.style.position = 'fixed';
-    notification.style.top = '20px';
-    notification.style.right = '20px';
-    notification.style.padding = '10px 20px';
-    notification.style.backgroundColor = '#4e6df2';
-    notification.style.color = 'white';
-    notification.style.borderRadius = '5px';
-    notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-    notification.style.zIndex = '9999';
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      background-color: #10b981;
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 9999;
+      animation: slideIn 0.3s ease-out;
+    `;
 
     document.body.appendChild(notification);
 
-    // 3초 후 자동으로 제거
     setTimeout(() => {
       notification.style.opacity = '0';
       notification.style.transition = 'opacity 0.5s';
@@ -873,36 +1207,21 @@
     }, 3000);
   }
 
-  // 섹션이 비어있는지 확인하고 처리하는 함수
   function checkEmptySections() {
-    // 활성 루틴 섹션
-    const activeRoutines = document.querySelectorAll('.routine-item:not(.routine-complete):not(.passed-routine)');
-    const existingEmptyState = document.querySelector('.empty-state');
+    const activeRoutines = document.querySelectorAll('.active-routines-section .routine-item:not(.routine-complete):not(.passed-routine)');
+    const emptyStateExists = document.querySelector('.empty-state');
 
-    if (activeRoutines.length === 0) {
-      // 이미 빈 상태 메시지가 있는지 확인
-      if (!existingEmptyState) {
-        // 빈 상태 메시지 표시
-        const emptyState = document.createElement('div');
-        emptyState.className = 'empty-state';
-        emptyState.innerHTML = '<p>등록된 데일리 루틴이 없습니다.</p><p>오늘의 루틴을 추가해 보세요!</p>';
+    if (activeRoutines.length === 0 && !emptyStateExists) {
+      const emptyState = document.createElement('div');
+      emptyState.className = 'empty-state';
+      emptyState.innerHTML = '<p>등록된 데일리 루틴이 없습니다.</p><p>오늘의 루틴을 추가해 보세요!</p>';
 
-        const activeRoutinesSection = document.querySelector('.active-routines-section');
-        const sectionHeader = activeRoutinesSection.querySelector('.section-header');
-
-        // 진행루틴에 빈 상태 메시지 삽입
-        if (sectionHeader && activeRoutinesSection) {
-          sectionHeader.insertAdjacentElement('afterend', emptyState);
-        }
-      }
-    } else {
-      // 활성 루틴이 있는데 빈 상태 메시지가 있으면 제거
-      if (existingEmptyState) {
-        existingEmptyState.remove();
-      }
+      const activeSection = document.querySelector('.active-routines-section');
+      activeSection.appendChild(emptyState);
     }
   }
 </script>
+
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>
 </html>
