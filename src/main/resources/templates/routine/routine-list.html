@@ -7,9 +7,12 @@
   <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
   <title>데일리 루틴</title>
 
-  <!-- 개선된 공통 스타일 -->
+  <!-- ✅ 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+
   <style>
-    /* 리셋 및 기본 스타일 */
     * {
       margin: 0;
       padding: 0;
@@ -22,220 +25,14 @@
       min-height: 100vh;
     }
 
-    /* 헤더 스타일 */
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 30px;
-    }
 
-    .header-background {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      z-index: -1;
-    }
-
-    .header-blur-overlay {
-      position: absolute;
-      inset: -50%;
-      background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%);
-      filter: blur(40px);
-    }
-
-    .sidebar-toggle {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      position: relative;
-      z-index: 1001;
-    }
-
-    .hamburger-container {
-      width: 24px;
-      height: 20px;
-      position: relative;
-    }
-
-    .hamburger-line {
-      display: block;
-      width: 100%;
-      height: 3px;
-      background: white;
-      margin: 5px 0;
-      border-radius: 3px;
-      transition: all 0.3s ease;
-    }
-
-    .header-logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .logo-link {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      gap: 12px;
-    }
-
-    .logo-icon {
-      position: relative;
-      width: 45px;
-      height: 45px;
-    }
-
-    .logo-gradient {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .logo-emoji {
-      font-size: 24px;
-      z-index: 1;
-    }
-
-    .logo-text-wrapper {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .logo-text {
-      font-size: 20px;
-      font-weight: 700;
-      color: white;
-    }
-
-    .logo-subtitle {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .user-avatar-wrapper {
-      position: relative;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    .user-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-name {
-      color: white;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .user-status {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 12px;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      background: #4ade80;
-      border-radius: 50%;
-    }
-
-    .logout-form {
-      margin: 0;
-    }
-
-    .action-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
 
     .action-btn:hover {
       background: rgba(255, 255, 255, 0.3);
       transform: translateY(-1px);
     }
 
-    /* 사이드바 스타일 */
-    .sidebar {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      width: 280px;
-      height: calc(100vh - 70px);
-      background: white;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-      z-index: 900;
-      transition: transform 0.3s ease;
-      overflow-y: auto;
-    }
 
-    .sidebar-nav {
-      padding: 20px 0;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 14px 24px;
-      color: #333;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      position: relative;
-      margin: 4px 12px;
-      border-radius: 8px;
-    }
 
     .nav-item:hover {
       background-color: #f3f4f6;
@@ -248,39 +45,13 @@
       font-weight: 600;
     }
 
-    .nav-icon {
-      font-size: 20px;
-      margin-right: 12px;
-      min-width: 24px;
-      text-align: center;
-    }
 
-    .nav-text {
-      font-size: 15px;
-    }
-
-    .nav-indicator {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 4px;
-      height: 24px;
-      background: #667eea;
-      border-radius: 0 4px 4px 0;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
 
     .nav-item.active .nav-indicator {
       opacity: 1;
     }
 
-    .nav-divider {
-      height: 1px;
-      background: #e5e7eb;
-      margin: 16px 24px;
-    }
+
 
     /* 메인 컨텐츠 스타일 */
     main {
@@ -407,8 +178,8 @@
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
-    /* 진행 루틴 섹션 */
-    .active-routines-section {
+    /* 루틴 섹션 통합 */
+    .all-routines-section {
       margin-bottom: 32px;
     }
 
@@ -463,6 +234,14 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
+    /* 완료된 루틴 스타일 */
+    .routine-item.completed .routine-title {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+
+    /* 쉬어가기 루틴 스타일 - 배경색 제거 */
+
     .routine-info {
       flex: 1;
     }
@@ -485,20 +264,39 @@
       gap: 8px;
     }
 
-    .start-timer {
-      background-color: #667eea;
-      color: white;
+    /* 버튼 스타일 통합 */
+    .routine-btn {
       border: none;
       padding: 8px 16px;
       border-radius: 8px;
       font-size: 14px;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
+      min-width: 80px;
     }
 
-    .start-timer:hover {
+    /* 시작하기 버튼 */
+    .routine-btn.start {
+      background-color: #667eea;
+      color: white;
+    }
+
+    .routine-btn.start:hover {
       background-color: #5a67d8;
       transform: translateY(-1px);
+    }
+
+    /* 완료 버튼 */
+    .routine-btn.completed {
+      background-color: #9ca3af;
+      color: white;
+    }
+
+    /* 쉬어가기 버튼 */
+    .routine-btn.passed {
+      background-color: #d1d5db;
+      color: white;
     }
 
     .menu-button {
@@ -549,30 +347,6 @@
     .empty-state p {
       margin-bottom: 12px;
       font-size: 16px;
-    }
-
-    .completed-routines h3,
-    .passed-routines h3 {
-      font-size: 20px;
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 16px;
-      margin-top: 32px;
-    }
-
-    .routine-complete {
-      background-color: #f3f4f6;
-      opacity: 0.8;
-    }
-
-    .routine-complete .routine-title {
-      text-decoration: line-through;
-      color: #9ca3af;
-    }
-
-    .passed-routine {
-      background-color: #fef3c7;
-      border-color: #fbbf24;
     }
 
     /* 모달 스타일 */
@@ -745,7 +519,7 @@
               <span class="fixed-routine-description">알고리즘 및 코딩테스트 대비</span>
             </div>
           </div>
-          <button class="fixed-routine-start-btn" onclick="openCodingTestModal()">시작하기</button>
+          <button class="fixed-routine-start-btn" onclick="openCodingTestModal()">추가하기</button>
         </div>
 
         <div class="fixed-routine-card">
@@ -755,15 +529,15 @@
               <span class="fixed-routine-description">기술 면접 질문 연습</span>
             </div>
           </div>
-          <button class="fixed-routine-start-btn" onclick="openInterviewModal()">시작하기</button>
+          <button class="fixed-routine-start-btn" onclick="openInterviewModal()">추가하기</button>
         </div>
       </div>
     </div>
 
-    <!-- 진행 루틴 섹션 -->
-    <div class="active-routines-section">
+    <!-- 통합된 루틴 섹션 -->
+    <div class="all-routines-section">
       <div class="section-header">
-        <h3>진행 루틴</h3>
+        <h3>데일리 루틴</h3>
         <button class="add-routine-btn" onclick="openModal()">+ 추가</button>
       </div>
 
@@ -777,7 +551,7 @@
             </div>
           </div>
           <div class="routine-right">
-            <button class="start-timer" th:onclick="'location.href=\'/routines/' + ${routine.id} + '/timer\''">시작하기</button>
+            <button class="routine-btn start" th:onclick="'location.href=\'/routines/' + ${routine.id} + '/timer\''">시작하기</button>
             <div style="position: relative;">
               <button class="menu-button">⋯</button>
               <div class="menu-box">
@@ -790,63 +564,62 @@
         </div>
       </div>
 
+      <!-- 쉬어가기 루틴 목록 -->
+      <div th:if="${passedRoutines != null and !passedRoutines.isEmpty()}">
+        <div th:each="routine : ${passedRoutines}" class="routine-item passed">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title">
+                <span style="color: #888;">(PASS)</span> <span th:text="${routine.title}">쉬어가기 루틴</span>
+              </span>
+              <span class="routine-category" th:text="${routine.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <button class="routine-btn passed">쉬어가기</button>
+            <div style="position: relative;">
+              <button class="menu-button">⋯</button>
+              <div class="menu-box">
+                <div th:onclick="'cancelPass(' + ${routine.id} + ')'">쉬어가기 취소</div>
+                <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 완료된 루틴 목록 -->
+      <div th:if="${completedRoutines != null and !completedRoutines.isEmpty()}">
+        <div th:each="routine : ${completedRoutines}" class="routine-item completed">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title" th:text="${routine.title}">완료된 루틴 1</span>
+              <span class="routine-category" th:text="${routine.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <button class="routine-btn completed">완료</button>
+            <div style="position: relative;">
+              <button class="menu-button">⋯</button>
+              <div class="menu-box">
+                <!-- 코딩테스트 루틴인 경우 정보보기 추가 -->
+                <div th:if="${routine.category != null and #strings.startsWith(routine.category, '코딩테스트 준비')}"
+                     th:onclick="'viewCodingReview(' + ${routine.id} + ')'">정보보기</div>
+                <!-- 면접준비 루틴인 경우 정보보기 추가 -->
+                <div th:if="${routine.category != null and #strings.startsWith(routine.category, '면접준비')}"
+                     th:onclick="'viewInterviewReview(' + ${routine.id} + ')'">정보보기</div>
+                <div th:onclick="'cancelComplete(' + ${routine.id} + ')'">완료 취소</div>
+                <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- 루틴이 없을 때 보여줄 빈 상태 -->
-      <div th:if="${activeRoutines == null or activeRoutines.isEmpty()}" class="empty-state">
+      <div th:if="${(activeRoutines == null or activeRoutines.isEmpty()) and (passedRoutines == null or passedRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty())}" class="empty-state">
         <p>등록된 데일리 루틴이 없습니다.</p>
         <p>오늘의 루틴을 추가해 보세요!</p>
-      </div>
-    </div>
-
-    <!-- 쉬어가기 루틴 목록 -->
-    <div th:if="${passedRoutines != null and !passedRoutines.isEmpty()}" class="passed-routines">
-      <h3>쉬어가는 루틴</h3>
-      <div th:each="routine : ${passedRoutines}" class="routine-item passed-routine">
-        <div class="routine-left">
-          <div class="routine-info">
-            <span class="routine-title">
-              <span style="color: #888;">(PASS)</span> <span th:text="${routine.title}">쉬어가기 루틴</span>
-            </span>
-            <span class="routine-category" th:text="${routine.category}">카테고리</span>
-          </div>
-        </div>
-        <div class="routine-right">
-          <button class="start-timer" disabled style="background-color: #ccc; cursor: not-allowed;">시작하기</button>
-          <div style="position: relative;">
-            <button class="menu-button">⋯</button>
-            <div class="menu-box">
-              <div th:onclick="'cancelPass(' + ${routine.id} + ')'">쉬어가기 취소</div>
-              <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 완료된 루틴 목록 -->
-    <div th:if="${completedRoutines != null and !completedRoutines.isEmpty()}" class="completed-routines">
-      <h3>완료된 루틴</h3>
-      <div th:each="routine : ${completedRoutines}" class="routine-item routine-complete">
-        <div class="routine-left">
-          <div class="routine-info">
-            <span class="routine-title" th:text="${routine.title}">완료된 루틴 1</span>
-            <span class="routine-category" th:text="${routine.category}">카테고리</span>
-          </div>
-        </div>
-        <div class="routine-right">
-          <div style="position: relative;">
-            <button class="menu-button">⋯</button>
-            <div class="menu-box">
-              <!-- 코딩테스트 루틴인 경우 정보보기 추가 -->
-              <div th:if="${routine.category != null and #strings.startsWith(routine.category, '코딩테스트 준비')}"
-                   th:onclick="'viewCodingReview(' + ${routine.id} + ')'">정보보기</div>
-              <!-- 면접준비 루틴인 경우 정보보기 추가 -->
-              <div th:if="${routine.category != null and #strings.startsWith(routine.category, '면접준비')}"
-                   th:onclick="'viewInterviewReview(' + ${routine.id} + ')'">정보보기</div>
-              <div th:onclick="'cancelComplete(' + ${routine.id} + ')'">완료 취소</div>
-              <div th:onclick="'deleteRoutine(' + ${routine.id} + ')'">삭제</div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -1208,16 +981,16 @@
   }
 
   function checkEmptySections() {
-    const activeRoutines = document.querySelectorAll('.active-routines-section .routine-item:not(.routine-complete):not(.passed-routine)');
+    const allRoutines = document.querySelectorAll('.all-routines-section .routine-item');
     const emptyStateExists = document.querySelector('.empty-state');
 
-    if (activeRoutines.length === 0 && !emptyStateExists) {
+    if (allRoutines.length === 0 && !emptyStateExists) {
       const emptyState = document.createElement('div');
       emptyState.className = 'empty-state';
       emptyState.innerHTML = '<p>등록된 데일리 루틴이 없습니다.</p><p>오늘의 루틴을 추가해 보세요!</p>';
 
-      const activeSection = document.querySelector('.active-routines-section');
-      activeSection.appendChild(emptyState);
+      const allRoutinesSection = document.querySelector('.all-routines-section');
+      allRoutinesSection.appendChild(emptyState);
     }
   }
 </script>
