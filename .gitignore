@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# API 키 등 민감한 정보
+secret.properties
