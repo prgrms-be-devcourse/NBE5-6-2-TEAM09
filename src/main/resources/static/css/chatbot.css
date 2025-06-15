@@ -1,7 +1,3 @@
-/* ========================================
-   CodeMap 챗봇 전용 CSS
-   ======================================== */
-
 /* ✅ 챗봇 전용 CSS 변수 */
 :root {
   --chatbot-primary: #667eea;
@@ -27,8 +23,21 @@
   --chatbot-z-index: 1000;
 }
 
+/* ✅ 챗봇 모달 wrapper 고정 위치 */
+#chatbot-modal-wrapper {
+  position: fixed !important;
+  bottom: 110px !important; /* 버튼 위에 적절한 간격으로 */
+  right: 30px !important;
+  z-index: 9998 !important; /* 버튼보다 살짝 낮게 */
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
 /* ✅ 챗봇 모달 컨테이너 */
 .chatbot-modal {
+  position: relative !important; /* wrapper가 이미 fixed이므로 relative로 */
   display: none;
   width: 420px;
   height: 580px;
@@ -44,7 +53,9 @@
   pointer-events: none;
   backdrop-filter: blur(20px);
   overflow: hidden;
-  position: relative;
+  margin: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 
 .chatbot-modal::before {
@@ -65,9 +76,9 @@
 
 /* ✅ 챗봇 버튼 */
 .chatbot-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
+  position: fixed !important; /* !important로 확실히 고정 */
+  bottom: 30px !important;
+  right: 30px !important;
   width: 64px;
   height: 64px;
   background: linear-gradient(135deg, var(--chatbot-primary) 0%, var(--chatbot-secondary) 100%);
@@ -77,13 +88,15 @@
   color: white;
   cursor: pointer;
   box-shadow: var(--chatbot-shadow-md);
-  z-index: calc(var(--chatbot-z-index) + 1);
+  z-index: 9999 !important; /* 높은 z-index로 최상단에 고정 */
   transition: var(--chatbot-transition);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  position: relative;
+  /* 스크롤바와 겹치지 않도록 조정 */
+  margin: 0 !important;
+  transform: none !important; /* 기본 transform 제거 */
 }
 
 .chatbot-button::before {
@@ -99,12 +112,16 @@
 }
 
 .chatbot-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) !important;
   box-shadow: var(--chatbot-shadow-lg);
 }
 
 .chatbot-button:hover::before {
   opacity: 1;
+}
+
+.chatbot-button:active {
+  transform: scale(0.95) !important;
 }
 
 .chatbot-button.active {
@@ -124,6 +141,7 @@
   transform: translate(-50%, -50%);
   animation: chatbot-pulse 2s infinite;
   opacity: 0.6;
+  pointer-events: none;
 }
 
 @keyframes chatbot-pulse {
@@ -543,8 +561,8 @@
   }
 
   .chatbot-button {
-    bottom: 20px;
-    right: 20px;
+    bottom: 20px !important;
+    right: 20px !important;
     width: 56px;
     height: 56px;
     font-size: 22px;
@@ -553,18 +571,48 @@
   #chatbot-modal-wrapper {
     bottom: 90px !important;
     right: 20px !important;
+    max-width: calc(100vw - 40px);
   }
 }
 
 @media (max-width: 480px) {
   .chatbot-modal {
-    width: calc(100vw - 20px);
+    width: calc(100vw - 30px);
     height: calc(100vh - 120px);
     max-height: 500px;
   }
 
+  .chatbot-button {
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+
   #chatbot-modal-wrapper {
-    right: 10px !important;
+    bottom: 85px !important;
+    right: 15px !important;
+    max-width: calc(100vw - 30px);
+  }
+}
+
+/* ✅ 스크롤바와 겹치지 않도록 추가 여백 조정 */
+@media (min-width: 769px) {
+  .chatbot-button {
+    right: 45px !important; /* 스크롤바 공간 확보 */
+  }
+
+  #chatbot-modal-wrapper {
+    right: 45px !important;
+  }
+}
+
+/* ✅ 높은 해상도에서 위치 조정 */
+@media (min-width: 1400px) {
+  .chatbot-button {
+    right: 60px !important;
+  }
+
+  #chatbot-modal-wrapper {
+    right: 60px !important;
   }
 }
 
