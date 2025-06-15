@@ -2,209 +2,364 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>CodeMap - 카테고리 선택</title>
     <link rel="stylesheet" th:href="@{/css/header/base.css}" />
     <link rel="stylesheet" th:href="@{/css/header.css}" />
     <link rel="stylesheet" th:href="@{/css/header/token.css}" />
-
     <link rel="stylesheet" th:href="@{/css/sidenav/user/base.css}" />
     <link rel="stylesheet" th:href="@{/css/sidenav.css}" />
     <link rel="stylesheet" th:href="@{/css/sidenav/user/token.css}" />
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Pretendard', sans-serif;
+            background: #ffffff;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 116px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        aside {
+            position: fixed;
+            top: 116px;
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 116px);
+            z-index: 900;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
         main {
+            position: absolute;
+            top: 116px;
+            margin-left: 270px;
+            width: calc(100vw - 250px);
+            min-height: calc(100vh - 116px);
+            padding: 60px 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-left: 250px;
-            margin-top: -31vw;
-            padding: 40px;
+        }
+
+        .main-container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 3rem;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .category-container {
-            background-color: #d8e3ff;
-            padding: 40px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 800px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
 
-        .category-container h2 {
-            margin-bottom: 30px;
-            font-size: 24px;
-            font-weight: bold;
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .error-message {
+            background: rgba(248, 215, 218, 0.9);
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-left: 4px solid #dc3545;
+            backdrop-filter: blur(10px);
         }
 
         .category-option {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #ffffff;
-            border: 2px solid #dcdcdc;
-            border-radius: 12px;
-            padding: 15px 20px;
-            margin: 10px 0;
-            font-size: 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1rem 0;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .category-option:hover {
-            background-color: #dce9ff;
+            background: rgba(102, 126, 234, 0.05);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .category-option input[type="checkbox"] {
-            accent-color: #e6ff00; /* 강조 색 지정 */
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
+            accent-color: #667eea;
             cursor: pointer;
+            border-radius: 6px;
         }
 
-        .category-button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 15px;
-            font-size: 18px;
-            background-color: #ffffff;
-            border: 2px solid #dcdcdc;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .category-button:hover {
-            background-color: #dce9ff;
+        .category-option span {
+            font-weight: 600;
+            color: #333;
+            text-shadow: none;
         }
 
         .submit-button {
-            background-color: #4e6df2; /* 루틴 페이지의 추가 버튼과 동일한 파란색 */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 20px;
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
             cursor: pointer;
-            display: block; /* 블록 요소로 변경 */
-            margin: 30px auto 0; /* 상단 여백 30px, 좌우 자동(중앙 정렬), 하단 여백 0 */
-            width: fit-content; /* 내용에 맞게 너비 조정 */
+            display: block;
+            margin: 3rem auto 0;
+            transition: all 0.3s ease;
+            text-shadow: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .submit-button:hover {
-            background-color: #3b6fe0; /* 호버 효과 */
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            backdrop-filter: blur(5px);
         }
 
         .modal-box {
-            background-color: #ffffff;
-            padding: 30px 40px;
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 24px;
             text-align: center;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-            animation: fadeIn 0.3s ease-out;
-            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.4s ease-out;
+            max-width: 500px;
+            margin: 1rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .modal-message {
-            font-size: 18px;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #0019a5;
-            margin-bottom: 20px;
+            color: #333;
+            margin-bottom: 2rem;
         }
 
         .modal-confirm-button {
-            padding: 10px 24px;
-            font-size: 14px;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
             border: none;
-            border-radius: 24px;
-            background-color: #4e6df2;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .modal-confirm-button:hover {
-            background-color: #3b6fe0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            aside.open {
+                transform: translateX(0);
+            }
+
+            main {
+                position: absolute;
+                top: 116px;
+                left: 0;
+                width: 100vw;
+                padding: 2rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .category-container {
+                padding: 2rem;
+            }
+
+            .category-option {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
         }
     </style>
 </head>
 <body>
-<!--알림 -->
 <th:block th:replace="~{fragments/common/alert-script :: alert-script}"></th:block>
 <header th:replace="~{fragments/header/header :: header}"></header>
 <aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
 
 <main>
-    <div class="category-container">
-        <h2>카테고리 선택</h2>
+    <div class="main-container">
+        <h1 class="page-title">🎯 면접 준비</h1>
 
-        <div th:if="${error}" style="color: red; text-align: center; margin-bottom: 20px;">
-            <p th:text="${error}">에러 메시지</p>
+        <div class="category-container">
+            <h2 class="section-title">학습할 카테고리를 선택하세요</h2>
+
+            <form th:action="@{/interview/select}" method="post">
+                <label class="category-option">
+                    <span>💻 알고리즘</span>
+                    <input type="checkbox" name="categoryList" value="알고리즘">
+                </label>
+
+                <label class="category-option">
+                    <span>📊 자료구조</span>
+                    <input type="checkbox" name="categoryList" value="자료구조">
+                </label>
+
+                <label class="category-option">
+                    <span>🗄️ 데이터베이스</span>
+                    <input type="checkbox" name="categoryList" value="데이터베이스">
+                </label>
+
+                <label class="category-option">
+                    <span>⚙️ 운영체제</span>
+                    <input type="checkbox" name="categoryList" value="운영체제">
+                </label>
+
+                <label class="category-option">
+                    <span>🌐 네트워크</span>
+                    <input type="checkbox" name="categoryList" value="네트워크">
+                </label>
+
+                <label class="category-option">
+                    <span>🏗️ 컴퓨터구조</span>
+                    <input type="checkbox" name="categoryList" value="컴퓨터구조">
+                </label>
+
+                <button type="submit" class="submit-button">시작하기</button>
+            </form>
         </div>
-        <form th:action="@{/interview/select}" method="post">
-            <label class="category-option">
-                <input type="checkbox" name="categoryList" value="알고리즘">
-                <span>알고리즘</span>
-            </label>
-            <label class="category-option">
-                <input type="checkbox" name="categoryList" value="자료구조">
-                <span>자료구조</span>
-            </label>
-            <label class="category-option">
-                <input type="checkbox" name="categoryList" value="데이터베이스">
-                <span>데이터베이스</span>
-            </label>
-            <label class="category-option">
-                <input type="checkbox" name="categoryList" value="운영체제">
-                <span>운영체제</span>
-            </label>
-            <label class="category-option">
-                <input type="checkbox" name="categoryList" value="네트워크">
-                <span>네트워크</span>
-            </label>
-            <label class="category-option">
-                <input type="checkbox" name="categoryList" value="컴퓨터구조">
-                <span>컴퓨터구조</span>
-            </label>
-            <button type="submit" class="submit-button">확인</button>
-        </form>
     </div>
-    <!-- 완료 모달 -->
+
     <div id="completeModal" class="modal-overlay" style="display: none;">
         <div class="modal-box">
             <p class="modal-message">🎉 모든 질문을 완료했습니다!</p>
             <button class="modal-confirm-button" onclick="closeModal()">확인</button>
         </div>
     </div>
-
-    <script th:inline="javascript">
-        const message = [[${message}]];
-        if (message) {
-            document.getElementById('completeModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('completeModal').style.display = 'none';
-        }
-    </script>
-
 </main>
+
 <th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }, 100);
+    });
+
+    const message = [[${message}]];
+    if (message) {
+        document.getElementById('completeModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('completeModal').style.display = 'none';
+    }
+
+    window.addEventListener('pageshow', function(event) {
+        window.scrollTo(0, 0);
+    });
+
+    window.addEventListener('load', function() {
+        window.scrollTo(0, 0);
+    });
+</script>
 </body>
 </html>
