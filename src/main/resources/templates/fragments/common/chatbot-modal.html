@@ -1,228 +1,48 @@
-<!-- chatbot-modal.html -->
+<!-- Enhanced chatbot-modal.html -->
 <div th:fragment="chatbot">
-  <style>
-    .chatbot-modal {
-      display: none;
-      width: 400px;
-      height: 500px;
-      background: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      padding: 20px;
-      font-family: 'Pretendard', sans-serif;
-      flex-direction: column;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-    }
-
-    .chatbot-modal.show {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .chatbot-button {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background-color: white;
-      border: 2px solid #ccc;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 24px;
-      text-align: center;
-      line-height: 56px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 1001;
-      transition: transform 0.2s ease;
-    }
-
-    .chatbot-button:hover {
-      transform: scale(1.1);
-    }
-
-    .chatbot-input {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .chatbot-input:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
-    }
-
-    .chatbot-send-btn {
-      margin-top: 8px;
-      padding: 8px 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.2s ease;
-    }
-
-    .chatbot-send-btn:hover {
-      background-color: #0056b3;
-    }
-
-    .chatbot-send-btn:disabled {
-      background-color: #6c757d;
-      cursor: not-allowed;
-    }
-
-    .chatbot-response {
-      max-height: 350px;
-      overflow-y: auto;
-      padding: 15px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      border: 1px solid #e9ecef;
-      line-height: 1.6;
-      font-size: 14px;
-    }
-
-    /* 마크다운 스타일링 */
-    .chatbot-response h1, .chatbot-response h2, .chatbot-response h3 {
-      margin: 16px 0 8px 0;
-      color: #333;
-      font-weight: 600;
-    }
-
-    .chatbot-response h1 { font-size: 18px; }
-    .chatbot-response h2 { font-size: 16px; }
-    .chatbot-response h3 { font-size: 15px; }
-
-    .chatbot-response p {
-      margin: 8px 0;
-      color: #555;
-    }
-
-    .chatbot-response ul, .chatbot-response ol {
-      margin: 8px 0;
-      padding-left: 20px;
-    }
-
-    .chatbot-response li {
-      margin: 4px 0;
-      color: #555;
-    }
-
-    .chatbot-response code {
-      background-color: #e9ecef;
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      color: #d63384;
-    }
-
-    .chatbot-response pre {
-      background-color: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 6px;
-      padding: 12px;
-      margin: 8px 0;
-      overflow-x: auto;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-    }
-
-    .chatbot-response pre code {
-      background: none;
-      padding: 0;
-      color: #333;
-    }
-
-    .chatbot-response strong {
-      font-weight: 600;
-      color: #333;
-    }
-
-    .chatbot-response em {
-      font-style: italic;
-      color: #666;
-    }
-
-    .chatbot-response blockquote {
-      border-left: 4px solid #007bff;
-      margin: 8px 0;
-      padding-left: 12px;
-      color: #666;
-      font-style: italic;
-    }
-
-    .loading-dots {
-      display: inline-block;
-    }
-
-    .loading-dots::after {
-      content: '';
-      animation: dots 1.5s steps(5, end) infinite;
-    }
-
-    @keyframes dots {
-      0%, 20% { content: '.'; }
-      40% { content: '..'; }
-      60% { content: '...'; }
-      80%, 100% { content: ''; }
-    }
-  </style>
-
   <!-- 챗봇 버튼 -->
   <div id="chatbot-button" class="chatbot-button" onclick="toggleChatbot()">
-    🤖
+    <span id="chatbot-icon">🤖</span>
   </div>
 
-  <!-- 챗봇 모달 wrapper -->
-  <div id="chatbot-modal-wrapper" style="position: fixed; bottom: 100px; right: 30px; z-index: 1000;">
+  <!-- 챗봇 모달 wrapper - 인라인 스타일 제거, CSS로 위치 제어 -->
+  <div id="chatbot-modal-wrapper">
     <div id="chatbot-modal" class="chatbot-modal">
       <!-- Header -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <strong style="color: #333; font-size: 16px;">CodeMap 챗봇</strong>
-        <button onclick="toggleChatbot()" style="
-          border: none;
-          background: transparent;
-          font-size: 18px;
-          cursor: pointer;
-          color: #666;
-          padding: 0;
-          width: 24px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        ">✖</button>
+      <div class="chatbot-header">
+        <div class="chatbot-title">
+          <div class="chatbot-logo">🤖</div>
+          <span>CodeMap 챗봇</span>
+        </div>
+        <button class="chatbot-close" onclick="toggleChatbot()" title="챗봇 닫기">
+          ✕
+        </button>
       </div>
 
-      <!-- 내용 -->
-      <div style="flex-grow: 1;">
-        <div id="chatbot-response" class="chatbot-response">
-          안녕하세요! 궁금한 키워드를 입력해 주세요. 🤖
+      <!-- 응답 영역 -->
+      <div id="chatbot-response" class="chatbot-response">
+        <div class="chatbot-message-welcome">
+          <span class="chatbot-welcome-icon">🚀</span>
+          <div class="chatbot-welcome-text">안녕하세요!</div>
+          <div class="chatbot-welcome-subtitle">궁금한 키워드를 입력해 주세요</div>
         </div>
       </div>
 
-      <!-- 하단 입력 -->
-      <div style="margin-top: 15px;">
-        <input
-            type="text"
-            id="chatbot-input"
-            class="chatbot-input"
-            placeholder="키워드를 입력하세요..."
-            maxlength="100"
-        />
+      <!-- 입력 영역 -->
+      <div class="chatbot-input-area">
+        <div class="chatbot-input-wrapper">
+          <input
+              type="text"
+              id="chatbot-input"
+              class="chatbot-input"
+              placeholder="키워드를 입력하세요..."
+              maxlength="100"
+          />
+          <span class="chatbot-input-icon">💬</span>
+        </div>
         <button id="chatbot-send-btn" class="chatbot-send-btn" onclick="sendKeywordFromInput()">
-          보내기
+          <span class="chatbot-btn-icon">🚀</span>
+          <span class="chatbot-btn-text">보내기</span>
         </button>
       </div>
     </div>
@@ -233,16 +53,22 @@
 
     function toggleChatbot() {
       const modal = document.getElementById('chatbot-modal');
+      const button = document.getElementById('chatbot-button');
+      const icon = document.getElementById('chatbot-icon');
+
       if (modal.classList.contains('show')) {
         modal.classList.remove('show');
+        button.classList.remove('active');
+        icon.textContent = '🤖';
         setTimeout(() => {
           modal.style.display = 'none';
         }, 300);
       } else {
         modal.style.display = 'flex';
+        button.classList.add('active');
+        icon.textContent = '✕';
         setTimeout(() => {
           modal.classList.add('show');
-          // 모달이 열릴 때 입력창에 포커스
           document.getElementById('chatbot-input').focus();
         }, 10);
       }
@@ -296,63 +122,75 @@
 
       if (loading) {
         sendBtn.disabled = true;
-        sendBtn.textContent = '전송중...';
+        sendBtn.innerHTML = '<span class="chatbot-btn-icon">⏳</span><span class="chatbot-btn-text">전송중...</span>';
         input.disabled = true;
       } else {
         sendBtn.disabled = false;
-        sendBtn.textContent = '보내기';
+        sendBtn.innerHTML = '<span class="chatbot-btn-icon">🚀</span><span class="chatbot-btn-text">보내기</span>';
         input.disabled = false;
         input.focus();
       }
     }
 
-    // 마크다운을 HTML로 변환하는 간단한 함수
+    // 로딩 메시지 표시
+    function showLoadingMessage() {
+      return `
+        <div class="chatbot-loading-message">
+          <div class="chatbot-loading-avatar">🤖</div>
+          <div>
+            <div style="margin-bottom: 8px; font-weight: 600; color: var(--chatbot-text-primary);">답변을 생성하고 있어요</div>
+            <div class="chatbot-loading-dots">
+              <div class="chatbot-loading-dot"></div>
+              <div class="chatbot-loading-dot"></div>
+              <div class="chatbot-loading-dot"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 에러 메시지 표시
+    function showErrorMessage(message) {
+      return `
+        <div class="chatbot-error-message">
+          <span class="chatbot-error-icon">⚠️</span>
+          <span>${message}</span>
+        </div>
+      `;
+    }
+
+    // 마크다운을 HTML로 변환하는 함수
     function parseMarkdown(text) {
       return text
-      // 코드 블록 (```)
       .replace(/```(\w+)?\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-      // 인라인 코드 (`)
       .replace(/`([^`]+)`/g, '<code>$1</code>')
-      // 굵은 글씨 (**)
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // 기울임 (*)
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      // 제목 (###, ##, #)
       .replace(/^### (.*$)/gm, '<h3>$1</h3>')
       .replace(/^## (.*$)/gm, '<h2>$1</h2>')
       .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-      // 순서 없는 목록 (- 또는 *)
       .replace(/^[\-\*] (.+)$/gm, '<li>$1</li>')
-      // 순서 있는 목록 (1. 2. 등)
       .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-      // 블록 인용 (>)
       .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-      // 줄바꿈
       .replace(/\n/g, '<br>');
     }
 
     // li 태그들을 ul로 감싸기
     function wrapListItems(html) {
-      // 연속된 li 태그들을 ul로 감싸기
       return html.replace(/(<li>.*?<\/li>(?:\s*<br>\s*<li>.*?<\/li>)*)/g, '<ul>$1</ul>')
-      .replace(/<br>\s*(<li>)/g, '$1')  // ul 내부의 불필요한 br 제거
-      .replace(/(<\/li>)\s*<br>/g, '$1'); // li 뒤의 불필요한 br 제거
+      .replace(/<br>\s*(<li>)/g, '$1')
+      .replace(/(<\/li>)\s*<br>/g, '$1');
     }
 
     // 실제 키워드 전송 로직
     function sendKeyword(keyword) {
       const responseElement = document.getElementById('chatbot-response');
-      responseElement.innerHTML = '답변을 불러오는 중<span class="loading-dots"></span>';
+      responseElement.innerHTML = showLoadingMessage();
 
       setLoading(true);
 
-      // localStorage에 저장 (브라우저에서 사용할 때만)
-      try {
-        localStorage.setItem('lastKeyword', keyword);
-      } catch (e) {
-        // localStorage를 사용할 수 없는 환경에서는 무시
-        console.log('localStorage not available');
-      }
+      // 스크롤을 맨 아래로 이동
+      responseElement.scrollTop = responseElement.scrollHeight;
 
       fetch('/chatbot/message', {
         method: 'POST',
@@ -369,15 +207,12 @@
       })
       .then(data => {
         if (data.response) {
-          // 마크다운을 HTML로 변환
           let htmlContent = parseMarkdown(data.response);
           htmlContent = wrapListItems(htmlContent);
-          responseElement.innerHTML = htmlContent;
-
-          // 스크롤을 맨 아래로 이동
+          responseElement.innerHTML = `<div class="chatbot-response-message">${htmlContent}</div>`;
           responseElement.scrollTop = responseElement.scrollHeight;
         } else {
-          responseElement.innerHTML = '응답을 받지 못했어요. 다시 시도해 주세요.';
+          responseElement.innerHTML = showErrorMessage('응답을 받지 못했어요. 다시 시도해 주세요.');
         }
       })
       .catch(error => {
@@ -390,7 +225,7 @@
         } else {
           errorMessage = '오류가 발생했어요. 다시 시도해 주세요 😥';
         }
-        responseElement.innerHTML = errorMessage;
+        responseElement.innerHTML = showErrorMessage(errorMessage);
       })
       .finally(() => {
         setLoading(false);
