@@ -38,12 +38,14 @@
 
     <!-- 📊 통계 카드 -->
     <div class="stats-grid">
+      <!-- 1. 오늘의 집중시간 (유지) -->
       <div class="stat-card">
         <div class="stat-header">📚 오늘의 집중시간</div>
         <div class="stat-value" th:text="${totalActualFocusMinutes} + '분'">0분</div>
         <div class="stat-subtext">완료된 루틴 기준</div>
       </div>
 
+      <!-- 2. 완료된 루틴 (유지) -->
       <div class="stat-card">
         <div class="stat-header">✅ 완료된 루틴</div>
         <div class="stat-value">
@@ -55,16 +57,20 @@
         </div>
       </div>
 
+      <!-- 3. 총 학습시간 (NEW - 실제 데이터) -->
       <div class="stat-card">
-        <div class="stat-header">🔥 연속 출석</div>
-        <div class="stat-value">15일</div>
-        <div class="stat-subtext">최고 기록: 23일</div>
+        <div class="stat-header">🏆 총 학습시간</div>
+        <div class="stat-value" th:text="${totalActualFocusTime != null ? (totalActualFocusTime / 60) + '시간' : '0시간'}">0시간</div>
+        <div class="stat-subtext">지금까지 누적된 시간</div>
       </div>
 
+      <!-- 4. 주력 분야 (NEW - 실제 데이터) -->
       <div class="stat-card">
-        <div class="stat-header">🎯 주간 목표</div>
-        <div class="stat-value">82%</div>
-        <div class="stat-subtext">32/40 시간</div>
+        <div class="stat-header">👑 주력 분야</div>
+        <div class="stat-value" th:text="${topCategory != null ? topCategory : '없음'}">없음</div>
+        <div class="stat-subtext">
+          <span th:text="${topCategoryTime != null ? (topCategoryTime / 60) + '시간 투자' : '시간 기록 없음'}">0시간 투자</span>
+        </div>
       </div>
     </div>
 

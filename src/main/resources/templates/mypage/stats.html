@@ -32,9 +32,18 @@
     <div class="card summary-card">
       <h3>✨ 오늘의 학습 요약</h3>
       <div class="summary-box">
-        <p>✅ 완료된 루틴: <strong th:text="${completion.completedCount}">0</strong>개 /
-          남은 루틴: <strong th:text="${completion.totalCount - completion.completedCount}">0</strong>개</p>
-        <p>⏱️ 오늘의 학습 시간: <strong th:text="${totalActualFocusTime}">0</strong>분</p>
+        <!-- ✅ 수정: 오늘의 루틴 데이터 사용 -->
+        <p>✅ 완료된 루틴: <strong th:text="${todayCompletion.completedCount}">0</strong>개 /
+          남은 루틴: <strong th:text="${todayCompletion.totalCount - todayCompletion.completedCount}">0</strong>개</p>
+        <!-- ✅ 수정: 오늘의 학습 시간 사용 -->
+        <p>⏱️ 오늘의 학습 시간: <strong th:text="${todayActualFocusTime}">0</strong>분</p>
+        <!-- ✅ 추가: 오늘의 완료율 표시 (선택사항) -->
+        <p th:if="${todayCompletion.totalCount > 0}">
+          📊 오늘의 완료율: <strong th:text="${#numbers.formatDecimal(todayCompletion.completionRate, 1, 1)} + '%'">0.0%</strong>
+        </p>
+        <p th:if="${todayCompletion.totalCount == 0}" style="color: rgba(255, 255, 255, 0.7);">
+          📭 오늘 등록된 루틴이 없습니다.
+        </p>
       </div>
     </div>
 

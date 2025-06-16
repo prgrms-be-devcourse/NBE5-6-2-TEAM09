@@ -2,6 +2,7 @@ package com.grepp.codemap.mypage.service;
 
 import com.grepp.codemap.mypage.dto.RoutineCategoryCompletionDto;
 import com.grepp.codemap.mypage.dto.RoutineCompletionDto;
+import com.grepp.codemap.routine.domain.DailyRoutine;
 import com.grepp.codemap.routine.repository.DailyRoutineRepository;
 import com.grepp.codemap.todo.domain.Todo;
 import com.grepp.codemap.todo.repository.TodoRepository;
@@ -89,5 +90,37 @@ public class MyPageService {
 
     public List<Todo> getTodayTodos(Long userId) {
         return todoRepository.findTodayTodos(LocalDate.now(), userId);
+    }
+
+    // ✅ NEW: 오늘의 루틴 완료 통계
+    public RoutineCompletionDto getTodayRoutineCompletionStats(Long userId) {
+        LocalDate today = LocalDate.now();
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 오늘 생성된 루틴들 조회 (DailyRoutineRepositoryCustom 활용)
+        List<DailyRoutine> todayRoutines = dailyRoutineRepository.findRoutinesByUserAndDate(user, today);
+
+        long totalCount = todayRoutines.size();
+        long completedCount = todayRoutines.stream()
+            .filter(routine -> "COMPLETED".equals(routine.getStatus()))
+            .count();
+
+        return new RoutineCompletionDto(completedCount, totalCount);
+    }
+
+    // ✅ NEW: 오늘의 실제 집중 시간
+    public Integer getTodayActualFocusTime(Long userId) {
+        LocalDate today = LocalDate.now();
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 오늘 생성되고 완료된 루틴들의 실제 집중 시간 합계
+        List<DailyRoutine> todayRoutines = dailyRoutineRepository.findRoutinesByUserAndDate(user, today);
+
+        return todayRoutines.stream()
+            .filter(routine -> "COMPLETED".equals(routine.getStatus()))
+            .mapToInt(routine -> routine.getActualFocusTime() != null ? routine.getActualFocusTime() : 0)
+            .sum();
     }
 }
