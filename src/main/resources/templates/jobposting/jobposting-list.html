@@ -53,8 +53,8 @@
     /* D-Day 알림 바 - 모든 페이지에 표시 */
     .dday-notification {
       position: fixed;
-      top: 116px;
-      left: 0;
+      top: 78px;
+      left: 250px; /* sidenav 고려해서 좌측 여백 줌 */
       right: 0;
       background: linear-gradient(90deg, #ff6b6b, #ee5a24);
       color: white;
@@ -63,8 +63,8 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       animation: slideDown 0.5s ease-out;
       display: none;
+      max-width: calc(100% - 250px); /* sidenav 가리지 않도록 */
     }
-
     .dday-notification.show {
       display: block;
     }
@@ -187,60 +187,146 @@
       margin-bottom: 32px;
     }
 
-    .add-company-form {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 2px solid #e0f2fe;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 16px;
-      align-items: end;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .form-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: #1f2937;
-    }
-
-    .form-input {
-      padding: 12px 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.3s;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: #6366f1;
-    }
-
-    .add-btn {
-      background: #6366f1;
+    .add-company-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 16px;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
       font-weight: 600;
+      border-radius: 50px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      margin-bottom: 2rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .add-btn:hover {
-      background: #5048e5;
+    .add-company-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    /* 모달 스타일 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 3rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.4s ease-out;
+      max-width: 500px;
+      width: 90%;
+      margin: 1rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #667eea;
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .modal-form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-form-label {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid rgba(102, 126, 234, 0.2);
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .modal-form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .modal-button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .modal-confirm-button {
+      flex: 1;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .modal-cancel-button {
+      flex: 1;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: 2px solid #667eea;
+      border-radius: 50px;
+      background: transparent;
+      color: #667eea;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-confirm-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .modal-cancel-button:hover {
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     /* 목표기업 리스트 */
@@ -347,11 +433,6 @@
         padding: 20px;
       }
 
-      .form-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-
       .job-sites-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -370,7 +451,112 @@
         margin-right: 0;
         margin-bottom: 8px;
       }
+
+      .modal-box {
+        padding: 2rem;
+      }
+
+      .modal-button-group {
+        flex-direction: column;
+      }
     }
+    /* 삭제 확인 모달 스타일 */
+    .delete-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+    }
+
+    .delete-modal-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
+      animation: fadeIn 0.4s ease-out;
+      max-width: 400px;
+      width: 90%;
+      margin: 1rem;
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(220, 38, 38, 0.1);
+      text-align: center;
+    }
+
+    .delete-modal-icon {
+      font-size: 3rem;
+      color: #dc2626;
+      margin-bottom: 1rem;
+    }
+
+    .delete-modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .delete-modal-message {
+      font-size: 1rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .delete-modal-company-name {
+      font-weight: 600;
+      color: #dc2626;
+    }
+
+    .delete-modal-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .delete-modal-cancel {
+      flex: 1;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px solid #d1d5db;
+      border-radius: 12px;
+      background: white;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .delete-modal-cancel:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      transform: translateY(-1px);
+    }
+
+    .delete-modal-confirm {
+      flex: 1;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    .delete-modal-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+    }
+
 
     /* D-Day 알림이 있을 때 메인 콘텐츠 마진 조정 */
     main.with-dday {
@@ -447,22 +633,8 @@
     <div class="target-companies-section">
       <h2 class="section-title">🎯 목표기업 관리</h2>
 
-      <!-- 목표기업 추가 폼 -->
-      <div class="add-company-form">
-        <form id="addCompanyForm">
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="companyName">기업명</label>
-              <input type="text" id="companyName" name="companyName" class="form-input" placeholder="목표 기업명을 입력하세요" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="deadline">마감일</label>
-              <input type="date" id="deadline" name="deadline" class="form-input" required>
-            </div>
-            <button type="submit" class="add-btn">📌 추가</button>
-          </div>
-        </form>
-      </div>
+      <!-- 목표기업 추가 버튼 -->
+      <button class="add-company-btn" onclick="openAddCompanyModal()">📌 목표기업 추가</button>
 
       <!-- 목표기업 리스트 -->
       <div id="companyList" class="company-list">
@@ -470,11 +642,49 @@
       </div>
     </div>
   </div>
+
+  <!-- 삭제 확인 모달 -->
+  <div id="deleteConfirmModal" class="delete-modal-overlay" style="display: none;">
+    <div class="delete-modal-box">
+      <div class="delete-modal-icon">🗑️</div>
+      <h3 class="delete-modal-title">목표기업 삭제</h3>
+      <p class="delete-modal-message">
+        <span class="delete-modal-company-name" id="deleteCompanyName"></span>을(를)<br>
+        정말 삭제하시겠습니까?
+      </p>
+      <div class="delete-modal-buttons">
+        <button type="button" class="delete-modal-cancel" onclick="closeDeleteModal()">취소</button>
+        <button type="button" class="delete-modal-confirm" onclick="confirmDelete()">삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 목표기업 추가 모달 -->
+  <div id="addCompanyModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <h3 class="modal-title">🎯 목표기업 추가</h3>
+      <form id="addCompanyForm">
+        <div class="modal-form-group">
+          <label class="modal-form-label" for="companyName">기업명</label>
+          <input type="text" id="companyName" name="companyName" class="modal-form-input" placeholder="목표 기업명을 입력하세요" required>
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-form-label" for="deadline">마감일</label>
+          <input type="date" id="deadline" name="deadline" class="modal-form-input" required>
+        </div>
+        <div class="modal-button-group">
+          <button type="button" class="modal-cancel-button" onclick="closeAddCompanyModal()">취소</button>
+          <button type="submit" class="modal-confirm-button">추가</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </main>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     let targetCompanies = [];
+
 
     loadTargetCompanies();
     updateDDayNotification();
@@ -491,6 +701,22 @@
 
       addTargetCompany(companyName, deadline);
     });
+
+    // 모달 외부 클릭시 닫기
+    document.getElementById('addCompanyModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeAddCompanyModal();
+      }
+    });
+
+    function openAddCompanyModal() {
+      document.getElementById('addCompanyModal').style.display = 'flex';
+    }
+
+    function closeAddCompanyModal() {
+      document.getElementById('addCompanyModal').style.display = 'none';
+      document.getElementById('addCompanyForm').reset();
+    }
 
     function addTargetCompany(companyName, deadline) {
       const requestData = {
@@ -512,9 +738,13 @@
       })
       .then(response => {
         if (response.ok) {
-          document.getElementById('addCompanyForm').reset();
+          closeAddCompanyModal(); // 모달 닫기
           loadTargetCompanies();
-          alert('목표기업이 추가되었습니다!');
+          // ✅ 헤더의 목표기업 목록도 업데이트
+          if (typeof window.refreshTargetCompaniesHeader === 'function') {
+            window.refreshTargetCompaniesHeader();
+          }
+
         } else {
           throw new Error('목표기업 추가 실패');
         }
@@ -564,29 +794,27 @@
       }).join('');
     }
 
+    function renderEmptyState() {
+      const container = document.getElementById('companyList');
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>등록된 목표기업이 없습니다.<br>목표기업을 추가해보세요!</p>
+        </div>
+      `;
+    }
+
     function deleteTargetCompany(id) {
       const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
       const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+      const company = targetCompanies.find(c => c.id === id);
+      if (!company) return;
 
-      fetch(`/jobposting/${id}`, {
-        method: 'DELETE',
-        headers: {
-          [csrfHeader]: csrfToken
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          loadTargetCompanies();
-          alert('목표기업이 삭제되었습니다.');
-        } else {
-          throw new Error('삭제 실패');
-        }
-      })
-      .catch(err => {
-        console.error('삭제 실패:', err);
-        alert('삭제에 실패했습니다.');
-      });
+      deleteTargetId = id;
+      document.getElementById('deleteCompanyName').textContent = company.companyName || company.title || '기업명 없음';
+      document.getElementById('deleteConfirmModal').style.display = 'flex';
     }
+
 
     function calculateDDay(deadline) {
       const today = new Date();
@@ -603,41 +831,96 @@
       return diffDays <= 0 ? 'dday-urgent' : diffDays <= 7 ? 'dday-warning' : 'dday-normal';
     }
 
-    function renderEmptyState() {
-      document.getElementById('companyList').innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📋</div>
-          <p>아직 등록된 목표기업이 없습니다.</p>
-          <p>위 폼을 통해 목표기업을 추가해보세요!</p>
-        </div>`;
-    }
+    let ddayTimeout; // 전역 타이머 변수
 
     function updateDDayNotification() {
       const notification = document.getElementById('ddayNotification');
       const ddayText = document.getElementById('ddayText');
       const mainContent = document.getElementById('mainContent');
 
+      // 비어 있으면 숨김 처리
       if (targetCompanies.length === 0) {
         notification.classList.remove('show');
         mainContent.classList.remove('with-dday');
         return;
       }
 
+      // 마감일 가장 빠른 기업 찾기
       const urgent = targetCompanies.reduce((a, b) => new Date(a.dueDate) < new Date(b.dueDate) ? a : b);
       const dday = calculateDDay(urgent.dueDate);
       const diffDays = Math.ceil((new Date(urgent.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
 
+      // 마감 7일 이내인 경우
       if (diffDays <= 7) {
-        ddayText.innerHTML = `<span class="dday-urgent">🚨 ${urgent.companyName} ${dday}</span> <span>마감일이 얼마 남지 않았습니다!</span>`;
+        const companyName = urgent.companyName || urgent.title || '기업명 없음';
+        ddayText.innerHTML = `<span class="dday-urgent">🚨 ${companyName} ${dday}</span> <span>마감일이 얼마 남지 않았습니다!</span>`;
         notification.classList.add('show');
         mainContent.classList.add('with-dday');
+
+        // 이전 타이머 제거하고 다시 설정
+        if (ddayTimeout) clearTimeout(ddayTimeout);
+        ddayTimeout = setTimeout(() => {
+          notification.classList.remove('show');
+          mainContent.classList.remove('with-dday');
+        }, 5000);
       } else {
         notification.classList.remove('show');
         mainContent.classList.remove('with-dday');
       }
     }
 
+    let deleteTargetId = null;
+
+    // 새로운 함수들 추가
+    function closeDeleteModal() {
+      document.getElementById('deleteConfirmModal').style.display = 'none';
+      deleteTargetId = null;
+    }
+
+    function confirmDelete() {
+      if (!deleteTargetId) return;
+
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      fetch(`/jobposting/${deleteTargetId}`, {
+        method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          closeDeleteModal();
+          loadTargetCompanies();
+          // 헤더의 목표기업 목록도 업데이트
+          if (typeof window.refreshTargetCompaniesHeader === 'function') {
+            window.refreshTargetCompaniesHeader();
+          }
+        } else {
+          throw new Error('삭제 실패');
+        }
+      })
+      .catch(err => {
+        console.error('삭제 실패:', err);
+        alert('삭제에 실패했습니다.');
+        closeDeleteModal();
+      });
+    }
+
+// 모달 외부 클릭시 닫기 이벤트 추가 (기존 모달 이벤트 아래에)
+    document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeDeleteModal();
+      }
+    });
+
+
     // 전역 등록
+    window.closeDeleteModal = closeDeleteModal;
+    window.confirmDelete = confirmDelete;
+    window.openAddCompanyModal = openAddCompanyModal;
+    window.closeAddCompanyModal = closeAddCompanyModal;
     window.deleteTargetCompany = deleteTargetCompany;
   });
 </script>
