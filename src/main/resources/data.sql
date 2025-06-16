@@ -9,10 +9,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- admin@example.com : 1234
 INSERT INTO users (email, password, nickname, role, is_active, notification_enabled, alert_stretch_enabled, created_at, updated_at)
 VALUES
-    ('frontend@example.com', '{noop}1234', 'Front', 'USER', true, true, false, NOW() - INTERVAL 7 DAY, NOW()),
-    ('backend@example.com', '{noop}1234', 'Back', 'USER', true, true, true, NOW() - INTERVAL 5 DAY, NOW()),
-    ('fullstack@example.com', '{noop}1234', 'Full', 'USER', true, false, false, NOW() - INTERVAL 10 DAY, NOW()),
-    ('admin@example.com', '{noop}1234', 'Admin', 'ADMIN', true, true, true, NOW() - INTERVAL 30 DAY, NOW());
+    ('frontend@example.com', '{noop}1234', 'Front', 'ROLE_USER', true, true, false, NOW() - INTERVAL 7 DAY, NOW()),
+    ('backend@example.com', '{noop}1234', 'Back', 'ROLE_USER', true, true, true, NOW() - INTERVAL 5 DAY, NOW()),
+    ('fullstack@example.com', '{noop}1234', 'Full', 'ROLE_USER', true, false, false, NOW() - INTERVAL 10 DAY, NOW()),
+    ('admin@example.com', '{noop}1234', 'Admin', 'ROLE_ADMIN', true, true, true, NOW() - INTERVAL 30 DAY, NOW());
 
 -- 2. 면접 질문 데이터 생성 (다른 테이블에서 참조할 수 있으므로 먼저 생성)
 INSERT INTO interview_questions (question_text, answer_text, category, difficulty, keywords)

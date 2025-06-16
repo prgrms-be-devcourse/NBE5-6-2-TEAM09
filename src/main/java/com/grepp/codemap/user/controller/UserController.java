@@ -182,7 +182,7 @@ public class UserController {
             // 사용자 역할 체크 및 리다이렉트
             if (user.getRole().equals("ROLE_ADMIN") ||
                 user.getRole().equals(Role.ROLE_ADMIN.name())) {
-                return "redirect:/admin/users";
+                return "redirect:/admin/dashboard";
             }
             return "redirect:/user/main";
         } catch (CommonException e) {

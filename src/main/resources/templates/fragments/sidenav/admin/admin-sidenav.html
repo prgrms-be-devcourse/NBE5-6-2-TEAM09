@@ -1,41 +1,28 @@
-<!-- ✅ 관리자 사이드바 Fragment -->
-<div th:fragment="sidebar" class="sidebar admin-sidebar">
-  <!-- 관리자 프로필 -->
-  <div class="sidebar-header">
-    <div class="admin-profile">
-      <div class="admin-avatar">
-        <img th:src="@{/img/user-circle.png}" alt="Admin Profile" />
-      </div>
-      <div class="admin-info">
-        <div class="admin-name">ADMIN</div>
-        <div class="admin-role">관리자</div>
-      </div>
-    </div>
-  </div>
-
+<!-- ✅ 기본 사이드바와 동일한 디자인의 관리자 사이드바 Fragment -->
+<div th:fragment="sidebar" class="sidebar">
   <!-- 네비게이션 -->
   <nav class="sidebar-nav">
+    <!-- 대시보드 -->
+    <a th:href="@{/admin/dashboard}" class="nav-item" data-nav="dashboard">
+      <div class="nav-icon">📊</div>
+      <span class="nav-text">대시보드</span>
+      <div class="nav-indicator"></div>
+    </a>
+
+    <!-- 구분선 -->
+    <div class="nav-divider"></div>
+
     <!-- 회원 관리 -->
     <a th:href="@{/admin/users}" class="nav-item" data-nav="users">
-      <div class="nav-icon">
-        <img th:src="@{/img/users.png}" alt="Users" />
-      </div>
+      <div class="nav-icon">👥</div>
       <span class="nav-text">회원 관리</span>
-      <div class="nav-arrow">
-        <img th:src="@{/img/chevron.png}" alt="Arrow" />
-      </div>
       <div class="nav-indicator"></div>
     </a>
 
     <!-- 컨텐츠 관리 -->
     <a th:href="@{/admin/contents}" class="nav-item" data-nav="contents">
-      <div class="nav-icon">
-        <img th:src="@{/img/pencil-alt.png}" alt="Contents" />
-      </div>
+      <div class="nav-icon">📝</div>
       <span class="nav-text">컨텐츠 관리</span>
-      <div class="nav-arrow">
-        <img th:src="@{/img/chevron.png}" alt="Arrow" />
-      </div>
       <div class="nav-indicator"></div>
     </a>
 
@@ -46,19 +33,13 @@
     <a th:href="@{/admin/system}" class="nav-item" data-nav="system">
       <div class="nav-icon">⚙️</div>
       <span class="nav-text">시스템 관리</span>
-      <div class="nav-arrow">
-        <img th:src="@{/img/chevron.png}" alt="Arrow" />
-      </div>
       <div class="nav-indicator"></div>
     </a>
 
     <!-- 통계 -->
     <a th:href="@{/admin/statistics}" class="nav-item" data-nav="statistics">
-      <div class="nav-icon">📊</div>
+      <div class="nav-icon">📈</div>
       <span class="nav-text">통계</span>
-      <div class="nav-arrow">
-        <img th:src="@{/img/chevron.png}" alt="Arrow" />
-      </div>
       <div class="nav-indicator"></div>
     </a>
   </nav>
@@ -68,10 +49,11 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname;
-    const navItems = document.querySelectorAll('.admin-sidebar .nav-item');
+    const navItems = document.querySelectorAll('.sidebar .nav-item');
 
     // 관리자 경로 매핑
     const pathMapping = {
+      '/admin/dashboard': 'dashboard',
       '/admin/users': 'users',
       '/admin/contents': 'contents',
       '/admin/system': 'system',
@@ -91,7 +73,7 @@
 
     // 활성 상태 설정
     if (activeNav) {
-      const activeItem = document.querySelector(`.admin-sidebar [data-nav="${activeNav}"]`);
+      const activeItem = document.querySelector(`.sidebar [data-nav="${activeNav}"]`);
       if (activeItem) {
         activeItem.classList.add('active');
       }
@@ -135,7 +117,7 @@
       navItems.forEach(item => {
         item.addEventListener('click', function() {
           setTimeout(() => {
-            const sidebar = document.querySelector('.admin-sidebar');
+            const sidebar = document.querySelector('.sidebar');
             const toggleBtn = document.querySelector('.sidebar-toggle');
             if (sidebar && toggleBtn) {
               sidebar.classList.remove('open');
@@ -153,7 +135,7 @@
     window.adminSidebarClickHandlerAdded = true;
 
     document.addEventListener('click', function(event) {
-      const sidebar = document.querySelector('.admin-sidebar');
+      const sidebar = document.querySelector('.sidebar');
       const toggleButton = document.querySelector('.sidebar-toggle');
 
       if (window.innerWidth <= 768 &&
@@ -170,7 +152,7 @@
     // ESC 키로 닫기 (모바일 전용)
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' && window.innerWidth <= 768) {
-        const sidebar = document.querySelector('.admin-sidebar');
+        const sidebar = document.querySelector('.sidebar');
         const toggleButton = document.querySelector('.sidebar-toggle');
         if (sidebar && sidebar.classList.contains('open')) {
           sidebar.classList.remove('open');
