@@ -1,4 +1,4 @@
-/* ✅ 헤더 전용 CSS 변수 */
+/* ✅ 헤더 전용 CSS 변수 - 격리된 네임스페이스 */
 :root {
   --header-height: 70px;
   --header-bg: rgba(255, 255, 255, 0.85);
@@ -18,94 +18,151 @@
   --header-z-index: 9999;
 }
 
-/* ✅ 페이지 레이아웃 보정 */
-body {
+/* ✅ 페이지 레이아웃 보정 - 더 구체적으로 명시 */
+body:has(.header) {
   padding-top: var(--header-height) !important;
-  transition: var(--header-transition);
-}
-
-main {
+  transition: var(--header-transition) !important;
   margin-top: 0 !important;
-  /* padding-top 강제 설정 제거 - 각 페이지에서 자유롭게 설정 가능 */
 }
 
-/* 사이드바가 있는 경우 */
-aside {
+main:has(~ .header),
+main + .header ~ main,
+body:has(.header) main {
+  margin-top: 0 !important;
+}
+
+/* 사이드바가 있는 경우 - 더 구체적으로 */
+body:has(.header) aside,
+.header ~ aside,
+.header + * aside {
   top: var(--header-height) !important;
   height: calc(100vh - var(--header-height)) !important;
 }
 
-/* 모바일 사이드바 오버레이 */
-body.sidebar-open::before {
-  content: '';
-  position: fixed;
-  top: var(--header-height);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  backdrop-filter: blur(4px);
+/* 모바일 사이드바 오버레이 - 헤더 존재 시에만 */
+body.sidebar-open:has(.header)::before {
+  content: '' !important;
+  position: fixed !important;
+  top: var(--header-height) !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: 999 !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
 }
 
-/* ✅ 헤더 메인 컨테이너 */
+/* ✅ 헤더 메인 컨테이너 - 완전 격리 */
 .header {
+  /* 레이아웃 강제 설정 */
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
   height: var(--header-height) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
   z-index: var(--header-z-index) !important;
+
+  /* 디스플레이 강제 설정 */
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
+
+  /* 패딩/마진 강제 설정 */
   padding: 0 2rem !important;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  margin: 0 !important;
+
+  /* 배경 효과 강제 설정 */
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+
+  /* 폰트 강제 설정 */
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+
+  /* 기타 속성 강제 설정 */
   transition: var(--header-transition) !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
+
+  /* 외부 스타일 리셋 */
+  border: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  list-style: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
 }
 
-/* ✅ 헤더 배경 효과 */
-.header-background {
+/* ✅ 헤더 내부 모든 요소 기본값 리셋 */
+.header *,
+.header *::before,
+.header *::after {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  vertical-align: baseline !important;
+  background: transparent !important;
+  text-decoration: none !important;
+  list-style: none !important;
+  font-size: 100% !important;
+  font: inherit !important;
+  color: inherit !important;
+}
+
+/* ✅ 헤더 배경 효과 - 완전 격리 */
+.header .header-background {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
   z-index: -1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.header-blur-overlay {
+.header .header-blur-overlay {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   background: var(--header-bg) !important;
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.header-gradient-overlay {
+.header .header-gradient-overlay {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   background: linear-gradient(135deg,
   rgba(102, 126, 234, 0.1) 0%,
   rgba(118, 75, 162, 0.05) 50%,
   rgba(240, 147, 251, 0.08) 100%) !important;
   border-bottom: 1px solid var(--header-border) !important;
   box-shadow: var(--header-shadow) !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* 스크롤 시 헤더 효과 */
+/* 스크롤 시 헤더 효과 - 더 구체적으로 */
 .header.scrolled .header-gradient-overlay {
   background: linear-gradient(135deg,
   rgba(102, 126, 234, 0.15) 0%,
@@ -114,13 +171,18 @@ body.sidebar-open::before {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* ✅ 모바일 사이드바 토글 버튼 */
-.sidebar-toggle {
+/* ✅ 모바일 사이드바 토글 버튼 - 완전 격리 */
+.header .sidebar-toggle {
   display: none !important;
   width: 44px !important;
   height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
   backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 12px !important;
   cursor: pointer !important;
@@ -129,9 +191,12 @@ body.sidebar-open::before {
   overflow: hidden !important;
   justify-content: center !important;
   align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: inherit !important;
 }
 
-.hamburger-container {
+.header .hamburger-container {
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
@@ -139,59 +204,76 @@ body.sidebar-open::before {
   gap: 3px !important;
   position: relative !important;
   z-index: 2 !important;
+  width: 18px !important;
+  height: 14px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.hamburger-line {
+.header .hamburger-line {
   width: 18px !important;
   height: 2px !important;
+  min-height: 2px !important;
+  max-height: 2px !important;
   background: linear-gradient(90deg, var(--header-primary), var(--header-secondary)) !important;
   border-radius: 1px !important;
   transition: var(--header-transition) !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
 }
 
-.toggle-glow {
+.header .toggle-glow {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%) !important;
   opacity: 0 !important;
   transition: var(--header-transition) !important;
   border-radius: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.sidebar-toggle:hover {
+.header .sidebar-toggle:hover {
   transform: translateY(-2px) scale(1.05) !important;
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25) !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
 }
 
-.sidebar-toggle:hover .toggle-glow {
+.header .sidebar-toggle:hover .toggle-glow {
   opacity: 1 !important;
 }
 
-.sidebar-toggle.active .hamburger-line:nth-child(1) {
+.header .sidebar-toggle.active .hamburger-line:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px) !important;
 }
 
-.sidebar-toggle.active .hamburger-line:nth-child(2) {
+.header .sidebar-toggle.active .hamburger-line:nth-child(2) {
   opacity: 0 !important;
   transform: translateX(20px) !important;
 }
 
-.sidebar-toggle.active .hamburger-line:nth-child(3) {
+.header .sidebar-toggle.active .hamburger-line:nth-child(3) {
   transform: rotate(-45deg) translate(7px, -6px) !important;
 }
 
-/* ✅ 로고 영역 */
-.header-logo {
+/* ✅ 로고 영역 - 완전 격리 */
+.header .header-logo {
   display: flex !important;
   align-items: center !important;
   flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
 }
 
-.logo-link {
+.header .logo-link {
   display: flex !important;
   align-items: center !important;
   gap: 16px !important;
@@ -199,23 +281,35 @@ body.sidebar-open::before {
   transition: var(--header-transition) !important;
   padding: 8px !important;
   border-radius: 12px !important;
+  margin: 0 !important;
+  height: auto !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
 }
 
-.logo-link:hover {
+.header .logo-link:hover {
   transform: translateY(-2px) !important;
   background: rgba(255, 255, 255, 0.1) !important;
+  text-decoration: none !important;
 }
 
-.logo-icon {
+.header .logo-icon {
   position: relative !important;
   width: 48px !important;
   height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.logo-gradient {
+.header .logo-gradient {
   width: 100% !important;
   height: 100% !important;
   background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
@@ -224,20 +318,25 @@ body.sidebar-open::before {
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3),
-  0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   transition: var(--header-transition) !important;
   position: relative !important;
   overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.logo-emoji {
+.header .logo-emoji {
   font-size: 22px !important;
   position: relative !important;
   z-index: 2 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: block !important;
 }
 
-.logo-shine {
+.header .logo-shine {
   position: absolute !important;
   top: -50% !important;
   left: -50% !important;
@@ -245,9 +344,11 @@ body.sidebar-open::before {
   height: 200% !important;
   background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent) !important;
   animation: logoRotate 4s linear infinite !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.logo-ring {
+.header .logo-ring {
   position: absolute !important;
   top: -2px !important;
   left: -2px !important;
@@ -259,15 +360,16 @@ body.sidebar-open::before {
   background-clip: padding-box !important;
   opacity: 0 !important;
   transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.logo-link:hover .logo-gradient {
+.header .logo-link:hover .logo-gradient {
   transform: scale(1.05) !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4),
-  0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
 }
 
-.logo-link:hover .logo-ring {
+.header .logo-link:hover .logo-ring {
   opacity: 1 !important;
 }
 
@@ -276,13 +378,15 @@ body.sidebar-open::before {
   to { transform: rotate(360deg); }
 }
 
-.logo-text-wrapper {
+.header .logo-text-wrapper {
   display: flex !important;
   flex-direction: column !important;
   gap: 2px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.logo-text {
+.header .logo-text {
   font-size: 26px !important;
   font-weight: 800 !important;
   background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
@@ -291,35 +395,49 @@ body.sidebar-open::before {
   background-clip: text !important;
   letter-spacing: -0.5px !important;
   line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
 }
 
-.logo-subtitle {
+.header .logo-subtitle {
   font-size: 10px !important;
   font-weight: 500 !important;
   color: var(--header-text-light) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   opacity: 0.8 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: block !important;
 }
 
-/* ✅ 헤더 중앙 빈 공간 */
-.header-center {
+/* ✅ 헤더 중앙 빈 공간 - 완전 격리 */
+.header .header-center {
   flex: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
 }
 
-/* ✅ 헤더 액션 영역 */
-.header-actions {
+/* ✅ 헤더 액션 영역 - 완전 격리 */
+.header .header-actions {
   display: flex !important;
   align-items: center !important;
   gap: 20px !important;
   flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
 }
 
-/* ✅ 액션 버튼 공통 스타일 - 높이 통일 */
-.action-btn {
+/* ✅ 액션 버튼 공통 스타일 - 완전 격리 */
+.header .action-btn {
   position: relative !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
   backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 12px !important;
   cursor: pointer !important;
@@ -328,90 +446,162 @@ body.sidebar-open::before {
   font-size: 14px !important;
   font-weight: 500 !important;
   text-decoration: none !important;
-  height: 48px !important; /* 모든 버튼 높이 통일 */
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: inherit !important;
 }
 
-.btn-content {
+.header .btn-content {
   position: relative !important;
   z-index: 2 !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
   height: 100% !important;
-  padding: 0 18px !important; /* 상하 패딩 제거, 좌우만 유지 */
+  padding: 0 18px !important;
   justify-content: center !important;
+  margin: 0 !important;
 }
 
-.btn-icon {
+.header .btn-icon {
   font-size: 16px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
 }
 
-.btn-text {
+.header .btn-text {
   font-weight: 500 !important;
   white-space: nowrap !important;
   color: var(--header-text-primary) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
 }
 
-.btn-hover-effect {
+.header .btn-hover-effect {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
   opacity: 0 !important;
   transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.action-btn:hover {
+.header .action-btn:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  text-decoration: none !important;
+}
+
+.header .action-btn:hover .btn-hover-effect {
+  opacity: 1 !important;
+}
+
+/* ✅ 알림 영역 - 완전 격리 */
+.header .notification-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 48px !important;
+}
+
+.header #notification-icon {
+  font-size: 20px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 12px !important;
+  transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+.header #notification-icon:hover {
   transform: translateY(-3px) scale(1.02) !important;
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
   border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
-.action-btn:hover .btn-hover-effect {
-  opacity: 1 !important;
+.header #notification-popup {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
+  z-index: 10000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* ✅ 사용자 정보 - 높이 통일 */
-.user-info {
+/* ✅ 사용자 정보 - 완전 격리 */
+.header .user-info {
   display: flex !important;
   align-items: center !important;
   gap: 14px !important;
-  height: 48px !important; /* 다른 버튼들과 동일한 높이 */
-  padding: 0 18px !important; /* 상하 패딩 제거, 좌우만 유지 */
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 0 18px !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
   backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
   border-radius: 14px !important;
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
   transition: var(--header-transition) !important;
   position: relative !important;
   overflow: hidden !important;
+  margin: 0 !important;
 }
 
-.user-info:hover {
+.header .user-info:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
   border-color: rgba(255, 255, 255, 0.35) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15) !important;
 }
 
-.user-avatar-wrapper {
+.header .user-avatar-wrapper {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.user-avatar {
-  width: 36px !important; /* 높이에 맞춰 크기 조정 */
+.header .user-avatar {
+  width: 36px !important;
   height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
   background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
   color: white !important;
   border-radius: 12px !important;
@@ -419,16 +609,18 @@ body.sidebar-open::before {
   align-items: center !important;
   justify-content: center !important;
   font-weight: 700 !important;
-  font-size: 14px !important; /* 폰트 크기 조정 */
+  font-size: 14px !important;
   text-transform: uppercase !important;
-  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.3),
-  0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
   position: relative !important;
   z-index: 2 !important;
   transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
 }
 
-.avatar-glow {
+.header .avatar-glow {
   position: absolute !important;
   top: -4px !important;
   left: -4px !important;
@@ -439,6 +631,8 @@ body.sidebar-open::before {
   opacity: 0 !important;
   transition: var(--header-transition) !important;
   animation: avatarGlow 3s ease-in-out infinite !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 @keyframes avatarGlow {
@@ -446,18 +640,24 @@ body.sidebar-open::before {
   50% { opacity: 0.5; transform: scale(1.05); }
 }
 
-.status-indicator {
+.header .status-indicator {
   position: absolute !important;
-  bottom: -1px !important; /* 위치 미세 조정 */
+  bottom: -1px !important;
   right: -1px !important;
   width: 12px !important;
   height: 12px !important;
+  min-width: 12px !important;
+  min-height: 12px !important;
+  max-width: 12px !important;
+  max-height: 12px !important;
   background: var(--header-success) !important;
   border: 2px solid white !important;
   border-radius: 50% !important;
   box-shadow: 0 2px 8px rgba(72, 187, 120, 0.4) !important;
   animation: statusPulse 2s ease-in-out infinite !important;
   z-index: 10 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 @keyframes statusPulse {
@@ -465,20 +665,25 @@ body.sidebar-open::before {
   50% { transform: scale(1.1); }
 }
 
-.user-details {
+.header .user-details {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.user-name {
+.header .user-name {
   font-size: 15px !important;
   font-weight: 600 !important;
   color: var(--header-text-primary) !important;
   line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
 }
 
-.user-status {
+.header .user-status {
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -486,14 +691,23 @@ body.sidebar-open::before {
   color: var(--header-success) !important;
   font-weight: 500 !important;
   line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.status-dot {
+.header .status-dot {
   width: 6px !important;
   height: 6px !important;
+  min-width: 6px !important;
+  min-height: 6px !important;
+  max-width: 6px !important;
+  max-height: 6px !important;
   background: var(--header-success) !important;
   border-radius: 50% !important;
   animation: statusDot 1.5s ease-in-out infinite !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
 }
 
 @keyframes statusDot {
@@ -501,49 +715,61 @@ body.sidebar-open::before {
   50% { opacity: 0.4; }
 }
 
-/* ✅ 로그아웃 버튼 */
-.logout-form {
+/* ✅ 로그아웃 버튼 - 완전 격리 */
+.header .logout-form {
   margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  height: 48px !important;
 }
 
-.logout-btn {
+.header .logout-btn {
   background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(229, 62, 62, 0.08) 100%) !important;
   border-color: rgba(245, 101, 101, 0.2) !important;
   color: var(--header-danger) !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
 }
 
-.logout-effect {
+.header .logout-effect {
   background: linear-gradient(135deg, rgba(245, 101, 101, 0.15) 0%, rgba(229, 62, 62, 0.12) 100%) !important;
 }
 
-.logout-btn:hover {
+.header .logout-btn:hover {
   border-color: rgba(245, 101, 101, 0.3) !important;
   box-shadow: 0 8px 25px rgba(245, 101, 101, 0.2) !important;
+  text-decoration: none !important;
 }
 
-.logout-btn .btn-text {
+.header .logout-btn .btn-text {
   color: var(--header-danger) !important;
   font-weight: 600 !important;
+  font-size: 14px !important;
 }
 
-/* ✅ 반응형 - 태블릿 */
+/* ✅ 반응형 - 태블릿 (768px ~ 1024px) */
 @media (max-width: 1024px) {
   .header {
     padding: 0 1.5rem !important;
   }
 
-  .header-center {
+  .header .header-center {
     flex: 0.8 !important;
   }
 
-  .logo-subtitle {
+  .header .logo-subtitle {
     display: none !important;
+  }
+
+  .header .header-actions {
+    gap: 16px !important;
   }
 }
 
-/* ✅ 반응형 - 모바일 */
+/* ✅ 반응형 - 모바일 (최대 768px) */
 @media (max-width: 768px) {
-  .sidebar-toggle {
+  .header .sidebar-toggle {
     display: flex !important;
   }
 
@@ -551,68 +777,164 @@ body.sidebar-open::before {
     padding: 0 1rem !important;
   }
 
-  .header-actions {
+  .header .header-actions {
     gap: 12px !important;
   }
 
-  .logo-text-wrapper {
+  .header .logo-text-wrapper {
     display: none !important;
   }
 
-  .header-center {
+  .header .header-center {
     display: none !important;
   }
 
-  .user-details {
+  .header .user-details {
     display: none !important;
   }
 
-  .btn-text {
+  .header .btn-text {
     display: none !important;
   }
 
-  .action-btn .btn-content {
+  .header .action-btn .btn-content {
     width: 48px !important;
     height: 48px !important;
     padding: 0 !important;
     justify-content: center !important;
   }
 
-  .user-info {
+  .header .user-info {
     width: 48px !important;
     padding: 0 !important;
     justify-content: center !important;
   }
+
+  .header #notification-icon {
+    width: 48px !important;
+    height: 48px !important;
+  }
 }
 
+/* ✅ 반응형 - 소형 모바일 (최대 480px) */
 @media (max-width: 480px) {
   .header {
     padding: 0 0.75rem !important;
   }
 
-  .header-actions {
+  .header .header-actions {
     gap: 8px !important;
+  }
+
+  .header .logo-icon {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .header .logo-gradient {
+    border-radius: 10px !important;
+  }
+
+  .header .logo-emoji {
+    font-size: 18px !important;
+  }
+
+  .header .action-btn,
+  .header .user-info,
+  .header #notification-icon {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .header .user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  .header .sidebar-toggle {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
   }
 }
 
-/* ✅ 접근성 */
-.action-btn:focus-visible {
+/* ✅ 접근성 강화 */
+.header .action-btn:focus-visible,
+.header .sidebar-toggle:focus-visible,
+.header .logo-link:focus-visible {
   outline: 2px solid var(--header-primary) !important;
   outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2) !important;
 }
 
-.sidebar-toggle:focus-visible {
-  outline: 2px solid var(--header-primary) !important;
-  outline-offset: 2px !important;
+.header .action-btn:focus,
+.header .sidebar-toggle:focus,
+.header .logo-link:focus {
+  outline: none !important;
 }
 
-/* ✅ 다크 모드 대응 */
+/* ✅ 키보드 네비게이션 지원 */
+.header .action-btn:focus-visible,
+.header .sidebar-toggle:focus-visible {
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* ✅ 다크 모드 대응 - 완전 격리 */
 @media (prefers-color-scheme: dark) {
   :root {
-    --header-bg: rgba(26, 32, 44, 0.85);
-    --header-text-primary: #f7fafc;
-    --header-text-secondary: #e2e8f0;
-    --header-text-light: #cbd5e0;
+    --header-bg: rgba(26, 32, 44, 0.85) !important;
+    --header-text-primary: #f7fafc !important;
+    --header-text-secondary: #e2e8f0 !important;
+    --header-text-light: #cbd5e0 !important;
+    --header-border: rgba(45, 55, 72, 0.3) !important;
+  }
+
+  .header .header-gradient-overlay {
+    background: linear-gradient(135deg,
+    rgba(102, 126, 234, 0.15) 0%,
+    rgba(118, 75, 162, 0.08) 50%,
+    rgba(240, 147, 251, 0.12) 100%) !important;
+    border-bottom: 1px solid var(--header-border) !important;
+  }
+
+  .header.scrolled .header-gradient-overlay {
+    background: linear-gradient(135deg,
+    rgba(102, 126, 234, 0.2) 0%,
+    rgba(118, 75, 162, 0.12) 50%,
+    rgba(240, 147, 251, 0.15) 100%) !important;
+  }
+}
+
+/* ✅ 고대비 모드 대응 */
+@media (prefers-contrast: high) {
+  .header {
+    border-bottom: 2px solid var(--header-text-primary) !important;
+  }
+
+  .header .action-btn,
+  .header .user-info,
+  .header .sidebar-toggle {
+    border: 2px solid var(--header-text-primary) !important;
+  }
+
+  .header .logo-gradient {
+    border: 2px solid white !important;
   }
 }
 
@@ -624,5 +946,95 @@ body.sidebar-open::before {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transform: none !important;
   }
+
+  .header .logo-shine {
+    animation: none !important;
+  }
+
+  .header .avatar-glow {
+    animation: none !important;
+  }
+
+  .header .status-indicator,
+  .header .status-dot {
+    animation: none !important;
+  }
+}
+
+/* ✅ 인쇄 시 헤더 숨김 */
+@media print {
+  .header {
+    display: none !important;
+  }
+
+  body:has(.header) {
+    padding-top: 0 !important;
+  }
+}
+
+/* ✅ 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+  .header .action-btn,
+  .header .sidebar-toggle,
+  .header .logo-link {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .header .action-btn:hover,
+  .header .sidebar-toggle:hover,
+  .header .logo-link:hover,
+  .header .user-info:hover {
+    transform: none !important;
+  }
+}
+
+/* ✅ 외부 스타일 차단 - 최종 방어선 */
+.header,
+.header *,
+.header *::before,
+.header *::after {
+  all: unset !important;
+}
+
+/* 차단 후 헤더 스타일 재적용 */
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: var(--header-height) !important;
+  z-index: var(--header-z-index) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 2rem !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  transition: var(--header-transition) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* ✅ 헤더 전용 유틸리티 클래스 */
+.header-isolated {
+  isolation: isolate !important;
+  contain: layout style paint !important;
+}
+
+/* ✅ 스타일 강제 적용 클래스 */
+.header-force-styles * {
+  box-sizing: border-box !important;
+  font-family: inherit !important;
+}
+
+/* ✅ 레이어 분리 */
+.header {
+  will-change: transform, opacity !important;
+  contain: layout style paint !important;
+  isolation: isolate !important;
 }
