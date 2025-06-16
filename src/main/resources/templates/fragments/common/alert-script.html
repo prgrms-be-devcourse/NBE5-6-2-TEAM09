@@ -14,69 +14,187 @@
     .blink {
       animation: blink-animation 1s infinite;
     }
+
+    /* ✅ 새로운 header 구조에 맞춘 스타일 */
+    #notification-popup {
+      display: none;
+      position: absolute;
+      top: 36px;
+      right: 0;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0px 2px 12px rgba(0,0,0,0.15);
+      width: 240px;
+      z-index: 10000;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    #notification-popup p {
+      margin: 0;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    #notification-popup p:last-child {
+      border-bottom: none;
+    }
+
+    /* ✅ 알림 아이콘 스타일 */
+    #notification-icon {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #notification-icon:hover {
+      transform: scale(1.1);
+    }
   </style>
 
   <script th:inline="javascript">
     /*<![CDATA[*/
-    window.addEventListener('load', () => {
+    function setupNotificationScript() {
+      // ✅ 중복 초기화 방지
+      if (window.notificationSystemInitialized) {
+        console.log("🔔 알림 시스템이 이미 초기화되었습니다.");
+        return;
+      }
+
       const icon = document.getElementById('notification-icon');
       const popup = document.getElementById('notification-popup');
 
-      // ✅ 아이콘 클릭 시 항상 팝업 표시되도록 기본 핸들러 등록
-      if (icon && popup) {
-        icon.addEventListener('click', () => {
-          if (popup.innerHTML.trim() !== '') {
-            // 기존 알림 내용이 있다면 그냥 토글
-            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
-          } else {
-            // 알림이 없으면 기본 메시지 출력
-            popup.innerHTML = '<p>🔕 아직 알림이 없습니다.</p>';
-            popup.style.display = 'block';
-          }
-        });
+      if (!icon || !popup) {
+        console.warn("🔕 알림 요소를 찾을 수 없습니다.");
+        console.log("Icon:", icon, "Popup:", popup);
+        return;
       }
 
-      // ✅ SSE 연결
-      const eventSource = new EventSource('/sse/alerts');
+      console.log("✅ 알림 요소 찾음:", { icon, popup });
 
-      eventSource.addEventListener('ALERT', (event) => {
-        const todos = JSON.parse(event.data);
-        console.log("📩 수신된 알림:", todos);
+      // ✅ 클릭 이벤트 리스너
+      icon.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
-        if (!Array.isArray(todos) || todos.length === 0) return;
+        console.log("🔔 알림 아이콘 클릭됨");
 
-        // ✅ 아이콘 깜빡임
-        if (icon) icon.classList.add('blink');
+        // 현재 팝업 상태 확인
+        const isVisible = popup.style.display === 'block';
 
-        // ✅ 화면 점멸
-        document.body.style.animation = "flash 0.3s alternate 6";
-
-        // ✅ 음성 알림 (첫 클릭 시만 재생)
-        document.addEventListener('click', function handler() {
-          const audio = new Audio('/sounds/alert.mp3');
-          audio.play().catch(e => console.warn("🔇 자동 재생 차단:", e));
-          document.removeEventListener('click', handler);
-        });
-
-        // ✅ 팝업 내용 갱신
-        popup.innerHTML = todos.map(todo =>
-            `<p>🕐 <strong>${todo.title}</strong><br/><span style="font-size: 12px;">시작 10분 전입니다.</span></p>`
-        ).join('');
-
-        // 팝업 열려있으면 자동 갱신된 내용 보이도록 유지
-        if (popup.style.display !== 'none') {
+        if (isVisible) {
+          popup.style.display = 'none';
+          console.log("팝업 숨김");
+        } else {
+          // 팝업에 내용이 있는지 확인
+          if (popup.innerHTML.trim() === '') {
+            popup.innerHTML = '<p>🔕 아직 알림이 없습니다.</p>';
+          }
           popup.style.display = 'block';
+          console.log("팝업 표시", popup.innerHTML);
         }
       });
 
-      eventSource.addEventListener('CONNECTED', () => {
-        console.log("✅ SSE 연결됨");
+      // ✅ 외부 클릭 시 팝업 닫기
+      document.addEventListener('click', function(e) {
+        if (!icon.contains(e.target) && !popup.contains(e.target)) {
+          popup.style.display = 'none';
+        }
       });
 
-      eventSource.onerror = (e) => {
-        console.error("❌ SSE 연결 오류:", e);
-        eventSource.close();
-      };
+      // ✅ SSE 연결
+      let eventSource = null;
+
+      try {
+        // 기존 연결이 있으면 닫기
+        if (window.notificationEventSource) {
+          window.notificationEventSource.close();
+        }
+
+        eventSource = new EventSource('/sse/alerts');
+        window.notificationEventSource = eventSource;
+
+        eventSource.addEventListener('ALERT', function(event) {
+          try {
+            console.log("📩 SSE 이벤트 수신:", event.data);
+
+            const todos = JSON.parse(event.data);
+
+            if (!Array.isArray(todos) || todos.length === 0) {
+              console.log("빈 알림 데이터");
+              return;
+            }
+
+            console.log("처리할 알림:", todos);
+
+            // ✅ 시각적 효과
+            icon.classList.add('blink');
+            document.body.style.animation = "flash 0.3s alternate 6";
+
+            // ✅ 사운드 재생 (사용자 상호작용 후)
+            const playSound = function() {
+              const audio = new Audio('/sounds/alert.mp3');
+              audio.play().catch(e => console.warn("🔇 사운드 재생 실패:", e));
+              document.removeEventListener('click', playSound);
+            };
+            document.addEventListener('click', playSound, { once: true });
+
+            // ✅ 팝업 내용 업데이트
+            popup.innerHTML = todos.map(todo =>
+                `<p>🕐 <strong>${todo.title}</strong><br/><span style="font-size: 12px; color: #666;">시작 10분 전입니다.</span></p>`
+            ).join('');
+
+            // ✅ 팝업 자동 표시
+            popup.style.display = 'block';
+
+            // ✅ 깜빡임 효과 제거
+            setTimeout(() => {
+              icon.classList.remove('blink');
+            }, 3000);
+
+          } catch (error) {
+            console.error("❌ 알림 데이터 파싱 오류:", error, event.data);
+          }
+        });
+
+        eventSource.addEventListener('CONNECTED', function() {
+          console.log("✅ SSE 연결 성공");
+        });
+
+        eventSource.addEventListener('error', function(e) {
+          console.error("❌ SSE 연결 오류:", e);
+          if (eventSource) {
+            eventSource.close();
+            window.notificationEventSource = null;
+          }
+        });
+
+      } catch (error) {
+        console.error("❌ SSE 초기화 오류:", error);
+      }
+
+      // ✅ 초기화 완료
+      window.notificationSystemInitialized = true;
+      console.log("✅ 알림 시스템 초기화 완료");
+    }
+
+    // ✅ DOM 준비 후 실행
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupNotificationScript);
+    } else {
+      // 이미 로드된 경우 즉시 실행
+      setupNotificationScript();
+    }
+
+    // ✅ 페이지 언로드 시 정리
+    window.addEventListener('beforeunload', function() {
+      if (window.notificationEventSource) {
+        window.notificationEventSource.close();
+      }
     });
     /*]]>*/
   </script>

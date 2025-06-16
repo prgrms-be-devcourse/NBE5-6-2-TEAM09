@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>투두 리스트 조회</title>
 
-  <link rel="stylesheet" th:href="@{/css/fragment/header.css}" />
-  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}" />
+  <!-- ✅ 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
 
   <style>
     body {
@@ -34,12 +36,10 @@
     }
 
     main {
-      position: absolute;
-      top: 100px;
-      left: 270px;
-      width: calc(100vw - 270px);
-      min-height: calc(100vh - 116px);
-      padding: 40px;
+      margin-left: 280px;
+      margin-top: 100px;
+      padding: 30px;
+      min-height: calc(100vh - 100px);
       background-color: #f8f9fa;
     }
 
