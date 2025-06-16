@@ -1,6 +1,7 @@
 package com.grepp.codemap.user.service;
 
 import com.grepp.codemap.infra.error.exceptions.CommonException;
+import com.grepp.codemap.infra.event.EventPublisher;
 import com.grepp.codemap.infra.response.ResponseCode;
 import com.grepp.codemap.infra.auth.Role;
 import com.grepp.codemap.user.domain.User;
@@ -23,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
+    private final EventPublisher eventPublisher;
 
     @Transactional
     public void signup(UserDto dto, Role role) {
@@ -37,7 +39,15 @@ public class UserService {
         user.encodePassword(passwordEncoder.encode(dto.getPassword()));
         user.assignRole(role.name());
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        try {
+            eventPublisher.publishSignupCompleteEvent(savedUser.getEmail());
+            log.info("✅ 회원가입 완료 - Email: {}, 메일 이벤트 발행됨", savedUser.getEmail());
+        } catch (Exception e) {
+            log.error("❌ 메일 이벤트 발행 실패 - Email: {}", savedUser.getEmail(), e);
+            // 메일 발송 실패해도 회원가입은 성공으로 처리
+        }
     }
 
     public boolean isDuplicatedEmail(String email) {
