@@ -1,4 +1,4 @@
-<!-- ✅ 개선된 헤더 Fragment (알림 기능 제거) -->
+<!-- ✅ 개선된 헤더 Fragment -->
 <div th:fragment="header" class="header">
   <!-- 헤더 배경 효과 -->
   <div class="header-background">
@@ -37,7 +37,14 @@
   <div class="header-center"></div>
 
   <!-- 우측 사용자 정보 영역 -->
-  <div class="header-actions">
+  <div class="header-actions" style="display: flex; align-items: center; gap: 16px; margin-right: 24px;">
+
+    <!-- ✅ 알림 아이콘 (기존 구조와 호환되도록) -->
+    <div class="notification-wrapper" style="position: relative; display: flex; align-items: center;">
+      <span id="notification-icon" style="font-size: 20px; cursor: pointer;">🔔</span>
+      <div id="notification-popup"></div> <!-- 인라인 스타일 제거 -->
+    </div>
+
     <!-- 사용자 정보 -->
     <div class="user-info">
       <div class="user-avatar-wrapper">
@@ -67,11 +74,11 @@
   </div>
 </div>
 
-<!-- ✅ 개선된 헤더 스크립트 (알림 기능 제거) -->
+<!-- ✅ 헤더 관련 스크립트 -->
 <script th:inline="javascript">
   /*<![CDATA[*/
   document.addEventListener('DOMContentLoaded', function() {
-    // 헤더 고정 강화
+    // 헤더 고정
     const header = document.querySelector('.header');
     if (header) {
       header.style.position = 'fixed';
@@ -82,7 +89,7 @@
       header.style.width = '100%';
     }
 
-    // 사이드바 토글 함수
+    // 사이드바 토글
     window.toggleSidebar = function() {
       const sidebar = document.querySelector('.sidebar');
       const toggleBtn = document.querySelector('.sidebar-toggle');
@@ -103,7 +110,7 @@
       }
     };
 
-    // 스크롤에 따른 헤더 효과
+    // 스크롤 효과
     let lastScrollY = window.scrollY;
     let ticking = false;
 
@@ -130,12 +137,11 @@
       }
     });
 
-    // 리사이즈 이벤트 처리
+    // 리사이즈
     let resizeTimer;
     window.addEventListener('resize', function() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function() {
-        // 모바일에서 데스크톱으로 전환시 사이드바 닫기
         if (window.innerWidth > 768) {
           const sidebar = document.querySelector('.sidebar');
           const toggleBtn = document.querySelector('.sidebar-toggle');
@@ -150,3 +156,6 @@
   });
   /*]]>*/
 </script>
+
+<!-- ✅ 알림 스크립트 연결 -->
+<th:block th:replace="~{fragments/common/alert-script :: alert-script}" />
