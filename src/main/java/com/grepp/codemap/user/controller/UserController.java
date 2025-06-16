@@ -2,6 +2,7 @@ package com.grepp.codemap.user.controller;
 
 import com.grepp.codemap.infra.auth.Role;
 import com.grepp.codemap.infra.error.exceptions.CommonException;
+import com.grepp.codemap.mypage.service.MyPageService;
 import com.grepp.codemap.routine.dto.DailyRoutineDto;
 import com.grepp.codemap.routine.service.DailyRoutineService;
 import com.grepp.codemap.todo.dto.TodoResponse;
@@ -44,7 +45,7 @@ public class UserController {
     private final UserService userService;
     private final DailyRoutineService dailyRoutineService;
     private final TodoService todoService;
-
+    private final MyPageService myPageService;
 
     @GetMapping("signin")
     public String signin(SigninForm form, Model model) {
@@ -91,6 +92,28 @@ public class UserController {
             // 완료율 계산
             double completionRate = totalRoutines > 0 ? (double) completedRoutineCount / totalRoutines * 100 : 0;
 
+            // ✅ NEW: MyPageService를 통해 추가 통계 데이터 가져오기
+            // 총 학습시간 (분 단위)
+            Integer totalActualFocusTime = myPageService.getTotalActualFocusTime(userId);
+
+            // 카테고리별 학습시간
+            Map<String, Integer> actualFocusTimeByCategory = myPageService.getActualFocusTimeByCategory(userId);
+
+            // 가장 많이 한 카테고리 찾기
+            String topCategory = null;
+            Integer topCategoryTime = null;
+
+            if (!actualFocusTimeByCategory.isEmpty()) {
+                Map.Entry<String, Integer> topEntry = actualFocusTimeByCategory.entrySet().stream()
+                    .max(Map.Entry.comparingByValue())
+                    .orElse(null);
+
+                if (topEntry != null && topEntry.getValue() > 0) {
+                    topCategory = topEntry.getKey();
+                    topCategoryTime = topEntry.getValue();
+                }
+            }
+
             // 모델에 데이터 추가
             model.addAttribute("activeRoutines", activeRoutines);
             model.addAttribute("completedRoutines", completedRoutines);
@@ -101,6 +124,11 @@ public class UserController {
             model.addAttribute("completedRoutineCount", completedRoutineCount);
             model.addAttribute("completionRate", Math.round(completionRate));
             model.addAttribute("today", today);
+
+            // ✅ NEW: 추가 통계 데이터
+            model.addAttribute("totalActualFocusTime", totalActualFocusTime);
+            model.addAttribute("topCategory", topCategory);
+            model.addAttribute("topCategoryTime", topCategoryTime);
 
         } catch (Exception e) {
             log.error("메인 페이지 로딩 중 오류 발생", e);

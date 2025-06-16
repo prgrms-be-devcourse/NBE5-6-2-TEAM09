@@ -35,31 +35,39 @@ public class MyPageViewController {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
+        // 기존 전체 통계 (차트용, 카테고리용)
         UserStatDto statDto = userStatService.getStatForUser(user.getId());
-        System.out.println("totalFocusMinutes = " + statDto.getTotalFocusMinutes());
-        RoutineCompletionDto completionDto = myPageService.getRoutineCompletionStats(user.getId());
+        RoutineCompletionDto completionDto = myPageService.getRoutineCompletionStats(user.getId()); // 전체
         List<RoutineCategoryCompletionDto> categoryStats = myPageService.getRoutineCompletionStatsByCategory(user.getId());
-
         Integer totalActualFocusTime = myPageService.getTotalActualFocusTime(user.getId());
         Map<String, Integer> actualFocusTimeByCategory = myPageService.getActualFocusTimeByCategory(user.getId());
 
+        // 요일별 차트 데이터
         Map<String, Integer> rawFocusMap = myPageService.getFocusTimePerDay(user.getId());
         Map<String, Integer> orderedFocusMap = new LinkedHashMap<>();
         for (String day : WEEKDAYS) {
             orderedFocusMap.put(day, rawFocusMap.getOrDefault(day, 0));
         }
 
+        // 오늘의 투두 (기존)
         List<Todo> todayTodos = myPageService.getTodayTodos(user.getId());
+
+        // ✅ NEW: 오늘의 학습 요약용 데이터
+        RoutineCompletionDto todayCompletion = myPageService.getTodayRoutineCompletionStats(user.getId());
+        Integer todayActualFocusTime = myPageService.getTodayActualFocusTime(user.getId());
 
         model.addAttribute("user", user);
         model.addAttribute("userStat", statDto);
-        model.addAttribute("completion", completionDto);
+        model.addAttribute("completion", completionDto);  // 전체 완료율 (차트용)
         model.addAttribute("categoryStats", categoryStats);
         model.addAttribute("focusTimes", orderedFocusMap);
         model.addAttribute("todayTodos", todayTodos);
-
         model.addAttribute("totalActualFocusTime", totalActualFocusTime);
         model.addAttribute("actualFocusTimeByCategory", actualFocusTimeByCategory);
+
+        // ✅ NEW: 오늘의 학습 요약용
+        model.addAttribute("todayCompletion", todayCompletion);
+        model.addAttribute("todayActualFocusTime", todayActualFocusTime);
 
         return "mypage/stats";
     }
