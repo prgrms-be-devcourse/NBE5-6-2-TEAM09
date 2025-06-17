@@ -19,4 +19,8 @@ public interface CodingTestReviewRepository extends JpaRepository<CodingTestRevi
     @Modifying
     @Query("DELETE FROM CodingTestReview c WHERE c.routine.id IN (SELECT r.id FROM DailyRoutine r WHERE r.user.id = :userId)")
     void deleteByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE CodingTestReview c SET c.isDeleted = true WHERE c.routine.id = :routineId")
+    void softDeleteByRoutineId(@Param("routineId") Long routineId);
 }

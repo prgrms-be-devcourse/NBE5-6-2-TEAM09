@@ -2,6 +2,7 @@ package com.grepp.codemap.routine.repository;
 
 import com.grepp.codemap.routine.domain.DailyRoutine;
 import com.grepp.codemap.user.domain.User;
+import java.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -89,4 +90,13 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
     """, nativeQuery = true)
     List<Object[]> sumActualFocusTimeGroupedByWeekday(@Param("userId") Long userId);
 
+
+    @Query("SELECT d FROM DailyRoutine d JOIN FETCH d.user WHERE d.isDeleted = false")
+    List<DailyRoutine> findAllWithUser();
+
+    @Query("SELECT d FROM DailyRoutine d JOIN FETCH d.user WHERE d.user.id = :userId AND d.isDeleted = false")
+    List<DailyRoutine> findAllByUserIdWithUser(@Param("userId") Long userId);
+
+    @Query("SELECT d FROM DailyRoutine d JOIN FETCH d.user WHERE DATE(d.createdAt) = :date AND d.isDeleted = false")
+    List<DailyRoutine> findByDateWithUser(@Param("date") LocalDate date);
 }
