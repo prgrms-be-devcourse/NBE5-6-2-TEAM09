@@ -18,6 +18,25 @@
   --header-z-index: 9999;
 }
 
+/* ✅ 다크 테마 변수 */
+body.dark-theme {
+  --header-bg: rgba(26, 32, 44, 0.85);
+  --header-text-primary: #f7fafc;
+  --header-text-secondary: #e2e8f0;
+  --header-text-light: #cbd5e0;
+  --header-border: rgba(45, 55, 72, 0.3);
+  --header-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ 테마 전환 애니메이션 */
+body.theme-transition {
+  transition: all 0.3s ease !important;
+}
+
+body.theme-transition * {
+  transition: all 0.3s ease !important;
+}
+
 /* ✅ 페이지 레이아웃 보정 */
 body:has(.header) {
   padding-top: var(--header-height) !important;
@@ -133,6 +152,14 @@ body:has(.header) aside,
   padding: 0 !important;
 }
 
+/* 다크 테마 헤더 배경 */
+body.dark-theme .header .header-gradient-overlay {
+  background: linear-gradient(135deg,
+  rgba(102, 126, 234, 0.15) 0%,
+  rgba(118, 75, 162, 0.08) 50%,
+  rgba(240, 147, 251, 0.12) 100%) !important;
+}
+
 /* 스크롤 시 헤더 효과 */
 .header.scrolled .header-gradient-overlay {
   background: linear-gradient(135deg,
@@ -140,6 +167,14 @@ body:has(.header) aside,
   rgba(118, 75, 162, 0.08) 50%,
   rgba(240, 147, 251, 0.12) 100%) !important;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.dark-theme .header.scrolled .header-gradient-overlay {
+  background: linear-gradient(135deg,
+  rgba(102, 126, 234, 0.2) 0%,
+  rgba(118, 75, 162, 0.12) 50%,
+  rgba(240, 147, 251, 0.15) 100%) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* ✅ 로고 영역 */
@@ -171,6 +206,10 @@ body:has(.header) aside,
   transform: translateY(-2px) !important;
   background: rgba(255, 255, 255, 0.1) !important;
   text-decoration: none !important;
+}
+
+body.dark-theme .header .logo-link:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
 }
 
 .header .logo-icon {
@@ -336,6 +375,11 @@ body:has(.header) aside,
   font-family: inherit !important;
 }
 
+body.dark-theme .header .action-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
 .header .btn-content {
   position: relative !important;
   z-index: 2 !important;
@@ -390,8 +434,98 @@ body:has(.header) aside,
   text-decoration: none !important;
 }
 
+body.dark-theme .header .action-btn:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
 .header .action-btn:hover .btn-hover-effect {
   opacity: 1 !important;
+}
+
+/* ✅ 테마 토글 버튼 */
+.header .theme-toggle-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 48px !important;
+}
+
+.header .theme-toggle-btn {
+  width: 48px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+body.dark-theme .header .theme-toggle-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.header .theme-toggle-btn .btn-content {
+  padding: 0 !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+.header .theme-icon {
+  position: relative !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.header .light-icon,
+.header .dark-icon {
+  position: absolute !important;
+  font-size: 18px !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.header .light-icon {
+  transform: rotate(0deg) scale(1) !important;
+}
+
+.header .dark-icon {
+  transform: rotate(180deg) scale(0) !important;
+}
+
+/* 다크 테마일 때 아이콘 상태 */
+body.dark-theme .header .light-icon {
+  transform: rotate(-180deg) scale(0) !important;
+}
+
+body.dark-theme .header .dark-icon {
+  transform: rotate(0deg) scale(1) !important;
+}
+
+.header .theme-effect {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.12) 100%) !important;
+}
+
+body.dark-theme .header .theme-effect {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 123, 255, 0.12) 100%) !important;
+}
+
+.header .theme-toggle-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 8px 25px rgba(255, 193, 7, 0.2) !important;
+}
+
+body.dark-theme .header .theme-toggle-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 8px 25px rgba(79, 172, 254, 0.2) !important;
 }
 
 /* ✅ 알림 영역 */
@@ -423,10 +557,20 @@ body:has(.header) aside,
   line-height: 1 !important;
 }
 
+body.dark-theme .header #notification-icon {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
 .header #notification-icon:hover {
   transform: translateY(-3px) scale(1.02) !important;
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
   border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body.dark-theme .header #notification-icon:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
 .header #notification-popup {
@@ -458,11 +602,22 @@ body:has(.header) aside,
   margin: 0 !important;
 }
 
+body.dark-theme .header .user-info {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
 .header .user-info:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
   border-color: rgba(255, 255, 255, 0.35) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15) !important;
+}
+
+body.dark-theme .header .user-info:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
 }
 
 .header .user-avatar-wrapper {
@@ -611,6 +766,11 @@ body:has(.header) aside,
   max-height: 48px !important;
 }
 
+body.dark-theme .header .logout-btn {
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.12) 0%, rgba(229, 62, 62, 0.08) 100%) !important;
+  border-color: rgba(245, 101, 101, 0.18) !important;
+}
+
 .header .logout-effect {
   background: linear-gradient(135deg, rgba(245, 101, 101, 0.15) 0%, rgba(229, 62, 62, 0.12) 100%) !important;
 }
@@ -619,6 +779,11 @@ body:has(.header) aside,
   border-color: rgba(245, 101, 101, 0.3) !important;
   box-shadow: 0 8px 25px rgba(245, 101, 101, 0.2) !important;
   text-decoration: none !important;
+}
+
+body.dark-theme .header .logout-btn:hover {
+  border-color: rgba(245, 101, 101, 0.25) !important;
+  box-shadow: 0 8px 25px rgba(245, 101, 101, 0.25) !important;
 }
 
 .header .logout-btn .btn-text {
@@ -645,45 +810,101 @@ body:has(.header) aside,
   transform: translateY(-2px) scale(1.02) !important;
 }
 
-/* ✅ 다크 모드 대응 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --header-bg: rgba(26, 32, 44, 0.85) !important;
-    --header-text-primary: #f7fafc !important;
-    --header-text-secondary: #e2e8f0 !important;
-    --header-text-light: #cbd5e0 !important;
-    --header-border: rgba(45, 55, 72, 0.3) !important;
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 1rem !important;
   }
 
-  .header .header-gradient-overlay {
-    background: linear-gradient(135deg,
-    rgba(102, 126, 234, 0.15) 0%,
-    rgba(118, 75, 162, 0.08) 50%,
-    rgba(240, 147, 251, 0.12) 100%) !important;
-    border-bottom: 1px solid var(--header-border) !important;
+  .header .header-actions {
+    gap: 12px !important;
   }
 
-  .header.scrolled .header-gradient-overlay {
-    background: linear-gradient(135deg,
-    rgba(102, 126, 234, 0.2) 0%,
-    rgba(118, 75, 162, 0.12) 50%,
-    rgba(240, 147, 251, 0.15) 100%) !important;
+  .header .logo-text {
+    font-size: 22px !important;
+  }
+
+  .header .user-details {
+    display: none !important;
+  }
+
+  .header .btn-text {
+    display: none !important;
+  }
+
+  .header .theme-toggle-btn,
+  .header #notification-icon {
+    width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .header .user-info {
+    padding: 0 12px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .header .logout-btn {
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
   }
 }
 
-/* ✅ 고대비 모드 대응 */
-@media (prefers-contrast: high) {
+@media (max-width: 480px) {
   .header {
-    border-bottom: 2px solid var(--header-text-primary) !important;
+    padding: 0 0.8rem !important;
   }
 
-  .header .action-btn,
+  .header .header-actions {
+    gap: 8px !important;
+  }
+
+  .header .logo-text-wrapper {
+    display: none !important;
+  }
+
+  .header .theme-toggle-btn,
+  .header #notification-icon {
+    width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+  }
+
   .header .user-info {
-    border: 2px solid var(--header-text-primary) !important;
+    padding: 0 8px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
   }
 
-  .header .logo-gradient {
-    border: 2px solid white !important;
+  .header .logout-btn {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+  }
+
+  .header .user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  .header .status-indicator {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    min-height: 8px !important;
+    max-width: 8px !important;
+    max-height: 8px !important;
   }
 }
 
@@ -709,6 +930,35 @@ body:has(.header) aside,
   .header .status-indicator,
   .header .status-dot {
     animation: none !important;
+  }
+
+  .header .light-icon,
+  .header .dark-icon {
+    transition: none !important;
+  }
+
+  body.theme-transition {
+    transition: none !important;
+  }
+
+  body.theme-transition * {
+    transition: none !important;
+  }
+}
+
+/* ✅ 고대비 모드 대응 */
+@media (prefers-contrast: high) {
+  .header {
+    border-bottom: 2px solid var(--header-text-primary) !important;
+  }
+
+  .header .action-btn,
+  .header .user-info {
+    border: 2px solid var(--header-text-primary) !important;
+  }
+
+  .header .logo-gradient {
+    border: 2px solid white !important;
   }
 }
 

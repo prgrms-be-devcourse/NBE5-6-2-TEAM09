@@ -28,6 +28,19 @@
 
   <!-- 우측 사용자 정보 영역 -->
   <div class="header-actions">
+    <!-- 테마 토글 버튼 -->
+    <div class="theme-toggle-wrapper">
+      <button id="theme-toggle" class="action-btn theme-toggle-btn" title="테마 변경">
+        <div class="btn-content">
+          <div class="btn-icon theme-icon">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+          </div>
+        </div>
+        <div class="btn-hover-effect theme-effect"></div>
+      </button>
+    </div>
+
     <!-- 알림 아이콘 -->
     <div class="notification-wrapper">
       <span id="notification-icon">🔔</span>
@@ -61,52 +74,103 @@
       </button>
     </form>
   </div>
-</div>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+      // ✅ 테마 초기화 및 적용
+      function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.classList.remove('light-theme', 'dark-theme');
+        document.body.classList.add(savedTheme + '-theme');
+        updateThemeToggleIcon(savedTheme);
+      }
 
-<!-- ✅ PC 전용 헤더 스크립트 -->
-<script th:inline="javascript">
-  /*<![CDATA[*/
-  document.addEventListener('DOMContentLoaded', function() {
-    // 헤더 고정
-    const header = document.querySelector('.header');
-    if (header) {
-      header.style.position = 'fixed';
-      header.style.top = '0';
-      header.style.left = '0';
-      header.style.right = '0';
-      header.style.zIndex = '9999';
-      header.style.width = '100%';
-    }
+      // ✅ 테마 토글 아이콘 업데이트
+      function updateThemeToggleIcon(theme) {
+        const lightIcon = document.querySelector('.light-icon');
+        const darkIcon = document.querySelector('.dark-icon');
 
-    // 스크롤 효과
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    function updateHeader() {
-      const currentScrollY = window.scrollY;
-      const header = document.querySelector('.header');
-
-      if (header) {
-        if (currentScrollY > 50) {
-          header.classList.add('scrolled');
+        if (theme === 'dark') {
+          if (lightIcon) lightIcon.style.display = 'block';
+          if (darkIcon) darkIcon.style.display = 'none';
         } else {
-          header.classList.remove('scrolled');
+          if (lightIcon) lightIcon.style.display = 'none';
+          if (darkIcon) darkIcon.style.display = 'block';
         }
       }
 
-      lastScrollY = currentScrollY;
-      ticking = false;
-    }
+      // ✅ 테마 토글 기능
+      function toggleTheme() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
 
-    window.addEventListener('scroll', function() {
-      if (!ticking) {
-        requestAnimationFrame(updateHeader);
-        ticking = true;
+        // localStorage에 저장
+        localStorage.setItem('theme', newTheme);
+
+        // body 클래스 변경 (애니메이션 효과)
+        document.body.classList.add('theme-transition');
+        document.body.classList.remove('light-theme', 'dark-theme');
+        document.body.classList.add(newTheme + '-theme');
+
+        // 아이콘 업데이트
+        updateThemeToggleIcon(newTheme);
+
+        // 애니메이션 완료 후 클래스 제거
+        setTimeout(() => {
+          document.body.classList.remove('theme-transition');
+        }, 300);
       }
+
+      // ✅ 테마 토글 버튼 이벤트 리스너
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+      }
+
+      // ✅ 초기 테마 적용
+      initializeTheme();
+
+      // 헤더 고정
+      const header = document.querySelector('.header');
+      if (header) {
+        header.style.position = 'fixed';
+        header.style.top = '0';
+        header.style.left = '0';
+        header.style.right = '0';
+        header.style.zIndex = '9999';
+        header.style.width = '100%';
+      }
+
+      // 스크롤 효과
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+
+      function updateHeader() {
+        const currentScrollY = window.scrollY;
+        const header = document.querySelector('.header');
+
+        if (header) {
+          if (currentScrollY > 50) {
+            header.classList.add('scrolled');
+          } else {
+            header.classList.remove('scrolled');
+          }
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(updateHeader);
+          ticking = true;
+        }
+      });
     });
-  });
-  /*]]>*/
-</script>
+    /*]]>*/
+  </script>
+</div>
 
 <!-- ✅ 알림 스크립트 연결 -->
 <th:block th:replace="~{fragments/common/alert-script :: alert-script}" />

@@ -30,8 +30,6 @@
 <!-- ✅ 사이드바 fragment 사용 -->
 <aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
 
-<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
-
 <main>
   <div class="main-container">
 
@@ -197,6 +195,10 @@
 
 <!-- ✅ 대시보드 전용 스크립트 -->
 <script>
+  // ✅ 저장된 테마 불러오기 (페이지 로드 시 최우선 실행)
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.body.classList.add(savedTheme + '-theme');
+
   // ✅ 페이지 로드 즉시 상단으로 스크롤 강제 실행
   document.addEventListener('DOMContentLoaded', function() {
     // 즉시 상단으로 스크롤
