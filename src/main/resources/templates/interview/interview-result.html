@@ -82,40 +82,38 @@
             margin-bottom: 2rem;
         }
 
-        /* 히스토리 뷰에서만 보이는 뒤로가기 버튼 */
-        /* 히스토리 뷰에서만 보이는 뒤로가기 버튼 */
-        /* 히스토리 뷰에서만 보이는 뒤로가기 버튼 */
+        /* 히스토리 뷰에서만 보이는 뒤로가기 버튼 - 카드 내부로 이동 */
         .back-arrow {
             position: absolute;
-            top: -60px;
-            left: 0;
-            transform: none;
+            top: 20px;
+            left: 20px;
             z-index: 10;
-            width: 56px;
-            height: 56px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(102, 126, 234, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
             text-decoration: none;
             color: #667eea;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /*.back-arrow:hover {*/
-        /*    transform: translateY(-50%) scale(1.05);*/
-        /*    background: rgba(255, 255, 255, 1);*/
-        /*    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);*/
-        /*}*/
+        .back-arrow:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.25);
+        }
 
         .back-arrow::after {
             content: '';
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border: 2px solid #667eea;
             border-bottom: none;
             border-right: none;
@@ -142,7 +140,6 @@
         }
 
         .nav-arrow:hover {
-            transform: translateY(-50%) scale(1.05);
             background: rgba(255, 255, 255, 1);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
@@ -192,6 +189,11 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
             position: relative;
+        }
+
+        /* 히스토리 뷰일 때 컨텐츠에 여백 추가 */
+        .content-box.with-back-button {
+            padding-top: 4rem;
         }
 
         .question-header {
@@ -482,7 +484,11 @@
                 padding: 2.5rem 3rem;
             }
 
-            .nav-arrow.left, .back-arrow {
+            .content-box.with-back-button {
+                padding-top: 3.5rem;
+            }
+
+            .nav-arrow.left {
                 left: 0;
             }
 
@@ -513,14 +519,30 @@
                 padding: 2rem 1.5rem;
             }
 
-            .nav-arrow, .back-arrow {
+            .content-box.with-back-button {
+                padding-top: 3rem;
+            }
+
+            .nav-arrow {
                 width: 40px;
                 height: 40px;
             }
 
-            .nav-arrow::after, .back-arrow::after {
+            .nav-arrow::after {
                 width: 10px;
                 height: 10px;
+            }
+
+            .back-arrow {
+                width: 36px;
+                height: 36px;
+                top: 15px;
+                left: 15px;
+            }
+
+            .back-arrow::after {
+                width: 8px;
+                height: 8px;
             }
 
             .page-title {
@@ -557,6 +579,22 @@
                 padding: 1.5rem 1rem;
             }
 
+            .content-box.with-back-button {
+                padding-top: 2.5rem;
+            }
+
+            .back-arrow {
+                width: 32px;
+                height: 32px;
+                top: 12px;
+                left: 12px;
+            }
+
+            .back-arrow::after {
+                width: 7px;
+                height: 7px;
+            }
+
             .page-title {
                 font-size: 1.2rem;
                 margin-bottom: 1.5rem;
@@ -590,16 +628,16 @@
     <div class="main-container">
 
         <div class="result-container">
-            <!-- 히스토리 뷰에서만 보이는 뒤로가기 버튼 -->
-            <div th:if="${isHistoryView}" class="back-arrow" onclick="history.back()"></div>
-
             <!-- 랜덤 질문 시 왼쪽 화살표 -->
             <div th:if="${!isHistoryView and page != null and page > 0}" class="nav-arrow left">
                 <a th:href="@{/interview/question(page=${page - 1}, category=${category})}"></a>
             </div>
 
             <!-- 피드백 내용 영역 -->
-            <div class="content-box">
+            <div class="content-box" th:classappend="${isHistoryView} ? 'with-back-button' : ''">
+                <!-- 히스토리 뷰에서만 보이는 뒤로가기 버튼 - 카드 내부로 이동 -->
+                <div th:if="${isHistoryView}" class="back-arrow" onclick="history.back()"></div>
+
                 <div class="question-header">
                     [[${category}]] - 난이도 [[${question.difficulty}]]
                 </div>

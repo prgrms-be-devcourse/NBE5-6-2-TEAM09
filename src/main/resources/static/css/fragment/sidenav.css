@@ -15,6 +15,11 @@
   --sidebar-radius: 12px;
   --sidebar-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --sidebar-z-index: 998;
+
+  /* 드롭다운 전용 변수 */
+  --dropdown-bg: rgba(248, 250, 252, 0.95);
+  --dropdown-border: rgba(102, 126, 234, 0.1);
+  --dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* ✅ 사이드바 메인 컨테이너 */
@@ -59,6 +64,15 @@ body:not(.sidebar-open) main {
   height: 1px !important;
   background: linear-gradient(90deg, transparent 0%, rgba(102, 126, 234, 0.1) 50%, transparent 100%) !important;
   margin: 12px 8px !important;
+}
+
+/* ✅ 네비게이션 아이템 그룹 */
+.nav-item-group {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  margin-bottom: 2px !important;
 }
 
 /* ✅ 네비게이션 아이템 */
@@ -152,6 +166,122 @@ body:not(.sidebar-open) main {
   transform: scale(1.2) !important;
 }
 
+/* ✅ 드롭다운 화살표 */
+.dropdown-arrow {
+  margin-left: auto !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  opacity: 0.7 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 14px !important;
+}
+
+.nav-item-group.open .dropdown-arrow {
+  transform: rotate(180deg) !important;
+  opacity: 1 !important;
+}
+
+/* ✅ 드롭다운 메뉴 */
+.dropdown-menu {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: var(--sidebar-radius) !important;
+  margin: 4px 0 0 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ✅ 드롭다운 열림 상태 */
+.nav-item-group.open .dropdown-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
+  max-height: 200px !important;
+  padding: 8px !important;
+  margin-left: 4px !important; /* nav-item의 translateX(4px)와 동일하게 이동 */
+}
+
+/* ✅ 드롭다운 아이템 */
+.dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 14px !important;
+  color: var(--sidebar-text-secondary) !important;
+  text-decoration: none !important;
+  border-radius: calc(var(--sidebar-radius) - 2px) !important;
+  transition: var(--sidebar-transition) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  margin-bottom: 2px !important;
+  cursor: pointer !important;
+  margin-left: 0 !important; /* 드롭다운 아이템은 추가 이동 없음 */
+}
+
+.dropdown-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.04) 100%) !important;
+  border-color: rgba(102, 126, 234, 0.15) !important;
+  color: var(--sidebar-text-primary) !important;
+  transform: translateX(2px) !important;
+}
+
+
+.dropdown-item.active {
+  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ✅ 드롭다운 아이콘 */
+.dropdown-icon {
+  width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  background: rgba(102, 126, 234, 0.08) !important;
+  border-radius: 6px !important;
+  transition: var(--sidebar-transition) !important;
+  flex-shrink: 0 !important;
+}
+
+.dropdown-item:hover .dropdown-icon {
+  background: rgba(102, 126, 234, 0.15) !important;
+  transform: scale(1.05) !important;
+}
+
+.dropdown-item.active .dropdown-icon {
+  background: rgba(102, 126, 234, 0.2) !important;
+  color: var(--sidebar-primary) !important;
+}
+
+/* ✅ 드롭다운 텍스트 */
+.dropdown-text {
+  flex: 1 !important;
+  font-weight: inherit !important;
+  white-space: nowrap !important;
+}
+
 /* ✅ 스크롤바 스타일 */
 .sidebar::-webkit-scrollbar {
   width: 4px !important;
@@ -168,6 +298,13 @@ body:not(.sidebar-open) main {
 
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(102, 126, 234, 0.5) !important;
+}
+
+/* ✅ 포커스 접근성 */
+.sidebar .nav-item:focus-visible,
+.dropdown-item:focus-visible {
+  outline: 2px solid var(--sidebar-primary) !important;
+  outline-offset: 2px !important;
 }
 
 /* ✅ 반응형 - 태블릿 */
@@ -212,18 +349,48 @@ body:not(.sidebar-open) main {
     height: 32px !important;
     font-size: 18px !important;
   }
+
+  /* 모바일에서 드롭다운 스타일 조정 */
+  .dropdown-menu {
+    background: rgba(240, 245, 251, 0.98) !important;
+    margin: 6px 0 0 0 !important;
+    border-radius: 10px !important;
+  }
+
+  .nav-item-group.open .dropdown-menu {
+    margin-left: 0 !important; /* 모바일에서는 정렬 조정 제거 */
+  }
+
+  .dropdown-item {
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+  }
+
+  .dropdown-icon {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 16px !important;
+  }
+
+  .dropdown-arrow {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 16px !important;
+  }
 }
 
 @media (max-width: 480px) {
   :root {
     --sidebar-width: 280px;
   }
-}
 
-/* ✅ 포커스 접근성 */
-.sidebar .nav-item:focus-visible {
-  outline: 2px solid var(--sidebar-primary) !important;
-  outline-offset: 2px !important;
+  .sidebar .nav-item {
+    padding: 16px 18px !important;
+  }
+
+  .dropdown-item {
+    padding: 14px 18px !important;
+  }
 }
 
 /* ✅ 다크 모드 대응 */
@@ -233,6 +400,29 @@ body:not(.sidebar-open) main {
     --sidebar-text-primary: #f7fafc;
     --sidebar-text-secondary: #e2e8f0;
     --sidebar-text-light: #cbd5e0;
+    --dropdown-bg: rgba(45, 55, 72, 0.95);
+    --dropdown-border: rgba(102, 126, 234, 0.2);
+  }
+
+  .dropdown-item {
+    color: #e2e8f0 !important;
+  }
+
+  .dropdown-item:hover {
+    color: #f7fafc !important;
+  }
+
+  .dropdown-item.active {
+    color: #90cdf4 !important;
+  }
+
+  .dropdown-icon {
+    background: rgba(102, 126, 234, 0.15) !important;
+  }
+
+  .dropdown-item.active .dropdown-icon {
+    background: rgba(102, 126, 234, 0.25) !important;
+    color: #90cdf4 !important;
   }
 }
 
@@ -247,132 +437,61 @@ body:not(.sidebar-open) main {
   }
 }
 
-   /* 기존 스타일에 추가할 드롭다운 관련 CSS */
-/*.nav-item-group .dropdown-menu {*/
-/*  opacity: 1 !important;*/
-/*  visibility: visible !important;*/
-/*  max-height: 300px !important;*/
-/*  position: relative !important;*/
-/*  z-index: 10000 !important;*/
-/*}*/
-
-
-.dropdown-parent {
-  position: relative;
+/* ✅ 추가 개선사항 - 호버 효과 부드럽게 */
+.nav-item-group {
+  transition: var(--sidebar-transition) !important;
 }
 
-.nav-arrow {
-  margin-left: auto;
-  transition: transform 0.3s ease;
-  opacity: 0.7;
-  /*display: none !important;*/
+.nav-item-group:hover .dropdown-arrow {
+  opacity: 1 !important;
+  color: var(--sidebar-primary) !important;
 }
 
-/* 닫힌 상태 - 기본값 */
+/* ✅ 드롭다운 메뉴 스크롤 */
 .dropdown-menu {
-  opacity: 0;
-  visibility: hidden;
-  max-height: 0;
-  transform: translateY(-8px);
-  transition: all 0.3s ease;
+  overflow-y: auto !important;
 }
 
-/* 열렸을 때 (JS에서 open 클래스가 붙을 때) */
+.dropdown-menu::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.2) !important;
+  border-radius: 2px !important;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.4) !important;
+}
+
+/* ✅ 면접 질문 그룹 전체를 카드처럼 보이게 */
+.nav-item-group.open {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-bottom: 0 !important;
+  transform: none !important;
+}
+
 .nav-item-group.open .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  max-height: 200px;
-  transform: translateY(0);
+  opacity: 1 !important;
+  visibility: visible !important;
+  max-height: 200px !important;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+  padding: 4px 0 0 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-
+/* ✅ 드롭다운 아이템 내부 간격 통일 */
 .dropdown-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  color: #374151;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.dropdown-item:last-child {
-  border-bottom: none;
-}
-
-.dropdown-item:hover {
-  background: #f8fafc;
-  color: #3b82f6;
-  transform: translateX(4px);
-}
-
-.dropdown-icon {
-  font-size: 16px;
-  margin-right: 10px;
-  transition: transform 0.2s ease;
-}
-
-.dropdown-item:hover .dropdown-icon {
-  transform: scale(1.1);
-}
-
-.dropdown-text {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* 모바일 대응 */
-@media (max-width: 768px) {
-  .dropdown-menu {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    box-shadow: none;
-    border: none;
-    background: #f8fafc;
-    margin-top: 8px;
-    border-radius: 6px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-
-  .nav-item-group:hover .dropdown-menu,
-  .nav-item-group.mobile-active .dropdown-menu {
-    max-height: 120px;
-  }
-
-  .nav-item.dropdown-toggle {
-    pointer-events: auto !important;
-    z-index: 9999 !important;
-    position: relative !important;
-    background: rgba(255, 0, 0, 0.05) !important; /* 확인용 빨간 배경 */
-  }
-
-  .dropdown-item {
-    padding: 10px 20px;
-  }
-
-  .nav-arrow {
-    display: block;
-  }
-}
-
-/* 다크모드 지원 */
-@media (prefers-color-scheme: dark) {
-  .dropdown-menu {
-    background: #1f2937;
-    border-color: #374151;
-  }
-
-  .dropdown-item {
-    color: #d1d5db;
-    border-color: #374151;
-  }
-
-  .dropdown-item:hover {
-    background: #374151;
-    color: #60a5fa;
-  }
+  margin-left: 12px !important;
+  margin-right: 12px !important;
 }
