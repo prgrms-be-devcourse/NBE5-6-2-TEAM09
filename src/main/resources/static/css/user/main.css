@@ -10,45 +10,22 @@ html, body {
   font-family: 'Pretendard', sans-serif;
   color: #333;
   overflow-x: hidden;
+  transition: all 0.3s ease;
 }
 
-/* ✅ 배경 개선 - 더 역동적인 그라데이션 */
-html {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-  background-size: 400% 400%;
-  background-attachment: fixed;
-  min-height: 100vh;
-  animation: gradientShift 8s ease infinite;
+/* ✅ 라이트 테마 (기본) */
+body.light-theme {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
 }
 
-body {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-  background-size: 400% 400%;
-  background-attachment: fixed;
-  min-height: 100vh;
-  animation: gradientShift 8s ease infinite;
+/* ✅ 다크 테마 */
+body.dark-theme {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #f7fafc;
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* 전체 페이지 래퍼 */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-  radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
-  z-index: -2;
-}
-
-/* 배경 애니메이션 - 더 화려하게 */
+/* 배경 애니메이션 - 단순화 */
 .background-animation {
   position: fixed;
   top: 0;
@@ -61,61 +38,45 @@ body::before {
 
 .floating-shape {
   position: absolute;
-  opacity: 0.08;
-  animation: float 12s ease-in-out infinite;
-  backdrop-filter: blur(2px);
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+  background: white;
+}
+
+body.dark-theme .floating-shape {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .floating-shape:nth-child(1) {
-  top: 15%;
-  right: 15%;
-  width: 120px;
-  height: 120px;
-  background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+  top: 20%;
+  left: 10%;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.1);
   animation-delay: 0s;
 }
 
 .floating-shape:nth-child(2) {
   top: 60%;
-  left: 10%;
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(45deg, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
-  border-radius: 30px;
-  border: 1px solid rgba(255,255,255,0.1);
-  animation-delay: 4s;
+  right: 10%;
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  animation-delay: 2s;
 }
 
 .floating-shape:nth-child(3) {
-  bottom: 25%;
-  right: 25%;
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+  bottom: 20%;
+  left: 20%;
+  width: 60px;
+  height: 60px;
   transform: rotate(45deg);
-  border: 1px solid rgba(255,255,255,0.1);
-  animation-delay: 8s;
+  animation-delay: 4s;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg) scale(1);
-    opacity: 0.08;
-  }
-  25% {
-    transform: translateY(-30px) rotate(90deg) scale(1.1);
-    opacity: 0.12;
-  }
-  50% {
-    transform: translateY(-50px) rotate(180deg) scale(1.2);
-    opacity: 0.15;
-  }
-  75% {
-    transform: translateY(-30px) rotate(270deg) scale(1.1);
-    opacity: 0.12;
-  }
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
 }
 
 /* ✅ 헤더 고정 */
@@ -129,7 +90,14 @@ header {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+body.dark-theme header {
+  background: rgba(30, 30, 46, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 /* ✅ 사이드바 고정 */
@@ -143,10 +111,17 @@ aside {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 8px 0 32px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
-/* ✅ 메인 콘텐츠 영역 개선 */
+body.dark-theme aside {
+  background: rgba(30, 30, 46, 0.95);
+  border-right-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+}
+
+/* ✅ 메인 콘텐츠 영역 */
 main {
   margin-top: 70px;
   margin-left: 250px;
@@ -165,79 +140,55 @@ main {
   position: relative;
 }
 
-/* ✅ 웰컴 섹션 - 더 임팩트있게 */
+/* ✅ 웰컴 섹션 - 일관된 디자인 */
 .welcome-section {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.2) 0%,
-  rgba(255, 255, 255, 0.1) 50%,
-  rgba(255, 255, 255, 0.15) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
   padding: 3rem;
   margin-bottom: 2.5rem;
   text-align: center;
-  animation: fadeInUp 0.8s ease-out, glow 4s ease-in-out infinite alternate;
-  position: relative;
-  overflow: hidden;
+  animation: fadeInUp 0.8s ease-out;
+  transition: all 0.3s ease;
 }
 
-.welcome-section::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.1));
-  animation: rotate 20s linear infinite;
-  z-index: -1;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes glow {
-  0% {
-    box-shadow: 0 0 20px rgba(255,255,255,0.1),
-    0 0 40px rgba(102, 126, 234, 0.1),
-    inset 0 0 20px rgba(255,255,255,0.05);
-  }
-  100% {
-    box-shadow: 0 0 30px rgba(255,255,255,0.2),
-    0 0 60px rgba(102, 126, 234, 0.2),
-    inset 0 0 30px rgba(255,255,255,0.1);
-  }
+body.dark-theme .welcome-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .welcome-title {
-  font-size: 2.8rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%);
-  background-size: 200% 200%;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 0.8rem;
-  text-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  animation: titleShine 3s ease-in-out infinite;
-}
-
-@keyframes titleShine {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.welcome-subtitle {
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 1.2rem;
-  font-weight: 500;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* ✅ 통계 그리드 - 더 화려하게 */
+body.dark-theme .welcome-title {
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.welcome-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .welcome-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ✅ 통계 그리드 - 단순화 */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -247,143 +198,93 @@ main {
 }
 
 .stat-card {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.2) 0%,
-  rgba(255, 255, 255, 0.1) 50%,
-  rgba(255, 255, 255, 0.18) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 2.5rem;
-  border-radius: 24px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, #ffffff, transparent);
-  transition: left 0.5s ease;
-}
-
-.stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg,
-  rgba(102, 126, 234, 0.1) 0%,
-  rgba(118, 75, 162, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 24px;
+body.dark-theme .stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .stat-card:hover {
-  transform: translateY(-12px) scale(1.02);
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.25) 0%,
-  rgba(255, 255, 255, 0.15) 50%,
-  rgba(255, 255, 255, 0.22) 100%);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.2),
-  0 0 0 1px rgba(255,255,255,0.1);
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.stat-card:hover::before {
-  left: 100%;
-}
-
-.stat-card:hover::after {
-  opacity: 1;
+body.dark-theme .stat-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 .stat-header {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 1.1rem;
-  margin-bottom: 1.2rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  position: relative;
-  z-index: 1;
+}
+
+body.dark-theme .stat-header {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .stat-value {
-  font-size: 2.8rem;
-  font-weight: 800;
+  font-size: 2.2rem;
+  font-weight: 700;
   color: white;
-  margin-bottom: 0.8rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  position: relative;
-  z-index: 1;
-  animation: countUp 1s ease-out;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-@keyframes countUp {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+body.dark-theme .stat-value {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .stat-subtext {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
-  font-weight: 500;
-  position: relative;
-  z-index: 1;
+  font-size: 0.9rem;
+  font-weight: 400;
 }
 
-/* 콘텐츠 섹션 - 더 세련되게 */
+body.dark-theme .stat-subtext {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 콘텐츠 섹션 - 단순화 */
 .content-section {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.18) 0%,
-  rgba(255, 255, 255, 0.12) 50%,
-  rgba(255, 255, 255, 0.16) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 24px;
-  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
   margin-bottom: 2rem;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
   animation: fadeInUp 0.8s ease-out 0.4s both;
-  position: relative;
-  overflow: hidden;
 }
 
-.content-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-  transparent 0%,
-  rgba(255,255,255,0.6) 50%,
-  transparent 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+body.dark-theme .content-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .content-section:hover {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.22) 0%,
-  rgba(255, 255, 255, 0.16) 50%,
-  rgba(255, 255, 255, 0.20) 100%);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-.content-section:hover::before {
-  opacity: 1;
+body.dark-theme .content-section:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .section-header {
@@ -392,114 +293,80 @@ main {
   align-items: center;
   margin-bottom: 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding-bottom: 1.5rem;
-  position: relative;
+  padding-bottom: 1rem;
+}
+
+body.dark-theme .section-header {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
 .section-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  position: relative;
+  gap: 0.5rem;
 }
 
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.5));
-  transition: width 0.3s ease;
-}
-
-.content-section:hover .section-title::after {
-  width: 60px;
+body.dark-theme .section-title {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .add-btn {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.25) 0%,
-  rgba(255, 255, 255, 0.15) 100%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  padding: 1rem 2rem;
+  padding: 0.8rem 1.5rem;
   border-radius: 50px;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
 }
 
-.add-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-  transparent,
-  rgba(255,255,255,0.2),
-  transparent);
-  transition: left 0.5s ease;
+body.dark-theme .add-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .add-btn:hover {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.35) 0%,
-  rgba(255, 255, 255, 0.25) 100%);
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   text-decoration: none;
 }
 
-.add-btn:hover::before {
-  left: 100%;
+body.dark-theme .add-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-/* 투두 아이템 스타일 - 더 모던하게 */
+/* 투두 아이템 스타일 - 가독성 향상 */
 .todo-item {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 1rem;
+  padding: 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
-  border-radius: 16px;
-  margin-bottom: 0.8rem;
-  position: relative;
-  overflow: hidden;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
 }
 
-.todo-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  background: linear-gradient(135deg,
-  rgba(255,255,255,0.1),
-  rgba(255,255,255,0.05));
-  transition: width 0.3s ease;
+body.dark-theme .todo-item {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 .todo-item:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateX(8px);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(5px);
 }
 
-.todo-item:hover::before {
-  width: 4px;
+body.dark-theme .todo-item:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .todo-item:last-child {
@@ -508,30 +375,32 @@ main {
 }
 
 .todo-checkbox {
-  width: 28px;
-  height: 28px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+}
+
+body.dark-theme .todo-checkbox {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .todo-checkbox:hover {
   border-color: #28a745;
-  background: rgba(40, 167, 69, 0.2);
-  transform: scale(1.1);
+  background: rgba(40, 167, 69, 0.1);
 }
 
 .todo-checkbox.checked {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: #28a745;
   border-color: #28a745;
   color: white;
-  transform: scale(1.05);
 }
 
 .todo-info {
@@ -541,47 +410,67 @@ main {
 .todo-title {
   font-weight: 600;
   color: white;
-  margin-bottom: 0.4rem;
-  font-size: 1.1rem;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-.todo-time {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.todo-completed .todo-title {
-  text-decoration: line-through;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-/* 루틴 테이블 스타일 - 더 세련되게 */
-.routine-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 16px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-}
-
-.routine-table th {
-  text-align: left;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 700;
-  padding: 1.5rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.15) 0%,
-  rgba(255, 255, 255, 0.1) 100%);
+  margin-bottom: 0.3rem;
   font-size: 1rem;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
+body.dark-theme .todo-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.todo-time {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+body.dark-theme .todo-time {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.todo-completed .todo-title {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+body.dark-theme .todo-completed .todo-title {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 루틴 테이블 스타일 - 가독성 향상 */
+.routine-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+}
+
+body.dark-theme .routine-table {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.routine-table th {
+  text-align: left;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  padding: 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .routine-table th {
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .routine-table td {
-  padding: 1.5rem;
+  padding: 1.2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   vertical-align: middle;
   color: white;
@@ -589,100 +478,113 @@ main {
   transition: all 0.3s ease;
 }
 
+body.dark-theme .routine-table td {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
 .routine-table tr {
   transition: all 0.3s ease;
 }
 
 .routine-table tr:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-theme .routine-table tr:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .status-badge {
-  padding: 0.8rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 50px;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-align: center;
-  min-width: 100px;
+  min-width: 80px;
   display: inline-block;
-  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .status-active {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 193, 7, 0.2));
+  background: rgba(255, 193, 7, 0.2);
   color: #ffc107;
-  border: 1px solid rgba(255, 193, 7, 0.4);
-  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+body.dark-theme .status-active {
+  background: rgba(255, 193, 7, 0.15);
+  border-color: rgba(255, 193, 7, 0.25);
 }
 
 .status-completed {
-  background: linear-gradient(135deg, rgba(40, 167, 69, 0.3), rgba(40, 167, 69, 0.2));
+  background: rgba(40, 167, 69, 0.2);
   color: #28a745;
-  border: 1px solid rgba(40, 167, 69, 0.4);
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+body.dark-theme .status-completed {
+  background: rgba(40, 167, 69, 0.15);
+  border-color: rgba(40, 167, 69, 0.25);
 }
 
 .status-pass {
-  background: linear-gradient(135deg, rgba(220, 53, 69, 0.3), rgba(220, 53, 69, 0.2));
+  background: rgba(220, 53, 69, 0.2);
   color: #dc3545;
-  border: 1px solid rgba(220, 53, 69, 0.4);
-  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+body.dark-theme .status-pass {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: rgba(220, 53, 69, 0.25);
 }
 
 .btn {
-  padding: 1rem 1.8rem;
+  padding: 0.8rem 1.5rem;
   border: none;
   border-radius: 50px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
   text-align: center;
   font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  position: relative;
-  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-  transparent,
-  rgba(255,255,255,0.2),
-  transparent);
-  transition: left 0.5s ease;
+body.dark-theme .btn-primary {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
 }
 
-.btn-primary:hover::before {
-  left: 100%;
+body.dark-theme .btn-primary:hover {
+  box-shadow: 0 5px 15px rgba(76, 99, 210, 0.4);
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
 }
 
 .btn-disabled {
-  background: rgba(108, 117, 125, 0.3);
+  background: rgba(108, 117, 125, 0.2);
   color: rgba(255, 255, 255, 0.6);
   cursor: not-allowed;
-  border: 1px solid rgba(108, 117, 125, 0.3);
+  border: 1px solid rgba(108, 117, 125, 0.2);
+}
+
+body.dark-theme .btn-disabled {
+  background: rgba(108, 117, 125, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(108, 117, 125, 0.15);
 }
 
 .btn-disabled:hover {
@@ -691,65 +593,56 @@ main {
 
 .empty-state {
   text-align: center;
-  padding: 4rem 2rem;
-  color: rgba(255, 255, 255, 0.9);
+  padding: 3rem 2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-theme .empty-state {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .empty-state p {
   margin: 1rem 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
 .empty-state a {
   color: white;
   text-decoration: none;
-  font-weight: 700;
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.25) 0%,
-  rgba(255, 255, 255, 0.15) 100%);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 1rem 2rem;
   border-radius: 50px;
   display: inline-block;
-  margin-top: 1.5rem;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
 }
 
-.empty-state a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-  transparent,
-  rgba(255,255,255,0.2),
-  transparent);
-  transition: left 0.5s ease;
+body.dark-theme .empty-state a {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .empty-state a:hover {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.35) 0%,
-  rgba(255, 255, 255, 0.25) 100%);
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-decoration: none;
 }
 
-.empty-state a:hover::before {
-  left: 100%;
+body.dark-theme .empty-state a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 /* ✅ 애니메이션 */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -759,26 +652,35 @@ main {
 
 /* ✅ 스크롤바 스타일링 */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.3),
-  rgba(255, 255, 255, 0.2));
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+body.dark-theme ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg,
-  rgba(255, 255, 255, 0.5),
-  rgba(255, 255, 255, 0.3));
+  background: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* ✅ 반응형 디자인 */
@@ -800,7 +702,11 @@ main {
   }
 
   .welcome-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
+  }
+
+  .welcome-section {
+    padding: 2rem;
   }
 
   .stats-grid {
@@ -822,22 +728,40 @@ main {
   .routine-table td {
     padding: 1rem 0.8rem;
   }
+
+  .content-section {
+    padding: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
   .welcome-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .welcome-section {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   .content-section {
-    padding: 2rem;
+    padding: 1.2rem;
   }
 
   .stat-card {
-    padding: 2rem;
+    padding: 1.2rem;
+  }
+
+  .routine-table th,
+  .routine-table td {
+    padding: 0.8rem 0.5rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
   }
 }

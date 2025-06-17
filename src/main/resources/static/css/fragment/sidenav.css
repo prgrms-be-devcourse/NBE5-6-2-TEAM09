@@ -1,67 +1,51 @@
-/* ✅ PC 전용 사이드바 CSS 변수 */
-:root {
-  --sidebar-width: 260px;
-  --sidebar-header-height: 70px;
-  --sidebar-bg: rgba(255, 255, 255, 0.95);
-  --sidebar-border: rgba(102, 126, 234, 0.15);
-  --sidebar-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  --sidebar-primary: #667eea;
-  --sidebar-secondary: #764ba2;
-  --sidebar-accent: #f093fb;
-  --sidebar-text-primary: #2d3748;
-  --sidebar-text-secondary: #4a5568;
-  --sidebar-text-light: #718096;
-  --sidebar-success: #48bb78;
-  --sidebar-radius: 12px;
-  --sidebar-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --sidebar-z-index: 998;
-  --dropdown-bg: rgba(248, 250, 252, 0.95);
-  --dropdown-border: rgba(102, 126, 234, 0.1);
-  --dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
+/* ✅ 메인 화면과 조화로운 사이드바 CSS */
 
-/* ✅ 사이드바 메인 컨테이너 */
+/* ✅ 사이드바 메인 컨테이너 - 메인 화면 디자인과 일치 */
 .sidebar {
   position: fixed !important;
-  top: var(--sidebar-header-height) !important;
+  top: 70px !important;
   left: 0 !important;
-  width: var(--sidebar-width) !important;
-  height: calc(100vh - var(--sidebar-header-height)) !important;
-  background: var(--sidebar-bg) !important;
+  width: 250px !important;
+  height: calc(100vh - 70px) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border-right: 1px solid var(--sidebar-border) !important;
-  box-shadow: var(--sidebar-shadow) !important;
-  z-index: var(--sidebar-z-index) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1) !important;
+  z-index: 900 !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  -webkit-font-smoothing: antialiased !important;
-  transition: var(--sidebar-transition) !important;
+  font-family: 'Pretendard', sans-serif !important;
+  transition: all 0.3s ease !important;
   display: flex !important;
   flex-direction: column !important;
 }
 
-/* ✅ 메인 콘텐츠 영역 조정 */
-main {
-  margin-left: var(--sidebar-width) !important;
-  transition: var(--sidebar-transition) !important;
+/* ✅ 다크 테마 사이드바 */
+body.dark-theme .sidebar {
+  background: rgba(30, 30, 46, 0.95) !important;
+  border-right-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
 }
 
 /* ✅ 네비게이션 컨테이너 */
 .sidebar .sidebar-nav {
-  padding: 20px 12px !important;
+  padding: 25px 15px !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 4px !important;
+  gap: 6px !important;
   flex: 1 !important;
 }
 
 /* ✅ 구분선 */
 .sidebar .nav-divider {
   height: 1px !important;
-  background: linear-gradient(90deg, transparent 0%, rgba(102, 126, 234, 0.1) 50%, transparent 100%) !important;
-  margin: 12px 8px !important;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%) !important;
+  margin: 15px 8px !important;
+}
+
+body.dark-theme .sidebar .nav-divider {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%) !important;
 }
 
 /* ✅ 네비게이션 아이템 그룹 */
@@ -70,43 +54,65 @@ main {
   display: flex !important;
   flex-direction: column !important;
   gap: 0 !important;
-  margin-bottom: 2px !important;
-  transition: var(--sidebar-transition) !important;
+  margin-bottom: 4px !important;
+  transition: all 0.3s ease !important;
 }
 
-/* ✅ 네비게이션 아이템 */
+/* ✅ 네비게이션 아이템 - 메인 화면 글래스모피즘 스타일 */
 .sidebar .nav-item {
   display: flex !important;
   align-items: center !important;
   gap: 14px !important;
-  padding: 12px 16px !important;
-  border-radius: var(--sidebar-radius) !important;
-  color: var(--sidebar-text-secondary) !important;
+  padding: 14px 16px !important;
+  border-radius: 16px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
   text-decoration: none !important;
-  transition: var(--sidebar-transition) !important;
+  transition: all 0.3s ease !important;
   cursor: pointer !important;
   position: relative !important;
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   overflow: hidden !important;
-  border: 1px solid transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   font-size: 15px !important;
   font-weight: 500 !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+/* ✅ 다크 테마 네비게이션 아이템 */
+body.dark-theme .sidebar .nav-item {
+  color: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .sidebar .nav-item:hover {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.04) 100%) !important;
-  border-color: rgba(102, 126, 234, 0.15) !important;
-  color: var(--sidebar-text-primary) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: white !important;
   transform: translateX(4px) !important;
   text-decoration: none !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .sidebar .nav-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
 }
 
 .sidebar .nav-item.active {
-  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
   color: white !important;
   font-weight: 600 !important;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .sidebar .nav-item.active {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4) !important;
 }
 
 .sidebar .nav-item.active:hover {
@@ -115,26 +121,39 @@ main {
 
 /* ✅ 아이콘 */
 .sidebar .nav-icon {
-  width: 28px !important;
-  height: 28px !important;
+  width: 30px !important;
+  height: 30px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-size: 16px !important;
-  background: rgba(102, 126, 234, 0.1) !important;
-  border-radius: 8px !important;
-  transition: var(--sidebar-transition) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  transition: all 0.3s ease !important;
   flex-shrink: 0 !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.dark-theme .sidebar .nav-icon {
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
 .sidebar .nav-item:hover .nav-icon {
-  background: rgba(102, 126, 234, 0.15) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
   transform: scale(1.05) !important;
 }
 
+body.dark-theme .sidebar .nav-item:hover .nav-icon {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
 .sidebar .nav-item.active .nav-icon {
+  background: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .sidebar .nav-item.active .nav-icon {
   background: rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3) !important;
 }
 
 /* ✅ 텍스트 */
@@ -146,17 +165,17 @@ main {
 
 /* ✅ 인디케이터 */
 .sidebar .nav-indicator {
-  width: 4px !important;
-  height: 4px !important;
-  background: var(--sidebar-primary) !important;
+  width: 6px !important;
+  height: 6px !important;
+  background: rgba(255, 255, 255, 0.6) !important;
   border-radius: 50% !important;
   opacity: 0 !important;
   transform: scale(0) !important;
-  transition: var(--sidebar-transition) !important;
+  transition: all 0.3s ease !important;
 }
 
 .sidebar .nav-item:hover .nav-indicator {
-  opacity: 0.6 !important;
+  opacity: 0.7 !important;
   transform: scale(1) !important;
 }
 
@@ -164,12 +183,13 @@ main {
   background: white !important;
   opacity: 1 !important;
   transform: scale(1.2) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5) !important;
 }
 
 /* ✅ 드롭다운 화살표 */
 .dropdown-arrow {
   margin-left: auto !important;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: transform 0.3s ease !important;
   opacity: 0.7 !important;
   display: flex !important;
   align-items: center !important;
@@ -186,7 +206,7 @@ main {
 
 .nav-item-group:hover .dropdown-arrow {
   opacity: 1 !important;
-  color: var(--sidebar-primary) !important;
+  color: white !important;
 }
 
 /* ✅ 드롭다운 메뉴 */
@@ -198,12 +218,12 @@ main {
   background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  border-radius: var(--sidebar-radius) !important;
-  margin: 4px 0 0 0 !important;
+  border-radius: 16px !important;
+  margin: 6px 0 0 0 !important;
   padding: 0 !important;
   border: none !important;
   box-shadow: none !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: all 0.3s ease !important;
   position: relative !important;
   z-index: 1 !important;
 }
@@ -212,7 +232,7 @@ main {
   opacity: 1 !important;
   visibility: visible !important;
   max-height: 200px !important;
-  padding: 4px 0 0 0 !important;
+  padding: 6px 0 0 0 !important;
   margin-left: 0 !important;
   margin-top: 0 !important;
   background: transparent !important;
@@ -225,17 +245,24 @@ main {
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
-  padding: 10px 14px !important;
-  color: var(--sidebar-text-secondary) !important;
+  padding: 12px 16px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   text-decoration: none !important;
-  border-radius: calc(var(--sidebar-radius) - 2px) !important;
-  transition: var(--sidebar-transition) !important;
+  border-radius: 14px !important;
+  transition: all 0.3s ease !important;
   font-size: 14px !important;
   font-weight: 500 !important;
-  background: transparent !important;
-  border: 1px solid transparent !important;
-  margin: 0 12px 2px 12px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin: 0 12px 4px 12px !important;
   cursor: pointer !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.dark-theme .dropdown-item {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 .dropdown-item:last-child {
@@ -243,43 +270,70 @@ main {
 }
 
 .dropdown-item:hover {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.04) 100%) !important;
-  border-color: rgba(102, 126, 234, 0.15) !important;
-  color: var(--sidebar-text-primary) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
   transform: translateX(2px) !important;
   text-decoration: none !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3) !important;
 }
 
 .dropdown-item.active {
-  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-secondary) 100%) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   color: white !important;
   font-weight: 600 !important;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .dropdown-item.active {
+  background: rgba(255, 255, 255, 0.1) !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4) !important;
 }
 
 /* ✅ 드롭다운 아이콘 */
 .dropdown-icon {
-  width: 20px !important;
-  height: 20px !important;
+  width: 24px !important;
+  height: 24px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-size: 14px !important;
-  background: rgba(102, 126, 234, 0.08) !important;
-  border-radius: 6px !important;
-  transition: var(--sidebar-transition) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
   flex-shrink: 0 !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.dark-theme .dropdown-icon {
+  background: rgba(255, 255, 255, 0.06) !important;
 }
 
 .dropdown-item:hover .dropdown-icon {
-  background: rgba(102, 126, 234, 0.15) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
   transform: scale(1.05) !important;
+}
+
+body.dark-theme .dropdown-item:hover .dropdown-icon {
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
 .dropdown-item.active .dropdown-icon {
   background: rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .dropdown-item.active .dropdown-icon {
+  background: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* ✅ 드롭다운 텍스트 */
@@ -289,46 +343,43 @@ main {
   white-space: nowrap !important;
 }
 
-/* ✅ 스크롤바 스타일 */
+/* ✅ 스크롤바 스타일 - 메인 화면과 일치 */
 .sidebar::-webkit-scrollbar {
-  width: 4px !important;
+  width: 8px !important;
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 4px !important;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3) !important;
-  border-radius: 2px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-theme .sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.5) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 
-/* 드롭다운 메뉴 스크롤바 */
-.dropdown-menu::-webkit-scrollbar {
-  width: 3px !important;
-}
-
-.dropdown-menu::-webkit-scrollbar-track {
-  background: transparent !important;
-}
-
-.dropdown-menu::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.2) !important;
-  border-radius: 2px !important;
-}
-
-.dropdown-menu::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.4) !important;
+body.dark-theme .sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
 }
 
 /* ✅ 포커스 접근성 */
 .sidebar .nav-item:focus-visible,
 .dropdown-item:focus-visible {
-  outline: 2px solid var(--sidebar-primary) !important;
+  outline: 2px solid rgba(255, 255, 255, 0.5) !important;
   outline-offset: 2px !important;
 }
 
@@ -337,56 +388,19 @@ main {
   outline: none !important;
 }
 
-/* ✅ 다크 모드 대응 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --sidebar-bg: rgba(26, 32, 44, 0.95) !important;
-    --sidebar-text-primary: #f7fafc !important;
-    --sidebar-text-secondary: #e2e8f0 !important;
-    --sidebar-text-light: #cbd5e0 !important;
-    --dropdown-bg: rgba(45, 55, 72, 0.95) !important;
-    --dropdown-border: rgba(102, 126, 234, 0.2) !important;
-  }
-
-  .dropdown-item {
-    color: #e2e8f0 !important;
-  }
-
-  .dropdown-item:hover {
-    color: #f7fafc !important;
-  }
-
-  .dropdown-item.active {
-    color: white !important;
-  }
-
-  .dropdown-icon {
-    background: rgba(102, 126, 234, 0.15) !important;
-  }
-
-  .dropdown-item.active .dropdown-icon {
-    background: rgba(255, 255, 255, 0.2) !important;
-  }
-}
-
-/* ✅ 고대비 모드 대응 */
-@media (prefers-contrast: high) {
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
   .sidebar {
-    border-right: 2px solid var(--sidebar-text-primary) !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s ease !important;
   }
 
-  .sidebar .nav-item,
-  .dropdown-item {
-    border: 2px solid transparent !important;
-  }
-
-  .sidebar .nav-item.active,
-  .dropdown-item.active {
-    border: 2px solid white !important;
+  .sidebar.open {
+    transform: translateX(0) !important;
   }
 }
 
-/* ✅ 애니메이션 줄이기 설정 */
+/* ✅ 애니메이션 최적화 */
 @media (prefers-reduced-motion: reduce) {
   .sidebar *,
   .sidebar *::before,
@@ -402,14 +416,4 @@ main {
   .sidebar {
     display: none !important;
   }
-
-  main {
-    margin-left: 0 !important;
-  }
-}
-
-/* ✅ 사이드바 격리 */
-.sidebar {
-  isolation: isolate !important;
-  contain: layout style paint !important;
 }
