@@ -44,8 +44,13 @@ public class KeywordCompareService {
 
     /** 불용어 제거 및 조사 제거 */
     private String removeParticles(String word) {
-        if (word.length() <= 1) return word;
-        return particlePattern.matcher(word).replaceAll("");
+        Matcher matcher = particlePattern.matcher(word);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(result, matcher.group(1)); // 조사 제외
+        }
+        matcher.appendTail(result);
+        return result.toString();
     }
 
     private boolean isValidKeyword(String word) {

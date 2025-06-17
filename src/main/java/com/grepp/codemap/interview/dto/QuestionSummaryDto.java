@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class QuestionSummaryDto {
 
@@ -15,5 +14,13 @@ public class QuestionSummaryDto {
     private String category;
     private String difficulty;
     private String questionText;
+
+
+    public QuestionSummaryDto(Long questionId, String questionText, String category, String difficulty) {
+        this.id = questionId;
+        this.questionText = questionText;
+        this.category = category;
+        this.difficulty = difficulty;
+    }
 
 }
