@@ -32,7 +32,7 @@
       <div class="nav-item dropdown-toggle">
         <div class="nav-icon">💬</div>
         <span class="nav-text">면접 질문</span>
-        <div class="nav-arrow">
+        <div class="dropdown-arrow">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
             <path d="M7 10l5 5 5-5H7z"/>
           </svg>
@@ -40,11 +40,11 @@
         <div class="nav-indicator"></div>
       </div>
       <div class="dropdown-menu">
-        <a th:href="@{/interview/select}" class="dropdown-item">
+        <a th:href="@{/interview/select}" class="dropdown-item" data-path="/interview">
           <div class="dropdown-icon">🎲</div>
           <span class="dropdown-text">랜덤 문제풀이</span>
         </a>
-        <a th:href="@{/interview/history}" class="dropdown-item">
+        <a th:href="@{/interview/history}" class="dropdown-item" data-path="/interview/history">
           <div class="dropdown-icon">📝</div>
           <span class="dropdown-text">답변 히스토리</span>
         </a>
@@ -66,6 +66,3 @@
     </a>
   </nav>
 </div>
-
-
-

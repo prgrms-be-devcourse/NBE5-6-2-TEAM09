@@ -141,6 +141,11 @@
             text-decoration: none;
         }
 
+        .nav-arrow:empty {
+            display: none;
+        }
+
+
         .content-box {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -352,9 +357,11 @@
 
         <div class="answer-container">
             <!-- 왼쪽 화살표 -->
-            <div th:if="${page > 0}" class="nav-arrow left">
-                <a th:href="@{/interview/question(page=${page - 1}, category=${category})}"></a>
-            </div>
+            <th:block th:if="${page > 0}">
+                <div class="nav-arrow left">
+                    <a th:href="@{/interview/question(page=${page - 1}, category=${category})}"></a>
+                </div>
+            </th:block>
 
             <!-- 답변 확인 영역 -->
             <div class="content-box">
@@ -382,9 +389,11 @@
             </div>
 
             <!-- 오른쪽 화살표 -->
-            <div th:if="${page + 1 < totalPages}" class="nav-arrow right">
-                <a th:href="@{/interview/question(page=${page + 1}, category=${category})}"></a>
-            </div>
+            <th:block th:if="${page + 1 < totalPages}">
+                <div class="nav-arrow right">
+                    <a th:href="@{/interview/question(page=${page + 1}, category=${category})}"></a>
+                </div>
+            </th:block>
         </div>
 
         <!-- 페이지네이션 -->
