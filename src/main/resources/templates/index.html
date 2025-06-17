@@ -8,6 +8,12 @@
   <link rel="stylesheet" th:href="@{/css/landing/index.css}"/>
 </head>
 <body>
+<!-- 다크모드 토글 버튼 -->
+<button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
+  <span class="sun-icon">☀️</span>
+  <span class="moon-icon">🌙</span>
+</button>
+
 <!-- 애니메이션 배경 -->
 <div class="background-animation">
   <div class="floating-shape"></div>
@@ -88,6 +94,39 @@
 </main>
 
 <script>
+  // 다크모드 토글 기능
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  const logo = document.querySelector('.logo');
+
+  // 로고 이미지 변경 함수
+  function updateLogo(theme) {
+    if (theme === 'dark') {
+      logo.src = '/img/codemap_white.png';
+    } else {
+      logo.src = '/img/codemap_blue.png';
+    }
+  }
+
+  // 저장된 테마 불러오기
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  body.classList.add(savedTheme + '-theme');
+  updateLogo(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('light-theme')) {
+      body.classList.remove('light-theme');
+      body.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
+      updateLogo('dark');
+    } else {
+      body.classList.remove('dark-theme');
+      body.classList.add('light-theme');
+      localStorage.setItem('theme', 'light');
+      updateLogo('light');
+    }
+  });
+
   // 부드러운 스크롤
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
