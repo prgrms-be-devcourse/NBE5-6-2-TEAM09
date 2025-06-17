@@ -1063,6 +1063,8 @@
 <div id="codingTestModal">
   <h3>코딩테스트 준비 루틴 추가</h3>
   <form id="codingTestForm" th:action="@{/routines}" method="post">
+
+    <input type="text" name="title" placeholder="루틴 제목 (예: 백준 알고리즘 풀이)" required />
     <select name="problemType" required>
       <option value="">문제 종류 선택</option>
       <option value="자료구조">자료구조</option>
@@ -1079,7 +1081,6 @@
     <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180" required />
     <input type="number" name="breakTime" placeholder="휴식 시간(분)" min="1" max="60" value="5" required />
     <input type="hidden" name="category" id="codingTestCategory" />
-    <input type="hidden" name="title" id="codingTestTitle" />
     <div class="button-group">
       <button type="button" class="cancel" onclick="closeCodingTestModal()">취소</button>
       <button type="submit" class="submit">저장</button>
@@ -1091,8 +1092,8 @@
 <div id="interviewModal">
   <h3>면접 준비 루틴 추가</h3>
   <form id="interviewForm" th:action="@{/routines}" method="post">
-    <input type="hidden" id="interviewTitle" name="title" />
-    <input type="hidden" id="interviewCategory" name="category" />
+
+    <input type="text" name="title" placeholder="루틴 제목 입력 (예: Java 기초 개념 정리)" required />
 
     <select name="techType" required>
       <option value="">기술 종류 선택</option>
@@ -1107,6 +1108,8 @@
     <textarea name="description" placeholder="상세 설명 (선택사항)"></textarea>
     <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180"  required />
     <input type="number" name="breakTime" placeholder="휴식 시간(분)" min="1" max="60" value="5" required />
+
+    <input type="hidden" name="category" id="interviewCategory" />
 
     <div class="button-group">
       <button type="button" class="cancel" onclick="closeInterviewModal()">취소</button>
@@ -1220,7 +1223,6 @@
   document.getElementById('codingTestForm').addEventListener('submit', function(e) {
     const problemType = document.querySelector('select[name="problemType"]').value;
     if (problemType) {
-      document.getElementById('codingTestTitle').value = `코딩테스트 준비 - ${problemType}`;
       document.getElementById('codingTestCategory').value = `코딩테스트 준비 - ${problemType}`;
     }
   });
@@ -1229,7 +1231,6 @@
   document.getElementById('interviewForm').addEventListener('submit', function(e) {
     const techType = document.querySelector('select[name="techType"]').value;
     if (techType) {
-      document.getElementById('interviewTitle').value = `면접준비 - ${techType}`;
       document.getElementById('interviewCategory').value = `면접준비 - ${techType}`;
     }
   });
