@@ -1,4 +1,4 @@
-/* ✅ 헤더 전용 CSS 변수 - 격리된 네임스페이스 */
+/* ✅ PC 전용 헤더 CSS 변수 */
 :root {
   --header-height: 70px;
   --header-bg: rgba(255, 255, 255, 0.85);
@@ -18,7 +18,7 @@
   --header-z-index: 9999;
 }
 
-/* ✅ 페이지 레이아웃 보정 - 더 구체적으로 명시 */
+/* ✅ 페이지 레이아웃 보정 */
 body:has(.header) {
   padding-top: var(--header-height) !important;
   transition: var(--header-transition) !important;
@@ -31,7 +31,7 @@ body:has(.header) main {
   margin-top: 0 !important;
 }
 
-/* 사이드바가 있는 경우 - 더 구체적으로 */
+/* 사이드바가 있는 경우 */
 body:has(.header) aside,
 .header ~ aside,
 .header + * aside {
@@ -39,23 +39,8 @@ body:has(.header) aside,
   height: calc(100vh - var(--header-height)) !important;
 }
 
-/* 모바일 사이드바 오버레이 - 헤더 존재 시에만 */
-body.sidebar-open:has(.header)::before {
-  content: '' !important;
-  position: fixed !important;
-  top: var(--header-height) !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  z-index: 999 !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
-}
-
-/* ✅ 헤더 메인 컨테이너 - 완전 격리 */
+/* ✅ 헤더 메인 컨테이너 */
 .header {
-  /* 레이아웃 강제 설정 */
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -64,40 +49,26 @@ body.sidebar-open:has(.header)::before {
   height: var(--header-height) !important;
   z-index: var(--header-z-index) !important;
 
-  /* 디스플레이 강제 설정 */
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
 
-  /* 패딩/마진 강제 설정 */
   padding: 0 2rem !important;
   margin: 0 !important;
 
-  /* 배경 효과 강제 설정 */
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
 
-  /* 폰트 강제 설정 */
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
 
-  /* 기타 속성 강제 설정 */
   transition: var(--header-transition) !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
-
-  /* 외부 스타일 리셋 */
-  border: none !important;
-  outline: none !important;
-  text-decoration: none !important;
-  list-style: none !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
 }
 
-/* ✅ 헤더 내부 모든 요소 기본값 리셋 */
+/* ✅ 헤더 내부 요소 기본값 리셋 */
 .header *,
 .header *::before,
 .header *::after {
@@ -115,7 +86,7 @@ body.sidebar-open:has(.header)::before {
   color: inherit !important;
 }
 
-/* ✅ 헤더 배경 효과 - 완전 격리 */
+/* ✅ 헤더 배경 효과 */
 .header .header-background {
   position: absolute !important;
   top: 0 !important;
@@ -162,7 +133,7 @@ body.sidebar-open:has(.header)::before {
   padding: 0 !important;
 }
 
-/* 스크롤 시 헤더 효과 - 더 구체적으로 */
+/* 스크롤 시 헤더 효과 */
 .header.scrolled .header-gradient-overlay {
   background: linear-gradient(135deg,
   rgba(102, 126, 234, 0.15) 0%,
@@ -171,99 +142,7 @@ body.sidebar-open:has(.header)::before {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* ✅ 모바일 사이드바 토글 버튼 - 완전 격리 */
-.header .sidebar-toggle {
-  display: none !important;
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px !important;
-  min-height: 44px !important;
-  max-width: 44px !important;
-  max-height: 44px !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  transition: var(--header-transition) !important;
-  position: relative !important;
-  overflow: hidden !important;
-  justify-content: center !important;
-  align-items: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  font-family: inherit !important;
-}
-
-.header .hamburger-container {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 3px !important;
-  position: relative !important;
-  z-index: 2 !important;
-  width: 18px !important;
-  height: 14px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.header .hamburger-line {
-  width: 18px !important;
-  height: 2px !important;
-  min-height: 2px !important;
-  max-height: 2px !important;
-  background: linear-gradient(90deg, var(--header-primary), var(--header-secondary)) !important;
-  border-radius: 1px !important;
-  transition: var(--header-transition) !important;
-  display: block !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-}
-
-.header .toggle-glow {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%) !important;
-  opacity: 0 !important;
-  transition: var(--header-transition) !important;
-  border-radius: 12px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.header .sidebar-toggle:hover {
-  transform: translateY(-2px) scale(1.05) !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25) !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
-}
-
-.header .sidebar-toggle:hover .toggle-glow {
-  opacity: 1 !important;
-}
-
-.header .sidebar-toggle.active .hamburger-line:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px) !important;
-}
-
-.header .sidebar-toggle.active .hamburger-line:nth-child(2) {
-  opacity: 0 !important;
-  transform: translateX(20px) !important;
-}
-
-.header .sidebar-toggle.active .hamburger-line:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -6px) !important;
-}
-
-/* ✅ 로고 영역 - 완전 격리 */
+/* ✅ 로고 영역 */
 .header .header-logo {
   display: flex !important;
   align-items: center !important;
@@ -413,7 +292,7 @@ body.sidebar-open:has(.header)::before {
   display: block !important;
 }
 
-/* ✅ 헤더 중앙 빈 공간 - 완전 격리 */
+/* ✅ 헤더 중앙 빈 공간 */
 .header .header-center {
   flex: 1 !important;
   margin: 0 !important;
@@ -421,7 +300,7 @@ body.sidebar-open:has(.header)::before {
   height: 100% !important;
 }
 
-/* ✅ 헤더 액션 영역 - 완전 격리 */
+/* ✅ 헤더 액션 영역 */
 .header .header-actions {
   display: flex !important;
   align-items: center !important;
@@ -432,7 +311,7 @@ body.sidebar-open:has(.header)::before {
   height: 100% !important;
 }
 
-/* ✅ 액션 버튼 공통 스타일 - 완전 격리 */
+/* ✅ 액션 버튼 공통 스타일 */
 .header .action-btn {
   position: relative !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
@@ -515,7 +394,7 @@ body.sidebar-open:has(.header)::before {
   opacity: 1 !important;
 }
 
-/* ✅ 알림 영역 - 완전 격리 */
+/* ✅ 알림 영역 */
 .header .notification-wrapper {
   position: relative !important;
   display: flex !important;
@@ -559,7 +438,7 @@ body.sidebar-open:has(.header)::before {
   padding: 0 !important;
 }
 
-/* ✅ 사용자 정보 - 완전 격리 */
+/* ✅ 사용자 정보 */
 .header .user-info {
   display: flex !important;
   align-items: center !important;
@@ -715,7 +594,7 @@ body.sidebar-open:has(.header)::before {
   50% { opacity: 0.4; }
 }
 
-/* ✅ 로그아웃 버튼 - 완전 격리 */
+/* ✅ 로그아웃 버튼 */
 .header .logout-form {
   margin: 0 !important;
   padding: 0 !important;
@@ -748,135 +627,8 @@ body.sidebar-open:has(.header)::before {
   font-size: 14px !important;
 }
 
-/* ✅ 반응형 - 태블릿 (768px ~ 1024px) */
-@media (max-width: 1024px) {
-  .header {
-    padding: 0 1.5rem !important;
-  }
-
-  .header .header-center {
-    flex: 0.8 !important;
-  }
-
-  .header .logo-subtitle {
-    display: none !important;
-  }
-
-  .header .header-actions {
-    gap: 16px !important;
-  }
-}
-
-/* ✅ 반응형 - 모바일 (최대 768px) */
-@media (max-width: 768px) {
-  .header .sidebar-toggle {
-    display: flex !important;
-  }
-
-  .header {
-    padding: 0 1rem !important;
-  }
-
-  .header .header-actions {
-    gap: 12px !important;
-  }
-
-  .header .logo-text-wrapper {
-    display: none !important;
-  }
-
-  .header .header-center {
-    display: none !important;
-  }
-
-  .header .user-details {
-    display: none !important;
-  }
-
-  .header .btn-text {
-    display: none !important;
-  }
-
-  .header .action-btn .btn-content {
-    width: 48px !important;
-    height: 48px !important;
-    padding: 0 !important;
-    justify-content: center !important;
-  }
-
-  .header .user-info {
-    width: 48px !important;
-    padding: 0 !important;
-    justify-content: center !important;
-  }
-
-  .header #notification-icon {
-    width: 48px !important;
-    height: 48px !important;
-  }
-}
-
-/* ✅ 반응형 - 소형 모바일 (최대 480px) */
-@media (max-width: 480px) {
-  .header {
-    padding: 0 0.75rem !important;
-  }
-
-  .header .header-actions {
-    gap: 8px !important;
-  }
-
-  .header .logo-icon {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    max-width: 40px !important;
-    max-height: 40px !important;
-  }
-
-  .header .logo-gradient {
-    border-radius: 10px !important;
-  }
-
-  .header .logo-emoji {
-    font-size: 18px !important;
-  }
-
-  .header .action-btn,
-  .header .user-info,
-  .header #notification-icon {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    max-width: 40px !important;
-    max-height: 40px !important;
-  }
-
-  .header .user-avatar {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    min-height: 28px !important;
-    max-width: 28px !important;
-    max-height: 28px !important;
-    font-size: 12px !important;
-  }
-
-  .header .sidebar-toggle {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    max-width: 40px !important;
-    max-height: 40px !important;
-  }
-}
-
 /* ✅ 접근성 강화 */
 .header .action-btn:focus-visible,
-.header .sidebar-toggle:focus-visible,
 .header .logo-link:focus-visible {
   outline: 2px solid var(--header-primary) !important;
   outline-offset: 2px !important;
@@ -884,18 +636,16 @@ body.sidebar-open:has(.header)::before {
 }
 
 .header .action-btn:focus,
-.header .sidebar-toggle:focus,
 .header .logo-link:focus {
   outline: none !important;
 }
 
 /* ✅ 키보드 네비게이션 지원 */
-.header .action-btn:focus-visible,
-.header .sidebar-toggle:focus-visible {
+.header .action-btn:focus-visible {
   transform: translateY(-2px) scale(1.02) !important;
 }
 
-/* ✅ 다크 모드 대응 - 완전 격리 */
+/* ✅ 다크 모드 대응 */
 @media (prefers-color-scheme: dark) {
   :root {
     --header-bg: rgba(26, 32, 44, 0.85) !important;
@@ -928,8 +678,7 @@ body.sidebar-open:has(.header)::before {
   }
 
   .header .action-btn,
-  .header .user-info,
-  .header .sidebar-toggle {
+  .header .user-info {
     border: 2px solid var(--header-text-primary) !important;
   }
 
@@ -974,67 +723,8 @@ body.sidebar-open:has(.header)::before {
   }
 }
 
-/* ✅ 터치 디바이스 최적화 */
-@media (hover: none) and (pointer: coarse) {
-  .header .action-btn,
-  .header .sidebar-toggle,
-  .header .logo-link {
-    min-height: 44px !important;
-    min-width: 44px !important;
-  }
-
-  .header .action-btn:hover,
-  .header .sidebar-toggle:hover,
-  .header .logo-link:hover,
-  .header .user-info:hover {
-    transform: none !important;
-  }
-}
-
-/* ✅ 외부 스타일 차단 - 최종 방어선 */
-.header,
-.header *,
-.header *::before,
-.header *::after {
-  all: unset !important;
-}
-
-/* 차단 후 헤더 스타일 재적용 */
+/* ✅ 외부 스타일 차단 및 재적용 */
 .header {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  height: var(--header-height) !important;
-  z-index: var(--header-z-index) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 0 2rem !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  transition: var(--header-transition) !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-/* ✅ 헤더 전용 유틸리티 클래스 */
-.header-isolated {
   isolation: isolate !important;
   contain: layout style paint !important;
-}
-
-/* ✅ 스타일 강제 적용 클래스 */
-.header-force-styles * {
-  box-sizing: border-box !important;
-  font-family: inherit !important;
-}
-
-/* ✅ 레이어 분리 */
-.header {
-  will-change: transform, opacity !important;
-  contain: layout style paint !important;
-  isolation: isolate !important;
 }
