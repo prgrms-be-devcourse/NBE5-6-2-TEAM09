@@ -61,13 +61,20 @@ public class InterviewController {
         model.addAttribute("question", questions.get(0));
         model.addAttribute("page", 0);
         model.addAttribute("totalPages", questions.size());
+        model.addAttribute("isHistoryView", false);
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            User user = userService.getUserById(userId);
+            model.addAttribute("user", user);
+        }
+
 
         return "interview/interview-random";
     }
 
     @GetMapping("/question")
     public String showQuestionPage(
-            @RequestParam("category") List<String> categories,
             @RequestParam("page") int page,
             HttpSession session,
             Model model) {
@@ -75,9 +82,7 @@ public class InterviewController {
         List<InterviewQuestion> questions = (List<InterviewQuestion>) session.getAttribute("questions");
 
         if (questions == null || questions.isEmpty()) {
-            questions = interviewService.pickFiveRandomByCategories(categories);
-            session.setAttribute("questions", questions);
-            session.setAttribute("selectedCategories", categories);
+            return "redirect:/interview/select";
         }
 
         if (page < 0 || page >= questions.size()) {
@@ -90,9 +95,18 @@ public class InterviewController {
         model.addAttribute("page", page);
         model.addAttribute("totalPages", questions.size());
         model.addAttribute("category", currentQuestion.getCategory());
+        model.addAttribute("isHistoryView", false);
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            User user = userService.getUserById(userId);
+            model.addAttribute("user", user);
+        }
+
 
         return "interview/interview-random";
     }
+
 
     @PostMapping("/{questionId}/answer")
     public String submitAnswer(
@@ -116,6 +130,13 @@ public class InterviewController {
         model.addAttribute("category", question.getCategory());
         model.addAttribute("page", page);
         model.addAttribute("totalPages", questions.size());
+        model.addAttribute("isHistoryView", false);
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            model.addAttribute("user", user);
+        }
+
 
         return "interview/interview-answer";
     }
@@ -171,6 +192,12 @@ public class InterviewController {
         model.addAttribute("category", question.getCategory());
         model.addAttribute("page", page);
 
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            model.addAttribute("user", user);
+        }
+
         // 분석 결과 추가
         model.addAttribute("analysis", analysis);
         model.addAttribute("highlightedModelAnswer", highlightedModelAnswer);
@@ -179,6 +206,9 @@ public class InterviewController {
 
         int totalPages = ((List<InterviewQuestion>) session.getAttribute("questions")).size();
         model.addAttribute("totalPages", totalPages);
+
+        model.addAttribute("isHistoryView", false);
+
 
         return "interview/interview-result";
     }
@@ -199,6 +229,14 @@ public class InterviewController {
         model.addAttribute("page", nextPage);
         model.addAttribute("totalPages", questions.size());
         model.addAttribute("category", nextQuestion.getCategory());
+        model.addAttribute("isHistoryView", false);
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            User user = userService.getUserById(userId);
+            model.addAttribute("user", user);
+        }
+
 
         log.info("➡️ [NEXT QUESTION] 현재 페이지: {} → 다음 페이지: {}", currentPage, nextPage);
         log.info("📋 [TOTAL QUESTIONS] {}", questions.size());
