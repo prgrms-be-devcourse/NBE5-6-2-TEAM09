@@ -2,12 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" th:href="@{/css/header/base.css}" />
-    <link rel="stylesheet" th:href="@{/css/fragment/header.css}" />
-    <link rel="stylesheet" th:href="@{/css/header/token.css}" />
-    <link rel="stylesheet" th:href="@{/css/sidenav/user/base.css}" />
-    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}" />
-    <link rel="stylesheet" th:href="@{/css/sidenav/user/token.css}" />
+    <title>카테고리 선택</title>
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
     <style>
         * {
             margin: 0;
@@ -17,8 +15,8 @@
 
         html, body {
             height: 100%;
-            font-family: 'Pretendard', sans-serif;
-            background: #ffffff;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             overflow-x: hidden;
         }
@@ -31,7 +29,8 @@
             height: 116px;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         aside {
@@ -42,16 +41,17 @@
             height: calc(100vh - 116px);
             z-index: 900;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         main {
             position: absolute;
             top: 116px;
             margin-left: 270px;
-            width: calc(100vw - 250px);
+            width: calc(100vw - 270px);
             min-height: calc(100vh - 116px);
-            padding: 60px 40px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -59,70 +59,59 @@
         }
 
         .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 3rem 4rem;
             max-width: 900px;
             width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
             margin: 0 auto;
         }
 
         .page-title {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #667eea;
-            margin-bottom: 3rem;
-            text-align: center;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .category-container {
-            background: rgba(248, 250, 252, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 24px;
-            padding: 3rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #667eea;
             text-align: center;
-            margin-bottom: 2.5rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .error-message {
-            background: rgba(248, 215, 218, 0.9);
-            color: #721c24;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            border-left: 4px solid #dc3545;
-            backdrop-filter: blur(10px);
+            letter-spacing: -0.025em;
         }
 
         .category-option {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid rgba(102, 126, 234, 0.2);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 16px;
             padding: 1.5rem 2rem;
             margin: 1rem 0;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .category-option:hover {
-            background: rgba(102, 126, 234, 0.05);
-            border-color: rgba(102, 126, 234, 0.4);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #667eea;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
         }
 
         .category-option input[type="checkbox"] {
@@ -135,8 +124,7 @@
 
         .category-option span {
             font-weight: 600;
-            color: #333;
-            text-shadow: none;
+            flex: 1;
         }
 
         .submit-button {
@@ -144,20 +132,24 @@
             color: white;
             border: none;
             padding: 1rem 3rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
             display: block;
-            margin: 3rem auto 0;
-            transition: all 0.3s ease;
-            text-shadow: none;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin: 2rem auto 0;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: -0.025em;
         }
 
         .submit-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
         }
 
         .modal-overlay {
@@ -176,40 +168,42 @@
 
         .modal-box {
             background: rgba(255, 255, 255, 0.95);
-            padding: 3rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 24px;
+            padding: 3rem;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.4s ease-out;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             max-width: 500px;
             margin: 1rem;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .modal-message {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #333;
+            color: #374151;
             margin-bottom: 2rem;
+            line-height: 1.4;
         }
 
         .modal-confirm-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
             padding: 1rem 2.5rem;
             font-size: 1.1rem;
             font-weight: 600;
-            border: none;
             border-radius: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            letter-spacing: -0.025em;
         }
 
         .modal-confirm-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
         }
 
         @keyframes fadeIn {
@@ -223,53 +217,64 @@
             }
         }
 
+        @media (max-width: 1000px) {
+            .content-box {
+                margin: 0 20px;
+                max-width: 800px;
+                padding: 2.5rem 3rem;
+            }
+        }
+
         @media (max-width: 768px) {
-            aside {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            aside.open {
-                transform: translateX(0);
-            }
-
             main {
-                position: absolute;
-                top: 116px;
-                left: 0;
+                margin-left: 0;
                 width: 100vw;
-                padding: 2rem 1rem;
+                padding: 20px 15px;
+            }
+
+            .content-box {
+                margin: 0;
+                padding: 2rem 1.5rem;
             }
 
             .page-title {
-                font-size: 2rem;
-            }
-
-            .category-container {
-                padding: 2rem;
+                font-size: 1.3rem;
             }
 
             .category-option {
-                padding: 1rem 1.5rem;
+                padding: 1.2rem 1.5rem;
                 font-size: 1rem;
+            }
+
+            .submit-button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+
+            .modal-box {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .modal-message {
+                font-size: 1.3rem;
             }
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+        @media (max-width: 480px) {
+            .content-box {
+                padding: 1.5rem 1rem;
+            }
 
-        ::-webkit-scrollbar-track {
-            background: rgba(102, 126, 234, 0.1);
-        }
+            .page-title {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
 
-        ::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.3);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.5);
+            .category-option {
+                padding: 1rem 1.2rem;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -277,13 +282,14 @@
 <th:block th:replace="~{fragments/common/alert-script :: alert-script}"></th:block>
 <header th:replace="~{fragments/header/header :: header}"></header>
 <aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
+<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
 
 <main>
     <div class="main-container">
-        <h1 class="page-title">🎯 면접 준비</h1>
-
-        <div class="category-container">
-            <h2 class="section-title">학습할 카테고리를 선택하세요</h2>
+        <div class="content-box">
+            <div class="page-title">
+                학습할 카테고리를 선택하세요
+            </div>
 
             <form th:action="@{/interview/select}" method="post">
                 <label class="category-option">
@@ -334,14 +340,6 @@
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-
-        setTimeout(() => {
-            window.scrollTo(0, 0);
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-        }, 100);
     });
 
     const message = [[${message}]];

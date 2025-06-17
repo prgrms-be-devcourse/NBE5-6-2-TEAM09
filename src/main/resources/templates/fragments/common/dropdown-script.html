@@ -1,0 +1,102 @@
+<!-- templates/fragments/common/dropdown-script.html -->
+<div th:fragment="dropdown-script">
+    <script th:inline="javascript">
+        <!-- ✅ 스크립트 -->
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname;
+            const navItems = document.querySelectorAll('.sidebar .nav-item');
+
+            const pathMapping = {
+                '/user/main': 'main',
+                '/todos': 'todos',
+                '/todos/calender': 'todos',
+                '/routines': 'routines',
+                '/jobposting/page': 'jobposting',
+                '/interview/select': 'interview',
+                '/mypage/stats': 'stats',
+                '/settings': 'settings'
+            };
+
+            let activeNav = pathMapping[currentPath];
+            if (!activeNav) {
+                for (const [path, nav] of Object.entries(pathMapping)) {
+                    if (currentPath.startsWith(path) && path !== '/') {
+                        activeNav = nav;
+                        break;
+                    }
+                }
+            }
+
+            if (activeNav) {
+                const activeItem = document.querySelector(`.sidebar [data-nav="${activeNav}"]`);
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const icon = this.querySelector('.nav-icon');
+                    if (icon) {
+                        icon.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            icon.style.transform = '';
+                        }, 150);
+                    }
+                });
+
+                item.addEventListener('mouseenter', function () {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateX(4px)';
+                    }
+                });
+
+                item.addEventListener('mouseleave', function () {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = '';
+                    }
+                });
+            });
+
+            // ✅ 드롭다운 메뉴 처리
+            console.log('✅ 드롭다운 초기화 시작');
+
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+
+            if (dropdownToggles.length === 0) {
+                console.warn('⚠ 드롭다운 토글 요소가 없습니다.');
+                return;
+            }
+
+            dropdownToggles.forEach(toggle => {
+                console.log('✅ 드롭다운 토글 발견:', toggle);
+                toggle.addEventListener('click', function (e) {
+                    console.log('✅ 드롭다운 클릭됨');
+                    e.stopPropagation();
+                    const parent = this.closest('.nav-item-group');
+                    parent.classList.toggle('open');
+
+                    // 다른 드롭다운 닫기
+                    document.querySelectorAll('.nav-item-group').forEach(group => {
+                        if (group !== parent) group.classList.remove('open');
+                    });
+                });
+            });
+
+            // 외부 클릭 시 닫기
+            document.addEventListener('click', function (e) {
+                document.querySelectorAll('.nav-item-group').forEach(group => {
+                    if (!group.contains(e.target)) {
+                        group.classList.remove('open');
+                    }
+                });
+            });
+        });
+
+    </script>
+</div>
+
+
