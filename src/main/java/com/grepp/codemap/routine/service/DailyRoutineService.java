@@ -92,33 +92,43 @@ public class DailyRoutineService {
     public Map<String, List<DailyRoutineDto>> getRoutinesByDate(Long userId, LocalDate date) {
         User user = userService.getUserById(userId);
 
-        // 해당 날짜의 모든 루틴 가져오기
-        List<DailyRoutine> dateRoutines = dailyRoutineRepository.findRoutinesByUserAndDate(user, date);
+        // 오늘 날짜인 경우에만 daily_routines에서 조회
+        if (date.equals(LocalDate.now())) {
+            List<DailyRoutine> dateRoutines = dailyRoutineRepository.findRoutinesByUserAndDate(user, date);
 
-        // 상태별로 분류
-        Map<String, List<DailyRoutineDto>> result = new HashMap<>();
+            Map<String, List<DailyRoutineDto>> result = new HashMap<>();
 
-        List<DailyRoutineDto> activeRoutines = dateRoutines.stream()
-            .filter(r -> "ACTIVE".equals(r.getStatus()))
-            .map(DailyRoutineDto::fromEntity)
-            .collect(Collectors.toList());
+            List<DailyRoutineDto> activeRoutines = dateRoutines.stream()
+                .filter(r -> "ACTIVE".equals(r.getStatus()))
+                .map(DailyRoutineDto::fromEntity)
+                .collect(Collectors.toList());
 
-        List<DailyRoutineDto> completedRoutines = dateRoutines.stream()
-            .filter(r -> "COMPLETED".equals(r.getStatus()))
-            .map(DailyRoutineDto::fromEntity)
-            .collect(Collectors.toList());
+            List<DailyRoutineDto> completedRoutines = dateRoutines.stream()
+                .filter(r -> "COMPLETED".equals(r.getStatus()))
+                .map(DailyRoutineDto::fromEntity)
+                .collect(Collectors.toList());
 
-        List<DailyRoutineDto> passedRoutines = dateRoutines.stream()
-            .filter(r -> "PASS".equals(r.getStatus()))
-            .map(DailyRoutineDto::fromEntity)
-            .collect(Collectors.toList());
+            List<DailyRoutineDto> passedRoutines = dateRoutines.stream()
+                .filter(r -> "PASS".equals(r.getStatus()))
+                .map(DailyRoutineDto::fromEntity)
+                .collect(Collectors.toList());
 
-        result.put("active", activeRoutines);
-        result.put("completed", completedRoutines);
-        result.put("passed", passedRoutines);
+            result.put("active", activeRoutines);
+            result.put("completed", completedRoutines);
+            result.put("passed", passedRoutines);
 
-        return result;
+            return result;
+        } else {
+            // 과거 날짜는 히스토리에서 조회하도록 빈 결과 반환
+            Map<String, List<DailyRoutineDto>> result = new HashMap<>();
+            result.put("active", List.of());
+            result.put("completed", List.of());
+            result.put("passed", List.of());
+            return result;
+        }
     }
+
+
 
     // 루틴 수정
     @Transactional
@@ -393,10 +403,15 @@ public class DailyRoutineService {
         DailyRoutine currentRoutine = dailyRoutineRepository.findById(currentRoutineId)
             .orElseThrow(() -> new IllegalArgumentException("Routine not found"));
 
+        // ACTIVE 상태의 루틴만 조회
         List<DailyRoutine> activeRoutines = dailyRoutineRepository.findByUserAndStatusAndNotDeleted(user, "ACTIVE");
+
+        // 현재 루틴을 제외하고, ID 순서로 다음 루틴 찾기
+        // (날짜가 바뀌면서 createdAt이 비슷해질 수 있으므로 ID로 정렬)
         return activeRoutines.stream()
-            .filter(routine -> routine.getCreatedAt().isAfter(currentRoutine.getCreatedAt()))
-            .min((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()))
+            .filter(routine -> !routine.getId().equals(currentRoutineId))
+            .filter(routine -> routine.getId() > currentRoutineId)
+            .min((r1, r2) -> r1.getId().compareTo(r2.getId()))
             .map(DailyRoutineDto::fromEntity)
             .orElse(null);
     }
@@ -529,5 +544,14 @@ public class DailyRoutineService {
 
         // 루틴 완료 처리
         return completeRoutine(routineId, userId);
+    }
+
+    public List<DailyRoutineDto> getAllActiveRoutinesByUser(Long userId) {
+        User user = userService.getUserById(userId);
+        List<DailyRoutine> routines = dailyRoutineRepository.findByUserAndIsDeletedFalseOrderByCreatedAtDesc(user);
+
+        return routines.stream()
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
     }
 }

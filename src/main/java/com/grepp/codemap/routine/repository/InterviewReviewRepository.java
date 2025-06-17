@@ -19,4 +19,8 @@ public interface InterviewReviewRepository extends JpaRepository<InterviewReview
     @Modifying
     @Query("DELETE FROM InterviewReview i WHERE i.routine.id IN (SELECT r.id FROM DailyRoutine r WHERE r.user.id = :userId)")
     void deleteByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE InterviewReview i SET i.isDeleted = true WHERE i.routine.id = :routineId")
+    void softDeleteByRoutineId(@Param("routineId") Long routineId);
 }

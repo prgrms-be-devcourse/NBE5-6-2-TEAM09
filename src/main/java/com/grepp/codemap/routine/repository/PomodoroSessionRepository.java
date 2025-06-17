@@ -1,5 +1,6 @@
 package com.grepp.codemap.routine.repository;
 
+import com.grepp.codemap.routine.domain.DailyRoutine;
 import com.grepp.codemap.routine.domain.PomodoroSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -33,8 +34,14 @@ public interface PomodoroSessionRepository extends JpaRepository<PomodoroSession
         """, nativeQuery = true)
     Long getTotalActualSessionSeconds(@Param("routineId") Long routineId);
 
-
     @Modifying
     @Query("DELETE FROM PomodoroSession ps WHERE ps.routine.id IN (SELECT r.id FROM DailyRoutine r WHERE r.user.id = :userId)")
     void deleteByUserId(@Param("userId") Long userId);
+
+    // 🔧 추가된 메서드들
+    @Query("SELECT ps FROM PomodoroSession ps JOIN FETCH ps.routine r JOIN FETCH r.user WHERE ps.routine = :routine AND ps.endedAt IS NULL")
+    List<PomodoroSession> findByRoutineAndEndedAtIsNull(@Param("routine") DailyRoutine routine);
+
+    @Query("SELECT ps FROM PomodoroSession ps JOIN FETCH ps.routine r JOIN FETCH r.user WHERE ps.routine.id = :routineId AND ps.endedAt IS NULL")
+    List<PomodoroSession> findByRoutineIdAndEndedAtIsNull(@Param("routineId") Long routineId);
 }
