@@ -231,13 +231,23 @@
   </div> <!-- admin-container end -->
 </main>
 
-<!-- ✅ 대시보드 전용 스크립트 -->
+<!-- ✅ 스크롤 초기화 스크립트 (일반 사용자와 동일) -->
 <script>
-  // admin-dashboard.js
-  // 관리자 대시보드 전용 JavaScript
-
+  // ✅ 페이지 로드 즉시 상단으로 스크롤 강제 실행
   document.addEventListener('DOMContentLoaded', function() {
     console.log('🛠️ 관리자 대시보드 로드 완료');
+
+    // 즉시 상단으로 스크롤
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // 추가 보장을 위해 약간의 지연 후 다시 실행
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
 
     // ✅ 초기화
     initDashboard();
@@ -247,6 +257,16 @@
 
     // ✅ 실시간 업데이트 시작 (30초마다)
     startRealtimeUpdates();
+  });
+
+  // ✅ 브라우저 뒤로가기/앞으로가기 시에도 상단 스크롤 보장
+  window.addEventListener('pageshow', function(event) {
+    window.scrollTo(0, 0);
+  });
+
+  // ✅ 모든 로드 이벤트에서 스크롤 리셋
+  window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
   });
 
   /**
@@ -581,6 +601,5 @@
     updateMetrics: updateSystemMetrics
   };
 </script>
-
 </body>
 </html>

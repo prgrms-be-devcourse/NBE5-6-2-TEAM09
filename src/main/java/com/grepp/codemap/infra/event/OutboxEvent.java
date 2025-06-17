@@ -20,7 +20,7 @@ public class OutboxEvent {
     private String eventType;
 
     @Builder.Default
-    private String sourceService = "user-service";
+    private String sourceService = "core-service";
 
     private String payload;
 
