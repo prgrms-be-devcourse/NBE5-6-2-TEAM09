@@ -433,11 +433,11 @@
         totalItems = historyItems.length;
         totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        if (totalPages <= 1) {
-            // 페이지가 1개 이하면 페이지네이션 숨기기
-            document.getElementById('pagination-container').style.display = 'none';
-            return;
-        }
+        // if (totalPages <= 1) {
+        //     // 페이지가 1개 이하면 페이지네이션 숨기기
+        //     document.getElementById('pagination-container').style.display = 'none';
+        //     return;
+        // }
 
         // 초기 페이지 표시
         showPage(1);
