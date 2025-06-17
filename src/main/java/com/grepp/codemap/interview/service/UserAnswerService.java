@@ -38,17 +38,10 @@ public class UserAnswerService {
                 .orElseThrow(() -> new RuntimeException("답변이 존재하지 않습니다."));
     }
 
+    // 답변한 질문 목록 조회 (중복 없이 최신 것만)
     public List<QuestionSummaryDto> getAnsweredQuestionsByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
-        return userAnswerRepository.findByUserIdOrderByIdDesc(userId).stream()
-                .map(ua -> new QuestionSummaryDto(
-                        ua.getQuestion().getId(),
-                        ua.getQuestion().getCategory(),
-                        ua.getQuestion().getDifficulty(),
-                        ua.getQuestion().getQuestionText()
-                ))
-                .collect(Collectors.toList());
+        return userAnswerRepository.findLatestAnswersByUserId(userId);
     }
+
 
 }
