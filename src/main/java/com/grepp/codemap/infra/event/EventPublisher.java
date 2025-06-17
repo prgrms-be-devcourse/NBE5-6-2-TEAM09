@@ -14,7 +14,7 @@ public class EventPublisher {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 
-    private static final String MAIL_CHANNEL = "user-service";
+    private static final String MAIL_CHANNEL = "core-service";
 
     /**
      * 메일 이벤트를 Redis Pub/Sub으로 발행
