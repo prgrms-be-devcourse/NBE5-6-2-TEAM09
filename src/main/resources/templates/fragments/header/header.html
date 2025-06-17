@@ -1,20 +1,10 @@
-<!-- ✅ 개선된 헤더 Fragment -->
+<!-- ✅ PC 전용 헤더 Fragment -->
 <div th:fragment="header" class="header">
   <!-- 헤더 배경 효과 -->
   <div class="header-background">
     <div class="header-blur-overlay"></div>
     <div class="header-gradient-overlay"></div>
   </div>
-
-  <!-- 모바일 사이드바 토글 버튼 -->
-  <button class="sidebar-toggle" onclick="toggleSidebar()">
-    <div class="hamburger-container">
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-    </div>
-    <div class="toggle-glow"></div>
-  </button>
 
   <!-- 좌측 로고 영역 -->
   <div class="header-logo">
@@ -37,12 +27,11 @@
   <div class="header-center"></div>
 
   <!-- 우측 사용자 정보 영역 -->
-  <div class="header-actions" style="display: flex; align-items: center; gap: 16px; margin-right: 24px;">
-
-    <!-- ✅ 알림 아이콘 (기존 구조와 호환되도록) -->
-    <div class="notification-wrapper" style="position: relative; display: flex; align-items: center;">
-      <span id="notification-icon" style="font-size: 20px; cursor: pointer;">🔔</span>
-      <div id="notification-popup"></div> <!-- 인라인 스타일 제거 -->
+  <div class="header-actions">
+    <!-- 알림 아이콘 -->
+    <div class="notification-wrapper">
+      <span id="notification-icon">🔔</span>
+      <div id="notification-popup"></div>
     </div>
 
     <!-- 사용자 정보 -->
@@ -74,7 +63,7 @@
   </div>
 </div>
 
-<!-- ✅ 헤더 관련 스크립트 -->
+<!-- ✅ PC 전용 헤더 스크립트 -->
 <script th:inline="javascript">
   /*<![CDATA[*/
   document.addEventListener('DOMContentLoaded', function() {
@@ -88,27 +77,6 @@
       header.style.zIndex = '9999';
       header.style.width = '100%';
     }
-
-    // 사이드바 토글
-    window.toggleSidebar = function() {
-      const sidebar = document.querySelector('.sidebar');
-      const toggleBtn = document.querySelector('.sidebar-toggle');
-      const body = document.body;
-
-      if (sidebar && toggleBtn) {
-        const isOpen = sidebar.classList.contains('open');
-
-        if (isOpen) {
-          sidebar.classList.remove('open');
-          toggleBtn.classList.remove('active');
-          body.classList.remove('sidebar-open');
-        } else {
-          sidebar.classList.add('open');
-          toggleBtn.classList.add('active');
-          body.classList.add('sidebar-open');
-        }
-      }
-    };
 
     // 스크롤 효과
     let lastScrollY = window.scrollY;
@@ -135,23 +103,6 @@
         requestAnimationFrame(updateHeader);
         ticking = true;
       }
-    });
-
-    // 리사이즈
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function() {
-        if (window.innerWidth > 768) {
-          const sidebar = document.querySelector('.sidebar');
-          const toggleBtn = document.querySelector('.sidebar-toggle');
-          if (sidebar && toggleBtn) {
-            sidebar.classList.remove('open');
-            toggleBtn.classList.remove('active');
-            document.body.classList.remove('sidebar-open');
-          }
-        }
-      }, 250);
     });
   });
   /*]]>*/
