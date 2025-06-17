@@ -2,18 +2,23 @@ package com.grepp.codemap.interview.service;
 
 import com.grepp.codemap.interview.domain.InterviewQuestion;
 import com.grepp.codemap.interview.domain.UserAnswer;
+import com.grepp.codemap.interview.dto.QuestionSummaryDto;
 import com.grepp.codemap.interview.repository.UserAnswerRepository;
 import com.grepp.codemap.user.domain.User;
+import com.grepp.codemap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserAnswerService {
 
     private final UserAnswerRepository userAnswerRepository;
+    private final UserRepository userRepository;
 
     // 사용자 답변 저장
     public UserAnswer saveUserAnswer(User user, InterviewQuestion question, String answerText) {
@@ -31,6 +36,19 @@ public class UserAnswerService {
     public UserAnswer findLatestAnswer(User user, InterviewQuestion question) {
         return userAnswerRepository.findTopByUserAndQuestionOrderByIdDesc(user, question)
                 .orElseThrow(() -> new RuntimeException("답변이 존재하지 않습니다."));
+    }
+
+    public List<QuestionSummaryDto> getAnsweredQuestionsByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+        return userAnswerRepository.findByUserIdOrderByIdDesc(userId).stream()
+                .map(ua -> new QuestionSummaryDto(
+                        ua.getQuestion().getId(),
+                        ua.getQuestion().getCategory(),
+                        ua.getQuestion().getDifficulty(),
+                        ua.getQuestion().getQuestionText()
+                ))
+                .collect(Collectors.toList());
     }
 
 }

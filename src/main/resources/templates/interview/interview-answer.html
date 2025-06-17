@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>답변 제출 완료</title>
-    <link rel="stylesheet" th:href="@{/css/fragment/header.css}" />
-    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}" />
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
     <style>
         * {
             margin: 0;
@@ -14,8 +15,8 @@
 
         html, body {
             height: 100%;
-            font-family: 'Pretendard', sans-serif;
-            background: #ffffff;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             overflow-x: hidden;
         }
@@ -28,7 +29,8 @@
             height: 116px;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         aside {
@@ -39,7 +41,8 @@
             height: calc(100vh - 116px);
             z-index: 900;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         main {
@@ -48,7 +51,7 @@
             margin-left: 270px;
             width: calc(100vw - 270px);
             min-height: calc(100vh - 116px);
-            padding: 60px 40px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -63,18 +66,18 @@
         }
 
         .page-title {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #667eea;
-            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
             text-align: center;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            letter-spacing: -0.025em;
         }
 
         .answer-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             position: relative;
             margin-bottom: 2rem;
         }
@@ -84,36 +87,39 @@
             top: 50%;
             transform: translateY(-50%);
             z-index: 10;
-            width: 50px;
-            height: 50px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .nav-arrow:hover {
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-50%) scale(1.05);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         .nav-arrow.left {
-            left: 30px;
+            left: -80px;
         }
 
         .nav-arrow.right {
-            right: 30px;
+            right: -80px;
         }
 
         .nav-arrow::after {
             content: '';
             width: 12px;
             height: 12px;
-            border: 2px solid white;
+            border: 2px solid #667eea;
             border-bottom: none;
             border-right: none;
             transform: rotate(-45deg);
@@ -136,23 +142,28 @@
         }
 
         .content-box {
-            background: rgba(248, 250, 252, 0.8);
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 24px;
             padding: 3rem 4rem;
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
             position: relative;
-            margin: 0 40px;
         }
 
         .question-header {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 1.5rem;
             text-align: center;
+            letter-spacing: -0.025em;
         }
 
         .success-message {
@@ -164,7 +175,8 @@
             margin-bottom: 2rem;
             font-weight: 600;
             font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+            box-shadow: 0 8px 24px rgba(72, 187, 120, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .warning-message {
@@ -177,25 +189,31 @@
             font-weight: 600;
             font-size: 1.1rem;
             border: 2px solid rgba(197, 48, 48, 0.2);
-            box-shadow: 0 4px 15px rgba(197, 48, 48, 0.1);
+            box-shadow: 0 8px 24px rgba(197, 48, 48, 0.2);
+            backdrop-filter: blur(10px);
         }
 
         .question-box, .answer-box {
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 16px;
             padding: 1.5rem;
             font-size: 1.1rem;
             margin-bottom: 1.5rem;
             word-break: keep-all;
             line-height: 1.6;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            color: #374151;
         }
 
         .question-label {
             font-size: 0.9rem;
             font-weight: 600;
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -206,22 +224,27 @@
             color: white;
             border: none;
             padding: 1rem 3rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
             display: block;
             margin: 2rem auto 0;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             text-align: center;
             width: fit-content;
+            letter-spacing: -0.025em;
         }
 
         .btn-view-result:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-view-result:active {
+            transform: translateY(0);
         }
 
         .pagination-dots {
@@ -231,34 +254,43 @@
 
         .pagination-dots span {
             font-size: 1.2rem;
-            color: rgba(102, 126, 234, 0.4);
+            color: rgba(255, 255, 255, 0.4);
             margin: 0 6px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .pagination-dots .active {
-            color: #667eea;
+            color: rgba(255, 255, 255, 0.9);
             transform: scale(1.2);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         @media (max-width: 1000px) {
             .content-box {
                 margin: 0 20px;
-                max-width: 800px;
+                max-width: 900px;
+                padding: 2.5rem 3rem;
             }
 
             .nav-arrow.left {
-                left: 15px;
+                left: 0;
             }
 
             .nav-arrow.right {
-                right: 15px;
+                right: 0;
             }
         }
 
         @media (max-width: 768px) {
+            main {
+                margin-left: 0;
+                width: 100vw;
+                padding: 20px 15px;
+            }
+
             .content-box {
-                margin: 0 10px;
+                margin: 0;
                 padding: 2rem 1.5rem;
             }
 
@@ -273,7 +305,36 @@
             }
 
             .page-title {
-                font-size: 2rem;
+                font-size: 1.3rem;
+            }
+
+            .question-header {
+                font-size: 1.1rem;
+            }
+
+            .btn-view-result {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-box {
+                padding: 1.5rem 1rem;
+            }
+
+            .page-title {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .question-header {
+                font-size: 1rem;
+            }
+
+            .question-box, .answer-box {
+                padding: 1.2rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -284,10 +345,10 @@
 
 <header th:replace="~{fragments/header/header :: header}"></header>
 <aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
+<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
 
 <main>
     <div class="main-container">
-        <h1 class="page-title">✅ 답변 제출 완료</h1>
 
         <div class="answer-container">
             <!-- 왼쪽 화살표 -->
