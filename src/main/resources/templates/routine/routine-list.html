@@ -13,6 +13,8 @@
   <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
 
   <style>
+    /* ===== 완전히 수정된 루틴 페이지 스타일 ===== */
+
     * {
       margin: 0;
       padding: 0;
@@ -116,7 +118,6 @@
       opacity: 1;
     }
 
-    /* 메인 컨텐츠 스타일 */
     main {
       margin-left: 280px !important;
       margin-top: 0 !important;
@@ -125,6 +126,7 @@
       transition: margin-left 0.3s ease;
       position: relative;
       z-index: 1;
+      overflow: visible !important;
     }
 
     .routine-wrapper {
@@ -139,8 +141,10 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
       position: relative;
       z-index: 2;
+      overflow: visible !important;
     }
 
+    /* ✅ 루틴 헤더 수정 */
     .routine-header {
       display: flex;
       justify-content: space-between;
@@ -148,6 +152,8 @@
       margin-bottom: 24px;
       padding-bottom: 20px;
       border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+      overflow: visible !important; /* ✅ overflow visible 추가 */
+      min-height: 50px; /* ✅ 최소 높이 설정 */
     }
 
     .routine-header h2 {
@@ -161,22 +167,25 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0; /* ✅ 제목이 줄어들지 않도록 */
     }
 
-    /* 히스토리 관련 스타일 추가 */
-    .history-indicator {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /*.history-indicator {
+      background: linear-gradient(135deg, #667eea, #764ba2);;
       color: white;
       padding: 6px 12px;
       border-radius: 16px;
       font-size: 0.85rem;
       font-weight: 500;
-    }
+    }*/
 
+    /* ✅ 날짜 네비게이션 수정 */
     .date-navigation {
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-shrink: 0; /* ✅ 버튼들이 줄어들지 않도록 */
+      flex-wrap: wrap; /* ✅ 필요시 줄바꿈 허용 */
     }
 
     .nav-btn {
@@ -191,6 +200,8 @@
       font-size: 0.9rem;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      white-space: nowrap; /* ✅ 텍스트 줄바꿈 방지 */
+      min-width: fit-content; /* ✅ 최소 너비 설정 */
     }
 
     .nav-btn:hover {
@@ -204,6 +215,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      overflow: visible; /* ✅ overflow visible 추가 */
     }
 
     .date-filter label {
@@ -280,6 +292,7 @@
     /* 고정 루틴 섹션 */
     .fixed-routines-section {
       margin-bottom: 32px;
+      overflow: visible; /* ✅ overflow visible 추가 */
     }
 
     .fixed-routines-section h3 {
@@ -347,16 +360,20 @@
       box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     }
 
-    /* 루틴 섹션 통합 */
     .all-routines-section {
       margin-bottom: 32px;
+      overflow: visible !important;
     }
 
+    /* ✅ 섹션 헤더 수정 */
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
+      overflow: visible !important; /* ✅ overflow visible 추가 */
+      min-height: 40px; /* ✅ 최소 높이 설정 */
+      gap: 16px; /* ✅ 요소 간 간격 추가 */
     }
 
     .section-header h3 {
@@ -364,8 +381,10 @@
       font-weight: 600;
       color: #374151;
       margin: 0;
+      flex-shrink: 0; /* ✅ 제목이 줄어들지 않도록 */
     }
 
+    /* ✅ 버튼 스타일 수정 */
     .add-routine-btn {
       background: linear-gradient(135deg, #10b981, #059669);
       color: white;
@@ -380,6 +399,9 @@
       align-items: center;
       gap: 4px;
       box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      white-space: nowrap; /* ✅ 텍스트 줄바꿈 방지 */
+      flex-shrink: 0; /* ✅ 버튼이 줄어들지 않도록 */
+      min-width: fit-content; /* ✅ 최소 너비 설정 */
     }
 
     .add-routine-btn:hover {
@@ -388,6 +410,7 @@
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
     }
 
+    /* ✅ 루틴 아이템 수정 */
     .routine-item {
       background: rgba(249, 250, 251, 0.8);
       backdrop-filter: blur(10px);
@@ -399,12 +422,15 @@
       justify-content: space-between;
       align-items: center;
       transition: all 0.3s ease;
+      position: relative; /* ✅ relative 포지션 추가 */
+      overflow: visible; /* ✅ overflow visible 추가 */
     }
 
     .routine-item:hover {
       border-color: rgba(102, 126, 234, 0.5);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
       transform: translateY(-2px);
+      z-index: 10; /* ✅ 호버 시 z-index 조정 */
     }
 
     /* 완료된 루틴 스타일 */
@@ -429,10 +455,18 @@
       color: #6b7280;
     }
 
+    /* ✅ 루틴 우측 영역 수정 */
     .routine-right {
       display: flex;
       align-items: center;
       gap: 8px;
+      position: relative;
+    }
+
+    /* ✅ 메뉴 버튼 컨테이너 명시적 스타일 */
+    .routine-right > div {
+      position: relative !important;
+      z-index: 50; /* ✅ 메뉴 컨테이너 z-index */
     }
 
     /* 버튼 스타일 통합 */
@@ -480,6 +514,7 @@
       border-radius: 8px;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
+      color: #6b7280;
     }
 
     .menu-button:hover {
@@ -491,15 +526,25 @@
       position: absolute;
       right: 0;
       top: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(229, 231, 235, 0.3);
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      background: white;
+      border: 1px solid rgba(229, 231, 235, 0.5);
+      border-radius: 8px;
       display: none;
-      z-index: 10;
+      z-index: 1000 !important; /* ✅ z-index를 1000으로 설정 */
       min-width: 120px;
       overflow: hidden;
+      /* ✅ 단순화된 그림자 효과 */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1),
+      0 2px 8px rgba(0, 0, 0, 0.08);
+      /* ✅ 단순화된 애니메이션 */
+      opacity: 0;
+      transform: translateY(-5px);
+      transition: all 0.15s ease;
+    }
+
+    .menu-box.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .menu-box div {
@@ -507,10 +552,26 @@
       font-size: 14px;
       cursor: pointer;
       transition: background-color 0.2s ease;
+      color: #374151;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+    }
+
+    .menu-box div:last-child {
+      border-bottom: none;
     }
 
     .menu-box div:hover {
       background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .menu-box div:first-child {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .menu-box div:last-child {
+      border-radius: 0 0 12px 12px;
     }
 
     .empty-state {
@@ -544,7 +605,19 @@
       display: none;
     }
 
-    /* 모달 스타일 */
+    /* ✅ 모달 z-index 조정 */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 9998; /* ✅ 메뉴보다 낮게 설정 */
+    }
+
     #routineModal, #codingTestModal, #interviewModal {
       display: none;
       position: fixed;
@@ -556,24 +629,12 @@
       padding: 32px;
       border-radius: 20px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-      z-index: 2000;
+      z-index: 9999; /* ✅ 메뉴보다 낮게 설정 */
       width: 90%;
       max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
       border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(4px);
-      z-index: 1999;
     }
 
     #routineModal h3, #codingTestModal h3, #interviewModal h3 {
@@ -653,7 +714,7 @@
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
-    /* 반응형 디자인 */
+    /* ✅ 반응형 디자인 개선 */
     @media (max-width: 1024px) {
       main {
         margin-left: 0 !important;
@@ -672,6 +733,7 @@
       .date-navigation {
         flex-wrap: wrap;
         gap: 4px;
+        justify-content: center;
       }
 
       .nav-btn {
@@ -692,15 +754,53 @@
         justify-content: center;
       }
 
+      /* ✅ 섹션 헤더 모바일 대응 */
       .section-header {
         flex-direction: column;
         gap: 12px;
-        align-items: flex-start;
+        align-items: stretch;
+      }
+
+      .section-header h3 {
+        text-align: center;
+      }
+
+      .add-routine-btn {
+        width: 100%;
+        justify-content: center;
       }
 
       .stats-grid {
         grid-template-columns: 1fr;
         gap: 16px;
+      }
+
+      /* ✅ 루틴 아이템 모바일 대응 */
+      .routine-item {
+        background: rgba(249, 250, 251, 0.8);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(229, 231, 235, 0.5);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: visible;
+      }
+
+      .routine-right {
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      /* ✅ 모바일에서 메뉴 드롭다운 위치 조정 */
+      .menu-box {
+        right: 0;
+        left: auto;
+        min-width: 140px;
       }
     }
   </style>
@@ -723,9 +823,7 @@
     <div class="routine-header">
       <h2>
         데일리 루틴
-        <div th:if="${isHistoryView}" class="history-indicator">
-          📚 히스토리
-        </div>
+
       </h2>
 
       <!-- 날짜 네비게이션 -->
@@ -1017,9 +1115,10 @@
   </form>
 </div>
 
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // 메뉴 버튼 이벤트 설정
+    // ✅ 수정된 메뉴 버튼 이벤트 설정
     const menuButtons = document.querySelectorAll('.menu-button');
     menuButtons.forEach(btn => {
       btn.addEventListener('click', function(e) {
@@ -1029,19 +1128,45 @@
         // 다른 열린 메뉴 닫기
         document.querySelectorAll('.menu-box').forEach(box => {
           if (box !== menuBox) {
-            box.style.display = 'none';
+            box.classList.remove('show');
+            // 애니메이션 후 display none
+            setTimeout(() => {
+              if (!box.classList.contains('show')) {
+                box.style.display = 'none';
+              }
+            }, 200);
           }
         });
 
         // 현재 메뉴 토글
-        menuBox.style.display = menuBox.style.display === 'block' ? 'none' : 'block';
+        if (menuBox.classList.contains('show')) {
+          // 메뉴 닫기
+          menuBox.classList.remove('show');
+          setTimeout(() => {
+            if (!menuBox.classList.contains('show')) {
+              menuBox.style.display = 'none';
+            }
+          }, 200);
+        } else {
+          // 메뉴 열기
+          menuBox.style.display = 'block';
+          // 다음 프레임에서 show 클래스 추가 (애니메이션을 위해)
+          requestAnimationFrame(() => {
+            menuBox.classList.add('show');
+          });
+        }
       });
     });
 
     // 문서 클릭 시 열린 메뉴 닫기
     document.addEventListener('click', function() {
       document.querySelectorAll('.menu-box').forEach(box => {
-        box.style.display = 'none';
+        box.classList.remove('show');
+        setTimeout(() => {
+          if (!box.classList.contains('show')) {
+            box.style.display = 'none';
+          }
+        }, 200);
       });
     });
   });
@@ -1281,17 +1406,17 @@
     notification.className = 'notification';
     notification.textContent = message;
     notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 16px 24px;
-      background-color: #10b981;
-      color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 9999;
-      animation: slideIn 0.3s ease-out;
-    `;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    background-color: #10b981;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+  `;
 
     document.body.appendChild(notification);
 
